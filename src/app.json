@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "pages/sp-calculator/main",
+    "pages/user-center/main",
+    "pages/user-login/main",
+    "pages/user-logon/main",
+    "pages/userinfo-setting/main",
+    "pages/membership-register/main",
+    "pages/report-repo/main",
+    "pages/spc-report-express/main",
+    "pages/spc-report-deluxe/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "SPC",
+    "navigationBarTextStyle": "black"
+  }
+}
