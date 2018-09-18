@@ -10,7 +10,7 @@
 	"miniprogramRoot": "./dist/",
 	"compileType": "miniprogram",
 	"appid": "wx5604e60d9858d6cc",
-	"projectname": "Minipro-SPC-test",
+	"projectname": "Minipro-SPC",
 	"condition": {
 		"search": {
 			"current": -1,
