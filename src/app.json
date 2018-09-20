@@ -15,5 +15,21 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "SPC",
     "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#000000",
+    "borderStyle": "white",
+    "backgroundColor": "#f8f9fb",
+    "list": [
+      {
+        "text": "计算",
+        "pagePath": "pages/sp-calculator/main"
+      },
+      {
+        "text": "用户",
+        "pagePath": "pages/user-center/main"
+      }
+    ]
   }
 }
