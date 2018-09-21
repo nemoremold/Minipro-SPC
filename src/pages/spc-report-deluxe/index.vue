@@ -1,6 +1,6 @@
 <template>
   <div>
-    SPC Report Deluxe Edition
+    <navigator open-type="switchTab" url="../user-center/main">SPC Report Deluxe Edition</navigator>
   </div>
 </template>
 
