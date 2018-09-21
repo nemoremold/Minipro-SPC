@@ -55,7 +55,7 @@ module.exports = {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',
-        include: [resolve('src'), resolve('test')],
+        include: [resolve('src'), resolve('test'), resolve('static/vant')],
         options: {
           formatter: require('eslint-friendly-formatter')
         }
@@ -67,7 +67,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        include: [resolve('src'), resolve('test')],
+        include: [resolve('src'), resolve('test'), resolve('static/vant')],
         use: [
           'babel-loader',
           {

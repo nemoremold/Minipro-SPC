@@ -3,16 +3,63 @@
     <div class="factor-element-list">
       <div class="factor-element" v-for="(item, index) in elements" :key="index">
         <div>
-          <li>{{ item.label + ': ' }}</li>
           <div v-if="elements[index].type === 'picklist'">
             <picker @change="bindPickerChange($event, index)" :value="pickerIds[elements[index].picklistId]" :range="picklists[elements[index].picklistId].options">
-              <view>
-                {{ elements[index].value }}
-              </view>
+              <van-field
+                v-model="elements[index].value"
+                :placeholder="elements[index].hint"
+                type="number"
+                clearable
+                required
+                disabled
+                :icon="elements[index].annotationIcon"
+                :label="elements[index].label"
+                @change="fieldChange($event, index)"
+                @clickIcon="toastAnnotation(index)"
+              />
             </picker>
           </div>
-          <div v-else-if="elements[index].type === 'numeric' || elements[index].type === 'string'">
-            <input v-model="elements[index].value" :placeholder="elements[index].hint">
+          <div v-else-if="elements[index].type === 'numeric'">
+            <van-field
+              v-model="elements[index].value"
+              :placeholder="elements[index].hint"
+              type="number"
+              clearable
+              required
+              :icon="elements[index].annotationIcon"
+              :label="elements[index].label"
+              @change="fieldChange($event, index)"
+              @clickIcon="toastAnnotation(index)"
+            />
+          </div>
+          <div v-else-if="elements[index].type === 'constant'">
+            <van-field
+              v-model="elements[index].value"
+              :placeholder="elements[index].hint"
+              type="number"
+              clearable
+              required
+              disabled
+              :icon="elements[index].annotationIcon"
+              :label="elements[index].label"
+              @change="fieldChange($event, index)"
+              @clickIcon="toastAnnotation(index)"
+            />
+          </div>
+          <div v-else-if="elements[index].type === 'string'">
+            <van-field
+              v-model="elements[index].value"
+              :placeholder="elements[index].hint"
+              clearable
+              required
+              :icon="elements[index].annotationIcon"
+              :label="elements[index].label"
+              @change="fieldChange($event, index)"
+              @clickIcon="toastAnnotation(index)"
+            />
+          </div>
+          <div v-else-if="elements[index].type === 'button'">
+            <van-button>{{ elements[index].label }}</van-button>
           </div>
         </div>
       </div>
@@ -52,6 +99,24 @@ export default {
       let pickedId = e.mp.detail.value
       this.pickerIds[this.elements[elementId].picklistId] = pickedId
       this.elements[elementId].value = this.picklists[this.elements[elementId].picklistId].options[pickedId]
+    },
+
+    fieldChange (e, elementId) {
+      console.log(e)
+      console.log(elementId)
+      let newValue = e.mp.detail
+      this.elements[elementId].value = newValue
+    },
+
+    toastAnnotation (elementId) {
+      if (this.elements[elementId].annotations == null) {
+        return
+      }
+      wx.showModal({
+        title: '温馨提示',
+        showCancel: false,
+        content: this.elements[elementId].annotations
+      })
     }
   }
 }
