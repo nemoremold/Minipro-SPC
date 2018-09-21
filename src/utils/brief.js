@@ -78,6 +78,10 @@ export function pension_gap(j,e,b,c,k,n,f) {
 /*************************************** 第一块结束 */
 
 /**
+ * todo  社保养老个人账户余额 怎么算 4108.03 * 参保年数
+ */
+
+/**
 * 计发月数, M。未来年记账利率或投资收益率: i 默认为 4%
 * @param {*} f 预期寿命
 * @param {*} b 准备退休的年龄
@@ -125,7 +129,7 @@ function sum_point(join, b, c, e, d, g, salary, years_b1992){
 
 /**
  * todo: 缴费年限月数到底是什么 
- * 计算本人指数化月平均缴费工资
+ * 计算本人指数化月平均缴费工资 Y
  * @param {*} years_b1992 1992年之前的连续工龄 年
  * @param {*} join 参加工作时间
  * @param {*} e 平均通胀率
@@ -166,8 +170,7 @@ function average_indexed_monthly_earnings(years_b1992, join, e, d, g, b, c, year
 }
 
 /**
- * 
-
+ * 社保基础养老金: P1
  * @param {*} years_b1992 1992年之前的连续工龄 年
  * @param {*} join 参加工作时间
  * @param {*} e 平均通胀率
@@ -178,7 +181,7 @@ function average_indexed_monthly_earnings(years_b1992, join, e, d, g, b, c, year
  * @param {*} years_join_insure 参保年数 理论上等于 2018-join
  * @param {*} salary 每月缴费工资
  */
-function pension_basic_social_insurance(years_b1992, join, e, d, g, b, c, years_join_insure, salary){
+export function pension_basic_social_insurance(years_b1992, join, e, d, g, b, c, years_join_insure, salary){
   /**
    *  w 参保人员退休时上一年度全省在岗职工月平均工资 元/月
    *  y 本人指数化月平均缴费工资
@@ -193,13 +196,51 @@ function pension_basic_social_insurance(years_b1992, join, e, d, g, b, c, years_
 }
 
 /**
-* 退休首年养老金月领金额
-* @param {*} p1 社保基础养老金
-* @param {*} p2 社保个人账户养老金
-* @param {*} p3 社保过渡性养老金
-* @param {*} p4 企业年金
-*/
-export function pension_in_first_retirement_month(p1, p2, p3, p4){
-  return p1+p2+p3+p4;
+ * 保个人账户养老金 P2
+ * @param {*} remaining_of_personal_account 个人账户养老金存额
+ * @param {*} c 目前年龄
+ * @param {*} b 准备退休的年龄
+ * @param {*} f 预期寿命
+ */
+export function pension_personal_account(remaining_of_personal_account, c, b, f){
+  var t = plan_months(f, b);
+  return (4108.03 * (b - c) + remaining_of_personal_account)/t;
+}
+
+/**
+ * 社保过渡性养老金: P3
+ * todo 算法有问题
+ */
+export function pension_transition(years_b1992, join, e, d, g, b, c, years_join_insure, salary){
+  var rate = 0.3 + (Math.floor(Math.random()*10) + Math.floor(Math.random()*5))*0.01;
+  return average_indexed_monthly_earnings(years_b1992, join, e, d, g, b, c, years_join_insure, salary) * rate;
+}
+
+/**
+ * 退休首年养老金月领金额
+ * @param {*} years_b1992 1992年之前的连续工龄 年
+ * @param {*} join 参加工作时间
+ * @param {*} e 平均通胀率
+ * @param {*} d 上年当地职工平均工资，取自json文件 元/月
+ * @param {*} g 上年当地职工工资平均增长率
+ * @param {*} b 准备退休的年龄
+ * @param {*} c 目前年龄
+ * @param {*} years_join_insure 参保年数 理论上等于 2018-join
+ * @param {*} salary 每月缴费工资
+ * @param {*} remaining_of_personal_account 个人账户养老金存额
+ * @param {*} f 预期寿命
+ * @param {*} company_annuity 企业年金
+ */
+export function pension_in_first_retirement_month(years_b1992, join, e, d, g, b, c, years_join_insure, salary, remaining_of_personal_account, f, company_annuity){
+  /** 
+   * @param {*} p1 社保基础养老金
+   * @param {*} p2 社保个人账户养老金
+   * @param {*} p3 社保过渡性养老金
+   * @param {*} company_annuity 企业年金
+   */
+  var p1 = pension_basic_social_insurance(years_b1992, join, e, d, g, b, c, years_join_insure, salary);
+  var p2 = pension_personal_account(remaining_of_personal_account, c, b, f);
+  var p3 = pension_transition(years_b1992, join, e, d, g, b, c, years_join_insure, salary);
+  return p1+p2+p3+company_annuity;
 }
 
