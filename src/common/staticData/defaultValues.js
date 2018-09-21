@@ -186,21 +186,21 @@ const DEFAULT_CALCULATION_FACTORS = [
     id: 'start-date',
     label: '参加工作时间',
     type: 'picklistDate',
-    value: '2000-01',
+    value: '2000年01月',
     picklistId: '3'
   }, {
     internalId: '4',
     id: 'time-for-participation',
     label: '参保年数',
-    type: 'picklistDate',
-    value: '0-0',
+    type: 'picklistMulti',
+    value: '0年0月',
     picklistId: '4'
   }, {
     internalId: '5',
     id: 'successive-length-of-service-by-date',
     label: '1992年12月31日之前的连续工龄',
-    type: 'picklistDate',
-    value: '0-0',
+    type: 'picklistMulti',
+    value: '0年0月',
     picklistId: '5',
     annotations: '一般来说：\r\n在非公有制单位(私企、外企、个体户、⾃由职业等)的工作年限，不计⼊国家认可的连续⼯龄。在公有制单位(政府机关、事业单位、国有企业等)的⼯作年限，计⼊国家认可的连续工龄。',
     annotationIcon: 'question'
@@ -340,13 +340,11 @@ const PICKLIST_TYPES = [
   }, {
     internalId: '4',
     id: 'time-for-participation',
-    startDate: '0-0',
-    endDate: '50-11'
+    options: [Array.from(Array(51), (v, k) => (k + '年')), Array.from(Array(12), (v, k) => (k + '月'))]
   }, {
     internalId: '5',
     id: 'successive-length-of-service-by-date',
-    startDate: '0-0',
-    endDate: '50-11'
+    options: [Array.from(Array(51), (v, k) => (k + '年')), Array.from(Array(12), (v, k) => (k + '月'))]
   }, {
     internalId: '6',
     id: 'age',

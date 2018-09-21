@@ -6,7 +6,7 @@
           <div v-if="elements[index].type === 'picklist'">
             <picker @change="bindPickerChange($event, index)" :value="pickerIds[elements[index].picklistId]" :range="picklists[elements[index].picklistId].options">
               <van-field
-                v-model="elements[index].value"
+                :value="elements[index].value"
                 :placeholder="elements[index].hint"
                 type="number"
                 clearable
@@ -29,7 +29,28 @@
               fields="month"
             >
               <van-field
-                v-model="elements[index].value"
+                :value="elements[index].value"
+                :placeholder="elements[index].hint"
+                type="date"
+                clearable
+                required
+                disabled
+                :icon="elements[index].annotationIcon"
+                :label="elements[index].label"
+                @change="fieldChange($event, index)"
+                @clickIcon="toastAnnotation(index)"
+              />
+            </picker>
+          </div>
+          <div v-if="elements[index].type === 'picklistMulti'">
+            <picker
+              @change="bindPickerMultiChange($event, index)"
+              mode="multiSelector"
+              :value="elements[index].value"
+              :range="picklists[elements[index].picklistId].options"
+            >
+              <van-field
+                :value="elements[index].value"
                 :placeholder="elements[index].hint"
                 type="date"
                 clearable
@@ -44,7 +65,7 @@
           </div>
           <div v-else-if="elements[index].type === 'numeric'">
             <van-field
-              v-model="elements[index].value"
+              :value="elements[index].value"
               :placeholder="elements[index].hint"
               type="number"
               clearable
@@ -57,7 +78,7 @@
           </div>
           <div v-else-if="elements[index].type === 'constant'">
             <van-field
-              v-model="elements[index].value"
+              :value="elements[index].value"
               :placeholder="elements[index].hint"
               type="number"
               clearable
@@ -71,7 +92,7 @@
           </div>
           <div v-else-if="elements[index].type === 'string'">
             <van-field
-              v-model="elements[index].value"
+              :value="elements[index].value"
               :placeholder="elements[index].hint"
               clearable
               required
@@ -151,7 +172,14 @@ export default {
 
     bindPickerDateChange (e, elementId) {
       let newValue = e.mp.detail.value
-      this.elements[elementId].value = newValue
+      let newValues = newValue.split('-')
+      this.elements[elementId].value = newValues[0] + '年' + newValues[1] + '月'
+    },
+
+    bindPickerMultiChange (e, elementId) {
+      console.log(e)
+      let newValues = e.mp.detail.value
+      this.elements[elementId].value = newValues[0] + '年' + newValues[1] + '月'
     },
 
     fieldChange (e, elementId) {
