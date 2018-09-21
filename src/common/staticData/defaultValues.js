@@ -1,3 +1,164 @@
+const LOCATIONS = [
+  '北京市',
+  '天津市',
+  '河北省',
+  '山西省',
+  '内蒙古自治区',
+  '辽宁省',
+  '吉林省',
+  '黑龙江省',
+  '上海市',
+  '江苏省',
+  '浙江省',
+  '安徽省',
+  '福建省',
+  '江西省',
+  '山东省',
+  '河南省',
+  '湖北省',
+  '湖南省',
+  '广东省',
+  '广西壮族自治区',
+  '海南省',
+  '重庆市',
+  '四川省',
+  '贵州省',
+  '云南省',
+  '西藏自治区',
+  '陕西省',
+  '甘肃省',
+  '青海省',
+  '宁夏回族自治区',
+  '新疆维吾尔自治区'
+]
+
+const LOCATIONS_WAGES = [
+  {
+    location: '北京市',
+    wage: 119928
+  },
+  {
+    location: '天津市',
+    wage: 86305
+  },
+  {
+    location: '河北省',
+    wage: 55334
+  },
+  {
+    location: '山西省',
+    wage: 53705
+  },
+  {
+    location: '内蒙古自治区',
+    wage: 61067
+  },
+  {
+    location: '辽宁省',
+    wage: 56015
+  },
+  {
+    location: '吉林省',
+    wage: 56098
+  },
+  {
+    location: '黑龙江省',
+    wage: 52435
+  },
+  {
+    location: '上海市',
+    wage: 119935
+  },
+  {
+    location: '江苏省',
+    wage: 71574
+  },
+  {
+    location: '浙江省',
+    wage: 73326
+  },
+  {
+    location: '安徽省',
+    wage: 59102
+  },
+  {
+    location: '福建省',
+    wage: 61973
+  },
+  {
+    location: '江西省',
+    wage: 56136
+  },
+  {
+    location: '山东省',
+    wage: 62539
+  },
+  {
+    location: '河南省',
+    wage: 49505
+  },
+  {
+    location: '湖北省',
+    wage: 59831
+  },
+  {
+    location: '湖南省',
+    wage: 58241
+  },
+  {
+    location: '广东省',
+    wage: 72326
+  },
+  {
+    location: '广西壮族自治区',
+    wage: 57878
+  },
+  {
+    location: '海南省',
+    wage: 61663
+  },
+  {
+    location: '重庆市',
+    wage: 65545
+  },
+  {
+    location: '四川省',
+    wage: 63926
+  },
+  {
+    location: '贵州省',
+    wage: 66279
+  },
+  {
+    location: '云南省',
+    wage: 60450
+  },
+  {
+    location: '西藏自治区',
+    wage: 103232
+  },
+  {
+    location: '陕西省',
+    wage: 59637
+  },
+  {
+    location: '甘肃省',
+    wage: 57575
+  },
+  {
+    location: '青海省',
+    wage: 66589
+  },
+  {
+    location: '宁夏回族自治区',
+    wage: 65570
+  },
+  {
+    location: '新疆维吾尔自治区',
+    wage: 63739
+  }
+]
+
 const DEFAULT_CALCULATION_FACTORS = [
   {
     internalId: '0',
@@ -11,7 +172,7 @@ const DEFAULT_CALCULATION_FACTORS = [
     id: 'social-security-location',
     label: '社保所在地',
     type: 'picklist',
-    value: '上海市',
+    value: '北京市',
     picklistId: '1'
   }, {
     internalId: '2',
@@ -24,22 +185,22 @@ const DEFAULT_CALCULATION_FACTORS = [
     internalId: '3',
     id: 'start-date',
     label: '参加工作时间',
-    type: 'picklist',
+    type: 'picklistDate',
     value: '2000-01',
     picklistId: '3'
   }, {
     internalId: '4',
     id: 'time-for-participation',
     label: '参保年数',
-    type: 'picklist',
-    value: '0000-00',
+    type: 'picklistDate',
+    value: '0-0',
     picklistId: '4'
   }, {
     internalId: '5',
     id: 'successive-length-of-service-by-date',
     label: '1992年12月31日之前的连续工龄',
-    type: 'picklist',
-    value: '0000-00',
+    type: 'picklistDate',
+    value: '0-0',
     picklistId: '5',
     annotations: '一般来说：\r\n在非公有制单位(私企、外企、个体户、⾃由职业等)的工作年限，不计⼊国家认可的连续⼯龄。在公有制单位(政府机关、事业单位、国有企业等)的⼯作年限，计⼊国家认可的连续工龄。',
     annotationIcon: 'question'
@@ -162,11 +323,7 @@ const PICKLIST_TYPES = [
   }, {
     internalId: '1',
     id: 'social-security-location',
-    options: [
-      '北京市',
-      '上海市',
-      '香港特别行政区'
-    ]
+    options: LOCATIONS
   }, {
     internalId: '2',
     id: 'company-type',
@@ -178,37 +335,34 @@ const PICKLIST_TYPES = [
   }, {
     internalId: '3',
     id: 'start-date',
-    options: [
-    ]
+    startDate: '1900-1',
+    endDate: '2100-12'
   }, {
     internalId: '4',
     id: 'time-for-participation',
-    options: [
-    ]
+    startDate: '0-0',
+    endDate: '50-11'
   }, {
     internalId: '5',
     id: 'successive-length-of-service-by-date',
-    options: [
-    ]
+    startDate: '0-0',
+    endDate: '50-11'
   }, {
     internalId: '6',
     id: 'age',
-    options: Array.from(Array(90), (v, k) => k)
+    options: Array.from(Array(49), (v, k) => k + 16)
   }, {
     internalId: '7',
     id: 'mandatory-age-for-retirement',
-    options: [
-    ]
+    options: Array.from(Array(31), (v, k) => k + 40)
   }, {
     internalId: '8',
     id: 'expected-retirement-age',
-    options: [
-    ]
+    options: Array.from(Array(26), (v, k) => k + 35)
   }, {
     internalId: '9',
     id: 'life-expectancy',
-    options: [
-    ]
+    options: Array.from(Array(51), (v, k) => k + 70)
   }, {
     internalId: '10',
     id: 'company-will-provide-supplementary-pension',
@@ -219,7 +373,16 @@ const PICKLIST_TYPES = [
   }
 ]
 
+function getLocationWage (e) {
+  for (var i = 0; i < e.length; i++) {
+    if (e[i].value === LOCATIONS_WAGES[i].location) {
+      return LOCATIONS_WAGES[i].wage
+    }
+  }
+}
+
 export default {
   DEFAULT_CALCULATION_FACTORS,
-  PICKLIST_TYPES
+  PICKLIST_TYPES,
+  getLocationWage
 }

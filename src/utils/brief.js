@@ -1,3 +1,5 @@
+import CALCULATE_FACTORS from '@/utils/factors'
+
 /**
  * todo:
  *  最终结果中，养老金缺口受基金定投收益率 和 通胀率影响较大
@@ -71,9 +73,13 @@ function FV(rate, nper, pmt, pv, type) {
 * @param {*} n 基金定投分担，元/月
 * @param {*} f 预期寿命
 */
-export function pension_gap(j,e,b,c,k,n,f) {
+function pension_gap(j,e,b,c,k,n,f) {
   return money_per_month(j, e, b, c) - pension_when_retirement(j, b, c) - benefit_from_fund(k, b, c, n, f);
 };
+
+export function get_pension_gap (j, b, c, f) {
+  return pension_gap(j, CALCULATE_FACTORS.e, b, c, CALCULATE_FACTORS.k, CALCULATE_FACTORS.n, f)
+}
 
 /*************************************** 第一块结束 */
 
@@ -181,7 +187,7 @@ function average_indexed_monthly_earnings(years_b1992, join, e, d, g, b, c, year
  * @param {*} years_join_insure 参保年数 理论上等于 2018-join
  * @param {*} salary 每月缴费工资
  */
-export function pension_basic_social_insurance(years_b1992, join, e, d, g, b, c, years_join_insure, salary){
+function pension_basic_social_insurance(years_b1992, join, e, d, g, b, c, years_join_insure, salary){
   /**
    *  w 参保人员退休时上一年度全省在岗职工月平均工资 元/月
    *  y 本人指数化月平均缴费工资
@@ -195,6 +201,10 @@ export function pension_basic_social_insurance(years_b1992, join, e, d, g, b, c,
   return (w + y)/2 * N * 0.01;
 }
 
+function get_pension_basic_social_insurance (years_b1992, join, d, b, c, years_join_insure, salary) {
+  return pension_basic_social_insurance(years_b1992, join, CALCULATE_FACTORS.e, d, CALCULATE_FACTORS.g, b, c, years_join_insure, salary)
+}
+
 /**
  * 保个人账户养老金 P2
  * @param {*} remaining_of_personal_account 个人账户养老金存额
@@ -202,18 +212,26 @@ export function pension_basic_social_insurance(years_b1992, join, e, d, g, b, c,
  * @param {*} b 准备退休的年龄
  * @param {*} f 预期寿命
  */
-export function pension_personal_account(remaining_of_personal_account, c, b, f){
+function pension_personal_account(remaining_of_personal_account, c, b, f){
   var t = plan_months(f, b);
   return (4108.03 * (b - c) + remaining_of_personal_account)/t;
+}
+
+function get_pension_personal_account (remaining_of_personal_account, c, b, f) {
+  return pension_personal_account(remaining_of_personal_account, c, b, f)
 }
 
 /**
  * 社保过渡性养老金: P3
  * todo 算法有问题
  */
-export function pension_transition(years_b1992, join, e, d, g, b, c, years_join_insure, salary){
+function pension_transition(years_b1992, join, e, d, g, b, c, years_join_insure, salary){
   var rate = 0.3 + (Math.floor(Math.random()*10) + Math.floor(Math.random()*5))*0.01;
   return average_indexed_monthly_earnings(years_b1992, join, e, d, g, b, c, years_join_insure, salary) * rate;
+}
+
+function get_pension_transition (years_b1992, join, d, b, c, years_join_insure, salary) {
+  return pension_transition(years_b1992, join, CALCULATE_FACTORS.e, d, CALCULATE_FACTORS.g, b, c, years_join_insure, salary)
 }
 
 /**
@@ -231,7 +249,7 @@ export function pension_transition(years_b1992, join, e, d, g, b, c, years_join_
  * @param {*} f 预期寿命
  * @param {*} company_annuity 企业年金
  */
-export function pension_in_first_retirement_month(years_b1992, join, e, d, g, b, c, years_join_insure, salary, remaining_of_personal_account, f, company_annuity){
+function pension_in_first_retirement_month(years_b1992, join, e, d, g, b, c, years_join_insure, salary, remaining_of_personal_account, f, company_annuity){
   /** 
    * @param {*} p1 社保基础养老金
    * @param {*} p2 社保个人账户养老金
@@ -244,3 +262,19 @@ export function pension_in_first_retirement_month(years_b1992, join, e, d, g, b,
   return p1+p2+p3+company_annuity;
 }
 
+function get_pension_in_first_retirement_month (years_b1992, join, d, b, c, years_join_insure, salary, remaining_of_personal_account, f) {
+  return pension_in_first_retirement_month(years_b1992, join, CALCULATE_FACTORS.e, d, CALCULATE_FACTORS.g, b, c, years_join_insure, salary, remaining_of_personal_account, f, CALCULATE_FACTORS.company_annuity)
+}
+
+function getExpressReportData (years_b1992, join, d, j, b, c, years_join_insure, salary, remaining_of_personal_account, f) {
+  return {
+    pensionGap: get_pension_gap(j, b, c, f),
+    pensionInFirstRetirementMonth: get_pension_in_first_retirement_month(years_b1992, join, d, b, c, years_join_insure, salary, remaining_of_personal_account, f),
+    pensionBasicSocialInsurance: get_pension_basic_social_insurance(years_b1992, join, d, b, c, years_join_insure, salary),
+    pensionPersonalAccount: get_pension_personal_account(remaining_of_personal_account, c, b, f),
+    pensionTransition: get_pension_transition(years_b1992, join, d, b, c, years_join_insure, salary),
+    companyAnnuity: CALCULATE_FACTORS.company_annuity
+  }
+}
+
+export default getExpressReportData
