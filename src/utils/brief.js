@@ -166,13 +166,30 @@ function average_indexed_monthly_earnings(years_b1992, join, e, d, g, b, c, year
 }
 
 /**
-* 社保基础养老金: p1
-* @param {*} w 参保人员退休时上一年度全省在岗职工月平均工资 元/月
-* @param {*} y 本人指数化月平均缴费工资
-* @param {*} N N为企业和职工应缴纳基本养老保险费的年限。
-*/
-function pension_basic_social_insurance(w, y, N){
-  return (w + y)/2 * N
+ * 
+
+ * @param {*} years_b1992 1992年之前的连续工龄 年
+ * @param {*} join 参加工作时间
+ * @param {*} e 平均通胀率
+ * @param {*} d 上年当地职工平均工资，取自json文件 元/月
+ * @param {*} g 上年当地职工工资平均增长率
+ * @param {*} b 准备退休的年龄
+ * @param {*} c 目前年龄
+ * @param {*} years_join_insure 参保年数 理论上等于 2018-join
+ * @param {*} salary 每月缴费工资
+ */
+function pension_basic_social_insurance(years_b1992, join, e, d, g, b, c, years_join_insure, salary){
+  /**
+   *  w 参保人员退休时上一年度全省在岗职工月平均工资 元/月
+   *  y 本人指数化月平均缴费工资
+   *  N N为企业和职工应缴纳基本养老保险费的年限。
+   */
+  
+  var w = d * (1+g)**(b-c);
+  var y = average_indexed_monthly_earnings(years_b1992, join, e, d, g, b, c, years_join_insure, salary);
+  var N = b - c + 2018-join;
+
+  return (w + y)/2 * N * 0.01;
 }
 
 /**
