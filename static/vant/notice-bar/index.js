@@ -1,9 +1,9 @@
-import { create } from '../common/create';
+import { VantComponent } from '../common/component';
 
 const FONT_COLOR = '#f60';
 const BG_COLOR = '#fff7cc';
 
-create({
+VantComponent({
   props: {
     text: {
       type: String,
@@ -61,7 +61,7 @@ create({
     timer: null
   },
 
-  attached() {
+  created() {
     if (this.data.mode) {
       this.setData({
         hasRightIcon: true
@@ -69,7 +69,7 @@ create({
     }
   },
 
-  detached() {
+  destroyed() {
     const { timer } = this.data;
     timer && clearTimeout(timer);
   },

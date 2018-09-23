@@ -1,6 +1,6 @@
-import { create } from '../common/create';
+import { VantComponent } from '../common/component';
 
-create({
+VantComponent({
   props: {
     inactive: {
       type: Boolean,
@@ -52,7 +52,7 @@ create({
     progressWidth: 0
   },
 
-  ready() {
+  mounted() {
     this.setText();
     this.setPivotStyle();
     this.getWidth();

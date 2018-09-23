@@ -1,11 +1,15 @@
-import { create } from '../common/create';
+import { VantComponent } from '../common/component';
 
-create({
+VantComponent({
   props: {
     show: Boolean,
     mask: Boolean,
     message: String,
     forbidClick: Boolean,
+    zIndex: {
+      type: Number,
+      value: 1000
+    },
     type: {
       type: String,
       value: 'text'
@@ -25,6 +29,9 @@ create({
       this.setData({
         show: false
       });
-    }
+    },
+
+    // for prevent touchmove
+    noop() {}
   }
 });

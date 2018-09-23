@@ -1,6 +1,6 @@
-import { create } from '../common/create';
+import { VantComponent } from '../common/component';
 
-create({
+VantComponent({
   props: {
     icon: String,
     steps: {
@@ -21,7 +21,7 @@ create({
     }
   },
 
-  attached() {
+  created() {
     this.formatSteps();
   },
 

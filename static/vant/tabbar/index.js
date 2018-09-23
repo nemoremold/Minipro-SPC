@@ -1,6 +1,6 @@
-import { create } from '../common/create';
+import { VantComponent } from '../common/component';
 
-create({
+VantComponent({
   props: {
     active: {
       type: Number,
@@ -24,7 +24,7 @@ create({
     currentActive: -1
   },
 
-  attached() {
+  created() {
     this.setData({ currentActive: this.data.active });
   },
 

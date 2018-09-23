@@ -1,7 +1,8 @@
 <template>
   <div>
     <div v-for="(item, index) in optionTabs" :key="index">
-      <option-tab :label="item.label" :url="item.url"></option-tab>
+      <!-- <option-tab :label="item.label" :url="item.url"></option-tab> -->
+      施工中，敬请期待！
     </div>
   </div>
 </template>

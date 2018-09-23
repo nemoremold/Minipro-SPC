@@ -1,6 +1,6 @@
-import { create } from '../common/create';
+import { VantComponent } from '../common/component';
 
-create({
+VantComponent({
   field: true,
 
   classes: ['node-class'],
@@ -20,7 +20,7 @@ create({
     }
   },
 
-  attached() {
+  created() {
     this.setData({ value: this.data.checked });
   },
 

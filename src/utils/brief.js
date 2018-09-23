@@ -266,14 +266,15 @@ function get_pension_in_first_retirement_month (years_b1992, join, d, b, c, year
   return pension_in_first_retirement_month(years_b1992, join, CALCULATE_FACTORS.e, d, CALCULATE_FACTORS.g, b, c, years_join_insure, salary, remaining_of_personal_account, f, CALCULATE_FACTORS.company_annuity)
 }
 
-function getExpressReportData (years_b1992, join, d, j, b, c, years_join_insure, salary, remaining_of_personal_account, f) {
+function getExpressReportData (years_b1992, join, d, j, b, c, years_join_insure, salary, remaining_of_personal_account, f, name) {
   return {
-    pensionGap: get_pension_gap(j, b, c, f),
-    pensionInFirstRetirementMonth: get_pension_in_first_retirement_month(years_b1992, join, d, b, c, years_join_insure, salary, remaining_of_personal_account, f),
-    pensionBasicSocialInsurance: get_pension_basic_social_insurance(years_b1992, join, d, b, c, years_join_insure, salary),
-    pensionPersonalAccount: get_pension_personal_account(remaining_of_personal_account, c, b, f),
-    pensionTransition: get_pension_transition(years_b1992, join, d, b, c, years_join_insure, salary),
-    companyAnnuity: CALCULATE_FACTORS.company_annuity
+    gap: parseInt(get_pension_gap(j, b, c, f)),
+    p0: parseInt(get_pension_in_first_retirement_month(years_b1992, join, d, b, c, years_join_insure, salary, remaining_of_personal_account, f)),
+    p1: parseInt(get_pension_basic_social_insurance(years_b1992, join, d, b, c, years_join_insure, salary)),
+    p2: parseInt(get_pension_personal_account(remaining_of_personal_account, c, b, f)),
+    p3: parseInt(get_pension_transition(years_b1992, join, d, b, c, years_join_insure, salary)),
+    p4: parseInt(CALCULATE_FACTORS.company_annuity),
+    name: name
   }
 }
 

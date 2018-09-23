@@ -11,8 +11,9 @@
     "pages/spc-report-deluxe/main"
   ],
   "window": {
+    "backgroundColor": "#B8B8B8",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
+    "navigationBarBackgroundColor": "#B8B8B8",
     "navigationBarTitleText": "SPC",
     "navigationBarTextStyle": "black"
   },
@@ -24,11 +25,15 @@
     "list": [
       {
         "text": "计算",
-        "pagePath": "pages/sp-calculator/main"
+        "pagePath": "pages/sp-calculator/main",
+        "iconPath": "/static/images/icon.jpg",
+        "selectedIconPath": "/static/images/icon.jpg"
       },
       {
         "text": "用户",
-        "pagePath": "pages/user-center/main"
+        "pagePath": "pages/user-center/main",
+        "iconPath": "/static/images/icon2.jpg",
+        "selectedIconPath": "/static/images/icon2.jpg"
       }
     ]
   }
