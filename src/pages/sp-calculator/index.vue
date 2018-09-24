@@ -284,7 +284,8 @@
 <script>
 import defaultValues from '@/common/staticData/defaultValues'
 import Toast from '../../../static/vant/toast/toast'
-import getExpressReportData from '@/utils/brief'
+// import getExpressReportData from '@/utils/brief' todo 1
+import Details from '@/utils/details'
 
 export default {
   data () {
@@ -381,55 +382,79 @@ export default {
       }
 
       let context = this
-      wx.request({
-        url: 'https://miniprogram.xluyun.com/getExpressReportData', // 仅为示例，并非真实的接口地址
-        header: {
-          'content-type': 'application/json' // 默认值
-        },
-        success: function (res) {
-          console.log(res)
-          var result = null
-          if (res.header.statusCode === 200) {
-            result = {
-              name: context.elements[19].value,
-              gap: parseInt(res.data.pensionGap),
-              p0: parseInt(res.data.pensionInFirstRetirementMonth),
-              p1: parseInt(res.data.pensionBasicSocialInsurance),
-              p2: parseInt(res.data.pensionPersonalAccount),
-              p3: parseInt(res.data.pensionTransition),
-              p4: parseInt(res.data.companyAnnuity)
-            }
-          } else {
-            result = getExpressReportData(
-              context.elements[5].value,
-              context.elements[3].value,
-              context.elements[12].value,
-              context.elements[10].value,
-              context.elements[8].value,
-              context.elements[6].value,
-              context.elements[4].value,
-              context.elements[11].value,
-              context.elements[13].value,
-              context.elements[9].value,
-              context.elements[19].value
-            )
-          }
-          wx.navigateTo({
-            url: '../spc-report-express/main?name=' + result.name + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
-          })
-        },
-        fail: function (res) {
-          console.log(res)
-          wx.showModal({
-            title: '服务错误',
-            showCancel: false,
-            content: '请求失败，请稍后再试！'
-          })
-        },
-        method: 'POST',
-        data: data,
-        dataType: 'json'
+      // todo 2 begin
+      var details = new Details(data)
+
+      var res = details.getExpressReportData()
+
+      console.log(res)
+      var result = {
+        name: context.elements[19].value,
+        gap: parseInt(res.pensionGap),
+        p0: parseInt(res.pensionInFirstRetirementMonth),
+        p1: parseInt(res.pensionBasicSocialInsurance),
+        p2: parseInt(res.pensionPersonalAccount),
+        p3: parseInt(res.pensionTransition),
+        p4: parseInt(res.companyAnnuity)
+      }
+      wx.navigateTo({
+        url: '../spc-report-express/main?name=' + result.name + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
       })
+
+      // todo 2 end
+
+      // todo 3 begin
+      // wx.request({
+      //   url: 'https://miniprogram.xluyun.com/getExpressReportData', // 仅为示例，并非真实的接口地址
+      //   header: {
+      //     'content-type': 'application/json' // 默认值
+      //   },
+      //   success: function (res) {
+      //     console.log(res)
+      //     var result = null
+      //     if (res.header.statusCode === 200) {
+      //       result = {
+      //         name: context.elements[19].value,
+      //         gap: parseInt(res.data.pensionGap),
+      //         p0: parseInt(res.data.pensionInFirstRetirementMonth),
+      //         p1: parseInt(res.data.pensionBasicSocialInsurance),
+      //         p2: parseInt(res.data.pensionPersonalAccount),
+      //         p3: parseInt(res.data.pensionTransition),
+      //         p4: parseInt(res.data.companyAnnuity)
+      //       }
+      //     } else {
+      //       result = getExpressReportData(
+      //         context.elements[5].value,
+      //         context.elements[3].value,
+      //         context.elements[12].value,
+      //         context.elements[10].value,
+      //         context.elements[8].value,
+      //         context.elements[6].value,
+      //         context.elements[4].value,
+      //         context.elements[11].value,
+      //         context.elements[13].value,
+      //         context.elements[9].value,
+      //         context.elements[19].value
+      //       )
+      //     }
+      //     wx.navigateTo({
+      //       url: '../spc-report-express/main?name=' + result.name + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
+      //     })
+      //   },
+      //   fail: function (res) {
+      //     console.log(res)
+      //     wx.showModal({
+      //       title: '服务错误',
+      //       showCancel: false,
+      //       content: '请求失败，请稍后再试！'
+      //     })
+      //   },
+      //   method: 'POST',
+      //   data: data,
+      //   dataType: 'json'
+      // })
+
+      // todo 3 end
     },
 
     bindPickerChange (e, elementId) {
