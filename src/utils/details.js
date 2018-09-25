@@ -269,8 +269,8 @@ export default class Deatils{
      * 社保过渡性养老金: P3
      */
     pension_transition(){
-        var rate = 0.19;
-        return (this.join < 1992)? this.average_indexed_monthly_earnings() * rate : 0;
+        var salary_of_year = this.local_average_salary * 10 * (1996 - this.join) * 0.013
+        return (this.join < 1992)? salary_of_year : 0;
     }
 
     /** √
