@@ -378,12 +378,14 @@ export default {
         'local-average-salary-last-year': parseInt(this.elements[12].value),
         'time-for-participation': parseInt(this.elements[4].value.split('年')[0]),
         'monthly-taxable-wage': parseInt(this.elements[11].value),
-        'social-security-pension-account-balance': parseInt(this.elements[13].value)
+        'social-security-pension-account-balance': parseInt(this.elements[13].value),
+        'target-pension-replacement-rate': parseInt(this.elements[16].value) / 100
       }
 
       let context = this
       // todo 2 begin
       var details = new Details(data)
+      console.log(data)
 
       var res = details.getExpressReportData()
 
