@@ -269,7 +269,7 @@ export default class Deatils{
      * 社保过渡性养老金: P3
      */
     pension_transition(){
-        var salary_of_year = this.local_average_salary * 10 * (1996 - this.join) * 0.013
+        var salary_of_year = this.local_average_salary * 10 * (1996 - this.join) * 0.013 /12
         return (this.join < 1992)? salary_of_year : 0;
     }
 
