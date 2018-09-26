@@ -1,6 +1,6 @@
 <template>
   <div>
-    user infomation setting
+    User Infomation Setting
   </div>
 </template>
 

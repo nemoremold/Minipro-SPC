@@ -1,14 +1,19 @@
 {
   "pages": [
-    "pages/sp-calculator/main",
     "pages/user-center/main",
+    "pages/sp-calculator/main",
     "pages/user-login/main",
     "pages/user-logon/main",
     "pages/userinfo-setting/main",
     "pages/membership-register/main",
     "pages/report-repo/main",
     "pages/spc-report-express/main",
-    "pages/spc-report-deluxe/main"
+    "pages/spc-report-deluxe/main",
+    "pages/purchase-history/main",
+    "pages/developer-info/main",
+    "pages/user-feedback/main",
+    "pages/user-guide/main",
+    "pages/user-guide/usage-guide/main"
   ],
   "window": {
     "backgroundColor": "#B8B8B8",
