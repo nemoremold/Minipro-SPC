@@ -1,6 +1,6 @@
 <template>
   <div>
-    User Infomation Setting
+    可学养老金计算器使用指南
   </div>
 </template>
 

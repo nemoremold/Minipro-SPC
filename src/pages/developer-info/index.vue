@@ -1,6 +1,6 @@
 <template>
   <div>
-    User Infomation Setting
+    Developer Info
   </div>
 </template>
 
