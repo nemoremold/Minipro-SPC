@@ -1,265 +1,332 @@
 <template>
   <view style="background: #F0F0F0;">
-    <view style="height: 100px; width: 100%; margin: 0;">
-      <image v-if="src" :src="src" mode="aspectFill" style="height: 100px; width: 100%;" />
+    <view style="height: 150px; width: 100%; margin: 0;">
+      <image v-if="src" :src="src" mode="aspectFill" style="height: 150px;" />
     </view>
-    <view style="background: white; margin: 5px 0;">
-      <picker
-        @change="bindPickerChange($event, 0)"
-        :value="pickerIds[elements[0].picklistId]"
-        :range="picklists[elements[0].picklistId].options"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[0].value"
-          :label="elements[0].label"
-          :placeholder="elements[0].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 0)"
-        />
-      </picker>
-      <view style="height: 1px; width: 100%; background: #F8F8F8;"></view>
-      <picker
-        @change="bindPickerChange($event, 1)"
-        :value="pickerIds[elements[1].picklistId]"
-        :range="picklists[elements[1].picklistId].options"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[1].value"
-          :label="elements[1].label"
-          :placeholder="elements[1].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 1)"
-        />
-      </picker>
-      <view style="height: 1px; width: 100%; background: #F8F8F8;"></view>
-      <picker
-        @change="bindPickerChange($event, 2)"
-        :value="pickerIds[elements[2].picklistId]"
-        :range="picklists[elements[2].picklistId].options"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[2].value"
-          :label="elements[2].label"
-          :placeholder="elements[2].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 2)"
-        />
-      </picker>
-      <view style="height: 1px; width: 100%; background: #F8F8F8;"></view>
-      <picker
-        @change="bindPickerDateChange($event, 3)"
-        mode="date"
-        :value="pickerIds[elements[3].picklistId]"
-        :start="picklists[elements[3].picklistId].startDate"
-        :end="picklists[elements[3].picklistId].endDate"
-        fields="month"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[3].value"
-          :label="elements[3].label"
-          :placeholder="elements[3].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 3)"
-        />
-      </picker>
-      <view style="height: 1px; width: 100%; background: #F8F8F8;"></view>
-      <picker
-        @change="bindPickerMultiChange($event, 4)"
-        mode="multiSelector"
-        :value="elements[4].value"
-        :range="picklists[elements[4].picklistId].options"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[4].value"
-          :label="elements[4].label"
-          :placeholder="elements[4].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 4)"
-        />
-      </picker>
-      <view style="height: 1px; width: 100%; background: #F8F8F8;"></view>
-      <van-cell
-        :title="elements[5].label"
+    <view style="background: white; margin: 0 0 6px 0;">
+      <van-panel
+        title="工作信息"
       >
         <view>
           <picker
-            @change="bindPickerMultiChange($event, 5)"
-            mode="multiSelector"
-            :value="elements[5].value"
-            :range="picklists[elements[5].picklistId].options"
+            @change="bindPickerChange($event, 0)"
+            :value="pickerIds[elements[0].picklistId]"
+            :range="picklists[elements[0].picklistId].options"
           >
-            <van-cell
-              :value="elements[5].value"
+            <van-field
+              inputAlign="right"
+              :value="elements[0].value"
+              :label="elements[0].label"
+              :placeholder="elements[0].hint"
               disabled
               is-link
+              @change="fieldChange($event, 0)"
+              center="true"
+            />
+          </picker>
+          <picker
+            @change="bindPickerChange($event, 1)"
+            :value="pickerIds[elements[1].picklistId]"
+            :range="picklists[elements[1].picklistId].options"
+          >
+            <van-field
+              inputAlign="right"
+              :value="elements[1].value"
+              :label="elements[1].label"
+              :placeholder="elements[1].hint"
+              disabled
+              is-link
+              @change="fieldChange($event, 1)"
+              center="true"
+            />
+          </picker>
+          <picker
+            @change="bindPickerChange($event, 2)"
+            :value="pickerIds[elements[2].picklistId]"
+            :range="picklists[elements[2].picklistId].options"
+          >
+            <van-field
+              inputAlign="right"
+              :value="elements[2].value"
+              :label="elements[2].label"
+              :placeholder="elements[2].hint"
+              disabled
+              is-link
+              @change="fieldChange($event, 2)"
+              center="true"
+            />
+          </picker>
+          <picker
+            @change="bindPickerDateChange($event, 3)"
+            mode="date"
+            :value="pickerIds[elements[3].picklistId]"
+            :start="picklists[elements[3].picklistId].startDate"
+            :end="picklists[elements[3].picklistId].endDate"
+            fields="month"
+          >
+            <van-field
+              inputAlign="right"
+              :value="elements[3].value"
+              :label="elements[3].label"
+              :placeholder="elements[3].hint"
+              disabled
+              is-link
+              @change="fieldChange($event, 3)"
+              center="true"
+            />
+          </picker>
+          <picker
+            @change="bindPickerMultiChange($event, 4)"
+            mode="multiSelector"
+            :value="elements[4].value"
+            :range="picklists[elements[4].picklistId].options"
+          >
+            <van-field
+              inputAlign="right"
+              :value="elements[4].value"
+              :label="elements[4].label"
+              :placeholder="elements[4].hint"
+              disabled
+              is-link
+              @change="fieldChange($event, 4)"
+              center="true"
+            />
+          </picker>
+          <van-cell
+            center="true"
+            is-link
+          >
+            <view slot="title" style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
+              <view style="display: flex; flex-direction: column; justify-content: flex-start; align-items: center;">
+                <span style="color: #0066FF;">1992年12月31日</span>
+                <span>之前的连续工龄</span>
+              </view>
+              <van-icon name="question" @click="toastAnnotation(5)" style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 5px;"></van-icon>
+            </view>
+            <view>
+              <picker
+                @change="bindPickerMultiChange($event, 5)"
+                mode="multiSelector"
+                :value="elements[5].value"
+                :range="picklists[elements[5].picklistId].options"
+              >
+                <span style="color: #666;">{{ elements[5].value }}</span>
+              </picker>
+            </view>
+          </van-cell>
+        </view>
+      </van-panel>
+    </view>
+
+    <view style="background: white; margin: 6px 0;">
+      <van-panel
+        title="年龄信息"
+      >
+        <view>
+          <picker
+            @change="bindPickerChange($event, 6)"
+            :value="pickerIds[elements[6].picklistId]"
+            :range="picklists[elements[6].picklistId].options"
+          >
+            <van-field
+              inputAlign="right"
+              :value="elements[6].value + '周岁'"
+              :label="elements[6].label"
+              :placeholder="elements[6].hint"
+              disabled
+              is-link
+              @change="fieldChange($event, 6)"
+              center="true"
+            />
+          </picker>
+          <picker
+            @change="bindPickerChange($event, 7)"
+            :value="pickerIds[elements[7].picklistId]"
+            :range="picklists[elements[7].picklistId].options"
+          >
+            <van-field
+              inputAlign="right"
+              :value="elements[7].value + '周岁'"
+              :label="elements[7].label"
+              :placeholder="elements[7].hint"
+              disabled
+              is-link
+              @change="fieldChange($event, 7)"
+              center="true"
+            />
+          </picker>
+          <picker
+            @change="bindPickerChange($event, 8)"
+            :value="pickerIds[elements[8].picklistId]"
+            :range="picklists[elements[8].picklistId].options"
+          >
+            <van-field
+              inputAlign="right"
+              :value="elements[8].value + '周岁'"
+              :label="elements[8].label"
+              :placeholder="elements[8].hint"
+              disabled
+              is-link
+              @change="fieldChange($event, 8)"
+              center="true"
+            />
+          </picker>
+          <picker
+            @change="bindPickerChange($event, 9)"
+            :value="pickerIds[elements[9].picklistId]"
+            :range="picklists[elements[9].picklistId].options"
+          >
+            <van-field
+              inputAlign="right"
+              :value="elements[9].value + '周岁'"
+              :label="elements[9].label"
+              :placeholder="elements[9].hint"
+              disabled
+              is-link
+              @change="fieldChange($event, 9)"
+              center="true"
             />
           </picker>
         </view>
-        <van-icon slot="right-icon" name="question" @click="toastAnnotation(5)"></van-icon>
-      </van-cell>
+      </van-panel>
     </view>
-    <view style="background: white; margin: 5px 0;">
-      <picker
-        @change="bindPickerChange($event, 6)"
-        :value="pickerIds[elements[6].picklistId]"
-        :range="picklists[elements[6].picklistId].options"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[6].value + '周岁'"
-          :label="elements[6].label"
-          :placeholder="elements[6].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 6)"
-        />
-      </picker>
-      <view style="height: 1px; width: 100%; background: #F8F8F8;"></view>
-      <picker
-        @change="bindPickerChange($event, 7)"
-        :value="pickerIds[elements[7].picklistId]"
-        :range="picklists[elements[7].picklistId].options"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[7].value + '周岁'"
-          :label="elements[7].label"
-          :placeholder="elements[7].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 7)"
-        />
-      </picker>
-      <view style="height: 1px; width: 100%; background: #F8F8F8;"></view>
-      <picker
-        @change="bindPickerChange($event, 8)"
-        :value="pickerIds[elements[8].picklistId]"
-        :range="picklists[elements[8].picklistId].options"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[8].value + '周岁'"
-          :label="elements[8].label"
-          :placeholder="elements[8].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 8)"
-        />
-      </picker>
-      <view style="height: 1px; width: 100%; background: #F8F8F8;"></view>
-      <picker
-        @change="bindPickerChange($event, 9)"
-        :value="pickerIds[elements[9].picklistId]"
-        :range="picklists[elements[9].picklistId].options"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[9].value + '周岁'"
-          :label="elements[9].label"
-          :placeholder="elements[9].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 9)"
-        />
-      </picker>
-    </view>
-    <view style="background: white; margin: 5px 0;">
-      <van-field
-        :inputAlign="'right'"
-        :value="elements[10].value"
-        :placeholder="elements[10].hint"
-        type="number"
-        clearable
-        :label="elements[10].label"
-        @change="fieldChange($event, 10)"
-      />
-      <van-field
-        :inputAlign="'right'"
-        :value="elements[11].value"
-        :placeholder="elements[11].hint"
-        type="number"
-        clearable
-        :icon="elements[11].annotationIcon"
-        :label="elements[11].label"
-        @change="fieldChange($event, 11)"
-        @clickIcon="toastAnnotation(11)"
-      />
-      <van-cell
-        :title="elements[12].label"
+
+    <view style="background: white; margin: 6px 0;">
+      <van-panel
+        title="工资及养老金信息"
       >
         <view>
-          <span style="color: #0066FF;">{{ elements[12].value }}</span>
-          元
+          <van-field
+            :inputAlign="'right'"
+            :value="elements[10].value"
+            :placeholder="elements[10].hint"
+            type="number"
+            clearable
+            @change="fieldChange($event, 10)"
+            center="true"
+            use-button-slot
+            :border="false"
+          >
+            <view slot="label">{{ elements[10].label }}</view>
+            <view slot="button">元</view>
+          </van-field>
+          <van-field
+            :inputAlign="'right'"
+            :value="elements[11].value"
+            :placeholder="elements[11].hint"
+            type="number"
+            clearable
+            @change="fieldChange($event, 11)"
+            center="true"
+            use-button-slot
+            :border="false"
+          >
+            <view slot="label" style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
+              <span>{{ elements[11].label }}</span>
+              <van-icon name="question" @click="toastAnnotation(11)" style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 5px;"></van-icon>
+            </view>
+            <view slot="button">元</view>
+          </van-field>
+          <van-cell
+            :title="elements[12].label"
+            center="true"
+            :border="false"
+          >
+            <view>
+              <span style="color: #0066FF;">{{ elements[12].value + ' ' }}</span>
+              <span>元/月</span>
+            </view>
+          </van-cell>
+          <van-field
+            :inputAlign="'right'"
+            :value="elements[13].value"
+            :placeholder="elements[13].hint"
+            type="number"
+            clearable
+            @change="fieldChange($event, 13)"
+            use-button-slot
+            center="true"
+            :border="false"
+          >
+            <view slot="label" style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
+              <span>{{ elements[13].label }}</span>
+              <van-icon name="question" @click="toastAnnotation(13)" style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 5px;"></van-icon>
+            </view>
+            <view slot="button">元</view>
+          </van-field>
+          <van-field
+            center="true"
+            use-button-slot
+            :border="false"
+            disabled
+          >
+            <van-button slot="button" @click="estimate(14)" size="small" type="primary" plain="true">{{ elements[14].label }}</van-button>
+          </van-field>
+          <picker
+            @change="bindPickerChange($event, 15)"
+            :value="pickerIds[elements[15].picklistId]"
+            :range="picklists[elements[15].picklistId].options"
+          >
+            <van-field
+              inputAlign="right"
+              :value="elements[15].value"
+              :placeholder="elements[15].hint"
+              disabled
+              is-link
+              @change="fieldChange($event, 15)"
+              center="true"
+              :border="false"
+            >
+              <view slot="label">{{ elements[15].label }}</view>
+            </van-field>
+          </picker>
+          <van-field
+            :inputAlign="'right'"
+            :value="elements[16].value"
+            :placeholder="elements[16].hint"
+            type="digit"
+            clearable
+            @change="fieldChange($event, 16)"
+            center="true"
+            use-button-slot
+            :border="false"
+          >
+            <view slot="label">{{ elements[16].label }}</view>
+            <view slot="button">%</view>
+          </van-field>
+          <van-field
+            :inputAlign="'right'"
+            :value="elements[17].value"
+            :placeholder="elements[17].hint"
+            type="digit"
+            clearable
+            @change="fieldChange($event, 17)"
+            center="true"
+            use-button-slot
+            :border="false"
+          >
+            <view slot="label">{{ elements[17].label }}</view>
+            <view slot="button">万元</view>
+          </van-field>
+          <van-field
+            :inputAlign="'right'"
+            :value="elements[18].value"
+            :placeholder="elements[18].hint"
+            type="digit"
+            clearable
+            @change="fieldChange($event, 18)"
+            center="true"
+            use-button-slot
+            :border="false"
+          >
+            <view slot="label">{{ elements[18].label }}</view>
+            <view slot="button">%</view>
+          </van-field>
         </view>
-      </van-cell>
-      <van-field
-        :inputAlign="'right'"
-        :value="elements[13].value"
-        :placeholder="elements[13].hint"
-        type="number"
-        clearable
-        :icon="elements[13].annotationIcon"
-        :label="elements[13].label"
-        @change="fieldChange($event, 13)"
-        @clickIcon="toastAnnotation(13)"
-        use-button-slot
-      >
-        <van-button slot="button" @click="estimate(14)" type="primary" plain="true">{{ elements[14].label }}</van-button>
-      </van-field>
-      <picker
-        @change="bindPickerChange($event, 15)"
-        :value="pickerIds[elements[15].picklistId]"
-        :range="picklists[elements[15].picklistId].options"
-      >
-        <van-field
-          inputAlign="right"
-          :value="elements[15].value"
-          :label="elements[15].label"
-          :placeholder="elements[15].hint"
-          disabled
-          is-link
-          @change="fieldChange($event, 15)"
-        />
-      </picker>
-      <van-field
-        :inputAlign="'right'"
-        :value="elements[16].value"
-        :placeholder="elements[16].hint"
-        type="number"
-        clearable
-        :label="elements[16].label"
-        @change="fieldChange($event, 16)"
-      />
-      <van-field
-        :inputAlign="'right'"
-        :value="elements[17].value"
-        :placeholder="elements[17].hint"
-        type="number"
-        clearable
-        :label="elements[17].label"
-        @change="fieldChange($event, 17)"
-      />
-      <van-field
-        :inputAlign="'right'"
-        :value="elements[18].value"
-        :placeholder="elements[18].hint"
-        type="number"
-        clearable
-        :label="elements[18].label"
-        @change="fieldChange($event, 18)"
-      />
+      </van-panel>
     </view>
-    <view style="background: white; margin: 5px 0;">
+
+    <view style="background: white; margin: 6px 0;">
       <van-field
         :inputAlign="'right'"
         :value="elements[19].value"
@@ -267,16 +334,18 @@
         clearable
         :label="elements[19].label"
         @change="fieldChange($event, 19)"
+        center="true"
       />
     </view>
-    <view style="margin: 5px 5px 4px 5px;">
+
+    <view style="margin: 6px 5px;">
       <van-button @click="calculatePension" size="large" type="primary" plain="true">
         生成
         <span style="font-weight: bold;">简版</span>
         养老金报告
         </van-button>
     </view>
-    <view style="height: 1px;"></view>
+    <view style="height: 6px; margin: 6px 0;"></view>
     <van-toast id="van-toast" />
   </view>
 </template>
@@ -475,14 +544,17 @@ export default {
     },
 
     bindPickerMultiChange (e, elementId) {
-      console.log(e)
       let newValues = e.mp.detail.value
       this.elements[elementId].value = newValues[0] + '年' + newValues[1] + '个月'
     },
 
     fieldChange (e, elementId) {
       let newValue = e.mp.detail
+      let check = newValue.split('.')
       this.elements[elementId].value = newValue
+      if (check[1] != null && check[1] !== '') {
+        this.elements[elementId].value = check[0] + '.' + check[1]
+      }
     },
 
     estimate (elementId) {
@@ -525,5 +597,9 @@ export default {
 </script>
 
 <style>
-
+page {
+  background: #F0F0F0;
+  height: 100%;
+  width: 100%;
+}
 </style>

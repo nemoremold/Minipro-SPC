@@ -201,7 +201,7 @@ const DEFAULT_CALCULATION_FACTORS = [
     id: 'time-for-participation',
     label: '参保年数',
     type: 'picklistMulti',
-    value: '0年0月',
+    value: '0年0个月',
     picklistId: '4'
   }, {
     internalId: '5',
@@ -243,7 +243,7 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '10',
     id: 'personal-salary-before-tax',
-    label: '个人税前月收入（元）',
+    label: '个人税前月收入',
     type: 'numeric',
     value: '',
     unit: '元',
@@ -251,7 +251,7 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '11',
     id: 'monthly-taxable-wage',
-    label: '月度缴费工资（元）',
+    label: '月度缴费工资',
     type: 'numeric',
     value: '',
     unit: '元',
@@ -269,12 +269,12 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '13',
     id: 'social-security-pension-account-balance',
-    label: '社保养老个人帐户余额（元）',
+    label: '社保养老个人帐户余额',
     type: 'numeric',
     value: '',
     hint: '请输入账户余额',
     unit: '元',
-    annotations: '指您在社保局的个人账户余额，就像银行存款账户那样。\r\n查询⽅式：\r\n方式一：\r\n进⼊当地⼈社局官方，注册并查询养老金个人账户余额。\r\n⽅式二：\r\n安装社保查询类APP，从APP中查询社保养老金个人账户余额。\r\n方式三：\r\n估算,请点击右侧的“估算”按钮即可（参保年数需大于0）。',
+    annotations: '指您在社保局的个人账户余额，就像银行存款账户那样。\r\n查询⽅式：\r\n方式一：\r\n进⼊当地⼈社局官方，注册并查询养老金个人账户余额。\r\n⽅式二：\r\n安装社保查询类APP，从APP中查询社保养老金个人账户余额。\r\n方式三：\r\n估算,请点击下方右侧的“估算”按钮即可（参保年数需大于0）。',
     annotationIcon: 'question'
   }, {
     internalId: '14',
@@ -293,7 +293,7 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '16',
     id: 'target-pension-replacement-rate',
-    label: '养老金替代率目标（%）',
+    label: '养老金替代率目标',
     type: 'numeric',
     value: '70',
     hint: '请输入目标替代率',
@@ -301,7 +301,7 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '17',
     id: 'current-prepared-pension',
-    label: '目前已准备的养老金（万元）',
+    label: '目前已准备的养老金',
     type: 'numeric',
     value: '0',
     hint: '请输入已准备的养老金',
@@ -309,7 +309,7 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '18',
     id: 'pension-investment-rate-of-return',
-    label: '养老金投资收益率（%）',
+    label: '养老金投资收益率',
     type: 'numeric',
     value: '3',
     hint: '请输入投资收益率',
