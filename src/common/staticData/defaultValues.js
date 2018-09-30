@@ -35,127 +35,127 @@ const LOCATIONS = [
 const LOCATIONS_WAGES = [
   {
     location: '北京市',
-    wage: 119928
+    wage: 8467 * 12
   },
   {
     location: '天津市',
-    wage: 86305
+    wage: 5607 * 12
   },
   {
     location: '河北省',
-    wage: 55334
+    wage: 5438.83 * 12
   },
   {
     location: '山西省',
-    wage: 53705
+    wage: 5129 * 12
   },
   {
     location: '内蒙古自治区',
-    wage: 61067
+    wage: 4645 * 12
   },
   {
     location: '辽宁省',
-    wage: 56015
+    wage: 5096.08 * 12
   },
   {
     location: '吉林省',
-    wage: 56098
+    wage: 4860.9 * 12
   },
   {
     location: '黑龙江省',
-    wage: 52435
+    wage: 4645 * 12
   },
   {
     location: '上海市',
-    wage: 119935
+    wage: 7132 * 12
   },
   {
     location: '江苏省',
-    wage: 71574
+    wage: 6645 * 12
   },
   {
     location: '浙江省',
-    wage: 73326
+    wage: 5084 * 12
   },
   {
     location: '安徽省',
-    wage: 59102
+    wage: 5661 * 12
   },
   {
     location: '福建省',
-    wage: 61973
+    wage: 5752 * 12
   },
   {
     location: '江西省',
-    wage: 56136
+    wage: 5256 * 12
   },
   {
     location: '山东省',
-    wage: 62539
+    wage: 5775.41 * 12
   },
   {
     location: '河南省',
-    wage: 49505
+    wage: 5438.83 * 12
   },
   {
     location: '湖北省',
-    wage: 59831
+    wage: 4658.58 * 12
   },
   {
     location: '湖南省',
-    wage: 58241
+    wage: 5500 * 12
   },
   {
     location: '广东省',
-    wage: 72326
+    wage: 6668 * 12
   },
   {
     location: '广西壮族自治区',
-    wage: 57878
+    wage: 5538 * 12
   },
   {
     location: '海南省',
-    wage: 61663
+    wage: 5755 * 12
   },
   {
     location: '重庆市',
-    wage: 65545
+    wage: 6106 * 12
   },
   {
     location: '四川省',
-    wage: 63926
+    wage: 5969 * 12
   },
   {
     location: '贵州省',
-    wage: 66279
+    wage: 5379 * 12
   },
   {
     location: '云南省',
-    wage: 60450
+    wage: 6126 * 12
   },
   {
     location: '西藏自治区',
-    wage: 103232
+    wage: 7587 * 12
   },
   {
     location: '陕西省',
-    wage: 59637
+    wage: 5619 * 12
   },
   {
     location: '甘肃省',
-    wage: 57575
+    wage: 5281.17 * 12
   },
   {
     location: '青海省',
-    wage: 66589
+    wage: 6377 * 12
   },
   {
     location: '宁夏回族自治区',
-    wage: 65570
+    wage: 6064.9 * 12
   },
   {
     location: '新疆维吾尔自治区',
-    wage: 63739
+    wage: 5032 * 12
   }
 ]
 
