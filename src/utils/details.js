@@ -342,7 +342,7 @@ export default class Deatils{
      * 企业年金
      */
     get_company_annuity(){
-        return this.company_annuity / this.plan_months();
+        return this.company_annuity * this.years_join_insure / this.plan_months();
     }
 
     /** √
