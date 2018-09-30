@@ -1,6 +1,6 @@
 export default class Deatils{
     constructor(inputs){
-        var AVERAGE_INFLATION_RATE = 0.11 // 平均通胀率
+        var AVERAGE_INFLATION_RATE = 0.08 // 平均通胀率
         var LOCAL_WAGE_GROWTH_RATE = 0.04 // 上年当地职工工资平均增长率
         var COMPANY_ANNUITY = 0// 企业年金
 
@@ -262,7 +262,7 @@ export default class Deatils{
         // 从现在开始第i年 缴费工资: Ci 
         var c = [];
         for(var i = 0; i < this.expected_retirement_age - this.age; i++){
-            c.push(this.salary * (1+this.local_wage_growth_rate)**i);
+            c.push(this.salary * (1+this.local_wage_growth_rate)**i * 0.08 * 1.0831);
         }
         // 现在开始到退休时可以发放的社保养老金 b 元
         var b = 0;
