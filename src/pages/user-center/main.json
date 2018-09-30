@@ -6,7 +6,6 @@
     "van-icon": "/static/vant/icon/index",
     "van-panel": "/static/vant/panel/index",
     "van-row": "/static/vant/row/index",
-    "van-col": "/static/vant/col/index",
-    "i-load-more": "/static/iview/load-more/index"
+    "van-col": "/static/vant/col/index"
   }
 }
