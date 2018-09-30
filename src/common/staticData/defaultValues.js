@@ -282,7 +282,7 @@ const DEFAULT_CALCULATION_FACTORS = [
     label: '估算',
     type: 'button',
     value: '4108.03',
-    notifications: '请输入参保年数'
+    notifications: '请输入参保年数及月度缴费工资'
   }, {
     internalId: '15',
     id: 'company-will-provide-supplementary-pension',
@@ -321,6 +321,13 @@ const DEFAULT_CALCULATION_FACTORS = [
     type: 'string',
     value: '',
     hint: '姓名（呈现在测算报告中）'
+  }, {
+    internalId: '20',
+    id: 'supplementary-pension',
+    label: '企业年金',
+    type: 'numeric',
+    hint: '请输入企业年金',
+    unit: '元'
   }
 ]
 

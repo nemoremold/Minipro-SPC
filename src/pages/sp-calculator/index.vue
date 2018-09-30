@@ -78,7 +78,7 @@
           <picker
             @change="bindPickerMultiChange($event, 4)"
             mode="multiSelector"
-            :value="elements[4].value"
+            :value="pickerIds[elements[4].picklistId]"
             :range="picklists[elements[4].picklistId].options"
           >
             <van-field
@@ -107,7 +107,7 @@
               <picker
                 @change="bindPickerMultiChange($event, 5)"
                 mode="multiSelector"
-                :value="elements[5].value"
+                :value="pickerIds[elements[5].picklistId]"
                 :range="picklists[elements[5].picklistId].options"
               >
                 <span style="color: #666;">{{ elements[5].value }}</span>
@@ -282,6 +282,21 @@
           </picker>
           <van-field
             :inputAlign="'right'"
+            :value="elements[20].value"
+            :placeholder="elements[20].hint"
+            type="number"
+            clearable
+            @change="fieldChange($event, 20)"
+            center="true"
+            use-button-slot
+            :border="false"
+            v-if="elements[15].value === '是'"
+          >
+            <view slot="label">{{ elements[20].label }}</view>
+            <view slot="button">元</view>
+          </van-field>
+          <van-field
+            :inputAlign="'right'"
             :value="elements[16].value"
             :placeholder="elements[16].hint"
             type="digit"
@@ -365,13 +380,24 @@ export default {
       pickerIds: [],
       weChatId: null,
       reportId: null,
-      src: '/static/images/p2.png'
+      src: '/static/images/banner.jpeg'
     }
   },
 
   onLoad () {
     this.elements = defaultValues.DEFAULT_CALCULATION_FACTORS
     this.picklists = defaultValues.PICKLIST_TYPES
+    this.pickerIds[0] = 0
+    this.pickerIds[1] = 0
+    this.pickerIds[2] = 0
+    this.pickerIds[3] = '2018-10'
+    this.pickerIds[4] = [0, 0]
+    this.pickerIds[5] = [0, 0]
+    this.pickerIds[6] = 24
+    this.pickerIds[7] = 20
+    this.pickerIds[8] = 25
+    this.pickerIds[9] = 10
+    this.pickerIds[10] = 1
   },
 
   methods: {
@@ -433,6 +459,9 @@ export default {
         return
       } else if (checker[19].value == null || checker[19].value === '') {
         Toast('请输入填表人姓名！')
+        return
+      } else if (checker[15].value != null && checker[15].value === '是' && (checker[20].value == null || checker[20].value === '')) {
+        Toast('请输入企业年金！')
         return
       }
 
@@ -541,11 +570,25 @@ export default {
       let newValue = e.mp.detail.value
       let newValues = newValue.split('-')
       this.elements[elementId].value = newValues[0] + '年' + newValues[1] + '月'
+      if (this.elements[elementId].id === 'start-date') {
+        let years = 2018 - parseInt(newValues[0])
+        if (years < 0) {
+          years = 0
+        } else if (years > 26) {
+          this.elements[elementId + 2].value = (years - 26) + '年0个月'
+          this.pickerIds[this.elements[elementId + 2].picklistId] = [(years - 26), 0]
+        }
+        this.elements[elementId + 1].value = years + '年0个月'
+        this.pickerIds[this.elements[elementId + 1].picklistId] = [years, 0]
+      }
+      this.pickerIds[this.elements[elementId].picklistId] = newValue
     },
 
     bindPickerMultiChange (e, elementId) {
-      let newValues = e.mp.detail.value
+      let newValues = [0, 0]
+      newValues = e.mp.detail.value
       this.elements[elementId].value = newValues[0] + '年' + newValues[1] + '个月'
+      this.pickerIds[this.elements[elementId].picklistId] = [newValues[0], newValues[1]]
     },
 
     fieldChange (e, elementId) {
@@ -555,19 +598,26 @@ export default {
       if (check[1] != null && check[1] !== '') {
         this.elements[elementId].value = check[0] + '.' + check[1]
       }
+      if (this.elements[elementId].id === 'personal-salary-before-tax') {
+        this.elements[elementId + 1].value = this.elements[elementId].value
+      }
     },
 
     estimate (elementId) {
       var timeForParticipation = 0
+      var taxableWage = 0
       for (var i = 0; i < this.elements.length; i++) {
         if (this.elements[i].id === 'time-for-participation') {
           timeForParticipation = this.elements[i].value.split('年')[0]
         }
+        if (this.elements[i].id === 'monthly-taxable-wage') {
+          taxableWage = this.elements[i].value
+        }
       }
-      if (timeForParticipation != null && timeForParticipation !== '' && timeForParticipation !== '0') {
+      if (timeForParticipation != null && timeForParticipation !== '' && timeForParticipation !== '0' && taxableWage != null && taxableWage !== '') {
         for (i = 0; i < this.elements.length; i++) {
           if (this.elements[i].id === 'social-security-pension-account-balance') {
-            this.elements[i].value = timeForParticipation * this.elements[elementId].value
+            this.elements[i].value = parseInt(timeForParticipation * 12 * 0.08 * (1 + 0.0831) * taxableWage)
           }
         }
       } else {

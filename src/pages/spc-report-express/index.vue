@@ -112,7 +112,7 @@ export default {
       report: [],
       options: entityDefinitions.CHART_OPTIONS,
       ec: null,
-      src: '/static/images/p2.png'
+      src: '/static/images/banner.jpeg'
     }
   },
 

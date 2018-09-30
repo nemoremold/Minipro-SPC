@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/user-feedback/main",
     "pages/sp-calculator/main",
+    "pages/user-feedback/main",
     "pages/user-center/main",
     "pages/user-login/main",
     "pages/user-logon/main",
