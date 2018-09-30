@@ -478,7 +478,7 @@ export default {
         'monthly-taxable-wage': parseInt(this.elements[11].value),
         'social-security-pension-account-balance': parseInt(this.elements[13].value),
         'target-pension-replacement-rate': parseInt(this.elements[16].value) / 100,
-        'supplementary-pension': parseInt(this.elements[20].value == null? 0: this.elements[20].value)
+        'supplementary-pension': parseInt(this.elements[20].value == null ? 0 : this.elements[20].value)
       }
 
       let context = this
