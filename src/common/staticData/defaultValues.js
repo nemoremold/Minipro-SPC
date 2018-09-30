@@ -305,7 +305,7 @@ const DEFAULT_CALCULATION_FACTORS = [
     type: 'numeric',
     value: '0',
     hint: '请输入已准备的养老金',
-    unit: '万元'
+    unit: '元'
   }, {
     internalId: '18',
     id: 'pension-investment-rate-of-return',

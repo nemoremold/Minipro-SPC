@@ -1,6 +1,6 @@
 <template>
   <view style="background: #F0F0F0;">
-    <view style="height: 150px; width: 100%; margin: 0; display: flex; justify-content: flex-start; align-items: center;">
+    <view style="height: 150px; width: 100%; margin: 0; display: flex; justify-content: flex-start; align-items: center; background: #2ebeb8 url('/static/images/banner-untitled.png') round;">
       <view style="height: 100%; width: 10%;"></view>
       <view style="height: 100%; width: 55%; display: flex; justify-content: center; align-items: center;">
         <view style="height: 50%; width: 100%; background: silver; display: flex; justify-content: flex-start; align-items: center;">
@@ -165,7 +165,8 @@ export default {
   data () {
     return {
       optionTabs: [],
-      logoSrc: '/static/images/logo.png'
+      logoSrc: '/static/images/logo.png',
+      bannerSrc: '/static/images/banner-untitled.png'
     }
   },
 

@@ -5,8 +5,15 @@
     </view>
     <view style="background: white; margin: 0 0 6px 0;">
       <van-panel
-        title="工作信息"
       >
+        <view slot="header">
+          <van-cell>
+            <view slot="title" style="font-size: 12pt;">
+              <span style="color: #56bab7;">{{ '| ' }}</span>
+              <span style="color: #479f99;">工作信息</span>
+            </view>
+          </van-cell>
+        </view>
         <view>
           <picker
             @change="bindPickerChange($event, 0)"
@@ -120,8 +127,15 @@
 
     <view style="background: white; margin: 6px 0;">
       <van-panel
-        title="年龄信息"
       >
+        <view slot="header">
+          <van-cell>
+            <view slot="title" style="font-size: 12pt;">
+              <span style="color: #56bab7;">{{ '| ' }}</span>
+              <span style="color: #479f99;">年龄信息</span>
+            </view>
+          </van-cell>
+        </view>
         <view>
           <picker
             @change="bindPickerChange($event, 6)"
@@ -193,8 +207,15 @@
 
     <view style="background: white; margin: 6px 0;">
       <van-panel
-        title="工资及养老金信息"
       >
+        <view slot="header">
+          <van-cell>
+            <view slot="title" style="font-size: 12pt;">
+              <span style="color: #56bab7;">{{ '| ' }}</span>
+              <span style="color: #479f99;">工资及养老金信息</span>
+            </view>
+          </van-cell>
+        </view>
         <view>
           <van-field
             :inputAlign="'right'"
@@ -321,7 +342,7 @@
             :border="false"
           >
             <view slot="label">{{ elements[17].label }}</view>
-            <view slot="button">万元</view>
+            <view slot="button">元</view>
           </van-field>
           <van-field
             :inputAlign="'right'"
@@ -380,7 +401,7 @@ export default {
       pickerIds: [],
       weChatId: null,
       reportId: null,
-      src: '/static/images/banner.jpeg'
+      src: '/static/images/banner-untitled.png'
     }
   },
 
