@@ -8,6 +8,7 @@
     "van-toast": "/static/vant/toast/index",
     "van-cell": "/static/vant/cell/index",
     "van-cell-group": "/static/vant/cell-group/index",
-    "van-icon": "/static/vant/icon/index"
+    "van-icon": "/static/vant/icon/index",
+    "van-panel": "/static/vant/panel/index"
   }
 }

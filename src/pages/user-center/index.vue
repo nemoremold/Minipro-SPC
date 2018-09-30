@@ -149,7 +149,7 @@
         </van-cell-group>
       </van-panel>
     </view>
-    <view style="height: 6px; margin: 6px 0 0 0;"></view>
+    <view style="height: 6px; margin: 6px 0;"></view>
   </view>
 </template>
 
@@ -176,5 +176,9 @@ export default {
 </script>
 
 <style>
-
+page {
+  background: #F0F0F0;
+  height: 100%;
+  width: 100%;
+}
 </style>
