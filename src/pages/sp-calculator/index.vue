@@ -1,7 +1,7 @@
 <template>
   <view style="background: #F0F0F0;">
-    <view style="height: 150px; width: 100%; margin: 0;">
-      <image v-if="src" :src="src" mode="aspectFill" style="height: 150px;" />
+    <view style="height: 150px; width: 100%; margin: 0; background: #2ebeb8;">
+      <image v-if="src" :src="src" mode="aspectFill" style="height: 150px; width: 100%;" />
     </view>
     <view style="background: white; margin: 0 0 6px 0;">
       <van-panel
