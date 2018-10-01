@@ -1,10 +1,11 @@
 {
   "pages": [
     "pages/sp-calculator/main",
+    "pages/terms-of-service/main",
+    "pages/user-logon/main",
     "pages/user-feedback/main",
     "pages/user-center/main",
     "pages/user-login/main",
-    "pages/user-logon/main",
     "pages/userinfo-setting/main",
     "pages/membership-register/main",
     "pages/report-repo/main",
