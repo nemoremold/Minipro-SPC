@@ -48,9 +48,9 @@ export default class Deatils{
 
     getDetailedReportData(){
         return {
-            "sectionSecondInfo": details.section_second_info,
-            "sectionThirdInfo": details.section_third_info,
-            "sectionFourthInfo": details.section_fourth_info
+            "sectionSecondInfo": this.section_second_info,
+            "sectionThirdInfo": this.section_third_info,
+            "sectionFourthInfo": this.section_fourth_info
         }
     }
 

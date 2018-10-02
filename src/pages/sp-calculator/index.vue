@@ -510,6 +510,7 @@ export default {
       var res = details.getExpressReportData()
 
       console.log(res)
+      console.log(details.getDetailedReportData())
       var result = {
         name: context.elements[19].value,
         gap: parseInt(res.pensionGap),
