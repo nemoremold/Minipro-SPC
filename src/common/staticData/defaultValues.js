@@ -35,127 +35,127 @@ const LOCATIONS = [
 const LOCATIONS_WAGES = [
   {
     location: '北京市',
-    wage: 119928
+    wage: 8467 * 12
   },
   {
     location: '天津市',
-    wage: 86305
+    wage: 5607 * 12
   },
   {
     location: '河北省',
-    wage: 55334
+    wage: 5438.83 * 12
   },
   {
     location: '山西省',
-    wage: 53705
+    wage: 5129 * 12
   },
   {
     location: '内蒙古自治区',
-    wage: 61067
+    wage: 4645 * 12
   },
   {
     location: '辽宁省',
-    wage: 56015
+    wage: 5096.08 * 12
   },
   {
     location: '吉林省',
-    wage: 56098
+    wage: 4860.9 * 12
   },
   {
     location: '黑龙江省',
-    wage: 52435
+    wage: 4645 * 12
   },
   {
     location: '上海市',
-    wage: 119935
+    wage: 7132 * 12
   },
   {
     location: '江苏省',
-    wage: 71574
+    wage: 6645 * 12
   },
   {
     location: '浙江省',
-    wage: 73326
+    wage: 5084 * 12
   },
   {
     location: '安徽省',
-    wage: 59102
+    wage: 5661 * 12
   },
   {
     location: '福建省',
-    wage: 61973
+    wage: 5752 * 12
   },
   {
     location: '江西省',
-    wage: 56136
+    wage: 5256 * 12
   },
   {
     location: '山东省',
-    wage: 62539
+    wage: 5775.41 * 12
   },
   {
     location: '河南省',
-    wage: 49505
+    wage: 5438.83 * 12
   },
   {
     location: '湖北省',
-    wage: 59831
+    wage: 4658.58 * 12
   },
   {
     location: '湖南省',
-    wage: 58241
+    wage: 5500 * 12
   },
   {
     location: '广东省',
-    wage: 72326
+    wage: 6668 * 12
   },
   {
     location: '广西壮族自治区',
-    wage: 57878
+    wage: 5538 * 12
   },
   {
     location: '海南省',
-    wage: 61663
+    wage: 5755 * 12
   },
   {
     location: '重庆市',
-    wage: 65545
+    wage: 6106 * 12
   },
   {
     location: '四川省',
-    wage: 63926
+    wage: 5969 * 12
   },
   {
     location: '贵州省',
-    wage: 66279
+    wage: 5379 * 12
   },
   {
     location: '云南省',
-    wage: 60450
+    wage: 6126 * 12
   },
   {
     location: '西藏自治区',
-    wage: 103232
+    wage: 7587 * 12
   },
   {
     location: '陕西省',
-    wage: 59637
+    wage: 5619 * 12
   },
   {
     location: '甘肃省',
-    wage: 57575
+    wage: 5281.17 * 12
   },
   {
     location: '青海省',
-    wage: 66589
+    wage: 6377 * 12
   },
   {
     location: '宁夏回族自治区',
-    wage: 65570
+    wage: 6064.9 * 12
   },
   {
     location: '新疆维吾尔自治区',
-    wage: 63739
+    wage: 5032 * 12
   }
 ]
 
@@ -187,7 +187,7 @@ const DEFAULT_CALCULATION_FACTORS = [
     id: 'company-type',
     label: '任职单位',
     type: 'picklist',
-    value: '城镇单位',
+    value: '城镇企业',
     picklistId: '2'
   }, {
     internalId: '3',
@@ -201,7 +201,7 @@ const DEFAULT_CALCULATION_FACTORS = [
     id: 'time-for-participation',
     label: '参保年数',
     type: 'picklistMulti',
-    value: '0年0月',
+    value: '0年0个月',
     picklistId: '4'
   }, {
     internalId: '5',
@@ -243,7 +243,7 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '10',
     id: 'personal-salary-before-tax',
-    label: '个人税前月收入（元）',
+    label: '个人税前月收入',
     type: 'numeric',
     value: '',
     unit: '元',
@@ -251,7 +251,7 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '11',
     id: 'monthly-taxable-wage',
-    label: '月度缴费工资（元）',
+    label: '月度缴费工资',
     type: 'numeric',
     value: '',
     unit: '元',
@@ -269,12 +269,12 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '13',
     id: 'social-security-pension-account-balance',
-    label: '社保养老个人帐户余额（元）',
+    label: '社保养老个人帐户余额',
     type: 'numeric',
     value: '',
     hint: '请输入账户余额',
     unit: '元',
-    annotations: '指您在社保局的个人账户余额，就像银行存款账户那样。\r\n查询⽅式：\r\n方式一：\r\n进⼊当地⼈社局官方，注册并查询养老金个人账户余额。\r\n⽅式二：\r\n安装社保查询类APP，从APP中查询社保养老金个人账户余额。\r\n方式三：\r\n估算,请点击右侧的“估算”按钮即可（参保年数需大于0）。',
+    annotations: '指您在社保局的个人账户余额，就像银行存款账户那样。\r\n查询⽅式：\r\n方式一：\r\n进⼊当地⼈社局官方，注册并查询养老金个人账户余额。\r\n⽅式二：\r\n安装社保查询类APP，从APP中查询社保养老金个人账户余额。\r\n方式三：\r\n估算,请点击下方右侧的“估算”按钮即可（参保年数需大于0）。',
     annotationIcon: 'question'
   }, {
     internalId: '14',
@@ -282,7 +282,7 @@ const DEFAULT_CALCULATION_FACTORS = [
     label: '估算',
     type: 'button',
     value: '4108.03',
-    notifications: '请输入参保年数'
+    notifications: '请输入参保年数及月度缴费工资'
   }, {
     internalId: '15',
     id: 'company-will-provide-supplementary-pension',
@@ -293,7 +293,7 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '16',
     id: 'target-pension-replacement-rate',
-    label: '养老金替代率目标（%）',
+    label: '养老金替代率目标',
     type: 'numeric',
     value: '70',
     hint: '请输入目标替代率',
@@ -301,15 +301,15 @@ const DEFAULT_CALCULATION_FACTORS = [
   }, {
     internalId: '17',
     id: 'current-prepared-pension',
-    label: '目前已准备的养老金（万元）',
+    label: '目前已准备的养老金',
     type: 'numeric',
     value: '0',
     hint: '请输入已准备的养老金',
-    unit: '万元'
+    unit: '元'
   }, {
     internalId: '18',
     id: 'pension-investment-rate-of-return',
-    label: '养老金投资收益率（%）',
+    label: '养老金投资收益率',
     type: 'numeric',
     value: '3',
     hint: '请输入投资收益率',
@@ -321,6 +321,13 @@ const DEFAULT_CALCULATION_FACTORS = [
     type: 'string',
     value: '',
     hint: '姓名（呈现在测算报告中）'
+  }, {
+    internalId: '20',
+    id: 'supplementary-pension',
+    label: '企业年金',
+    type: 'numeric',
+    hint: '请输入企业年金',
+    unit: '元'
   }
 ]
 

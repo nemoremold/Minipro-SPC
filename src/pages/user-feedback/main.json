@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "用户反馈",
+  "usingComponents": {
+    "van-panel": "/static/vant/panel/index",
+    "van-cell": "/static/vant/cell/index",
+    "van-cell-group": "/static/vant/cell/index",
+    "van-tag": "/static/vant/tag/index",
+    "van-button": "/static/vant/button/index",
+    "van-field": "/static/vant/field/index",
+    "van-toast": "/static/vant/toast/index"
+  }
+}

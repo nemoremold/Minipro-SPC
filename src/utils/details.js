@@ -1,6 +1,6 @@
 export default class Deatils{
     constructor(inputs){
-        var AVERAGE_INFLATION_RATE = 0.08 // 平均通胀率
+        var AVERAGE_INFLATION_RATE = 0.04 // 平均通胀率
         var LOCAL_WAGE_GROWTH_RATE = 0.04 // 上年当地职工工资平均增长率
         var COMPANY_ANNUITY = 0// 企业年金
 
@@ -17,7 +17,7 @@ export default class Deatils{
         this.remaining_of_personal_account = inputs['social-security-pension-account-balance']; // @property 个人账户养老金存额
         this.average_inflation_rate = AVERAGE_INFLATION_RATE; // @property 平均通胀率
         this.local_wage_growth_rate = LOCAL_WAGE_GROWTH_RATE; // @property 上年当地职工工资平均增长率
-        this.company_annuity = COMPANY_ANNUITY; // @property 企业年金
+        this.company_annuity = inputs['supplementary-pension']; // @property 企业年金
         this.pension_replacement_rate = inputs['target-pension-replacement-rate']; // @property 养老金替代率目标
         // @property 基金定投分担，元/月
         this.fund_benefit_per_month = (inputs['social-security-pension-account-balance'] > 5000)? 
@@ -48,9 +48,9 @@ export default class Deatils{
 
     getDetailedReportData(){
         return {
-            "sectionSecondInfo": details.section_second_info,
-            "sectionThirdInfo": details.section_third_info,
-            "sectionFourthInfo": details.section_fourth_info
+            "sectionSecondInfo": this.section_second_info,
+            "sectionThirdInfo": this.section_third_info,
+            "sectionFourthInfo": this.section_fourth_info
         }
     }
 
@@ -102,7 +102,7 @@ export default class Deatils{
         return fv.toFixed(2);
     }
 
-    /**
+    /** √
      * 养老金缺口, r
      * @param {*} this.current_wage 目前工资 元/月
      * @param {*} this.average_inflation_rate 平均通胀率
@@ -117,15 +117,11 @@ export default class Deatils{
         // pension_gap_per_month:${this.pension_gap_per_month()},
         // months:${(this.expected_age - this.expected_retirement_age) * 12}`);
         var b = 0;
-        this.gaps_per_year_until_died().forEach( e => b+=e);
+        this.gaps_per_year_until_died().forEach( e => b+= (e*12));
         return b
     };
 
     /*************************************** 第一块结束 */
-
-    /**
-     * todo  社保养老个人账户余额 怎么算 4108.03 * 参保年数
-     */
 
     /** √
      * 计发月数, M。未来年记账利率或投资收益率: i 默认为 4%
@@ -135,7 +131,7 @@ export default class Deatils{
     plan_months(){
         // 未来年记账利率或投资收益率: i 默认为 4%
         var i = 0.04;
-        var t = 1 - (1+i)**(this.expected_retirement_age-this.expected_age);
+        var t = 1 - (1+i)**(this.expected_retirement_age-75);
         return Math.round(12 * t/i*(1+i));
     }
 
@@ -163,7 +159,7 @@ export default class Deatils{
         var sum_point = 0;
 
         sum_point += (this.join <= 1992)? (Math.ceil(this.years_b1992) + (2018 - 1992)*1.8) : 0;
-        sum_point += (this.join > 1992)? (2018 - this.join)*1.4 : 0;
+        sum_point += (this.join > 1992)? (2018 - this.join)*1.8 : 0;
 
         for(var i = 1; i <= this.expected_retirement_age - this.age; i++){
             sum_point += this.salary * (1+this.average_inflation_rate)**i / (this.local_average_salary * (1+this.local_wage_growth_rate)**(i))
@@ -262,14 +258,27 @@ export default class Deatils{
      */
     pension_personal_account(){
         var t = this.plan_months();
-        return (4108.03 * (this.expected_retirement_age - this.age) + this.remaining_of_personal_account)/t;
+
+        // 从现在开始第i年 缴费工资: Ci 
+        var c = [];
+        for(var i = 0; i < this.expected_retirement_age - this.age; i++){
+            c.push(this.salary * (1+this.local_wage_growth_rate)**i * 0.08 * 1.0831);
+        }
+        // 现在开始到退休时可以发放的社保养老金 b 元
+        var b = 0;
+        c.forEach( e => {
+            b += (e*12)
+        })
+
+        var Q = this.remaining_of_personal_account + b;
+        return Q/t;
     }
 
     /** √
      * 社保过渡性养老金: P3
      */
     pension_transition(){
-        var salary_of_year = this.local_average_salary * 10 * (1996 - this.join) * 0.013
+        var salary_of_year = this.local_average_salary * (1996 - this.join) * 0.013
         return (this.join < 1992)? salary_of_year : 0;
     }
 
@@ -329,12 +338,11 @@ export default class Deatils{
         return result;
     }
 
-    /** todo
+    /** todo 修改企业年金的值
      * 企业年金
      */
     get_company_annuity(){
-        var t = this.salary - this.to_pure_income(this.salary, 0);
-        return this.has_company_annuity? t: this.company_annuity;
+        return this.company_annuity * this.years_join_insure / this.plan_months();
     }
 
     /** √
@@ -413,6 +421,9 @@ export default class Deatils{
         return pensions;
     }
 
+    /** √
+     * 每年的gap直到死掉
+     */
     gaps_per_year_until_died(){
         var gaps = [];
         var gap = this.pension_gap_per_month();
