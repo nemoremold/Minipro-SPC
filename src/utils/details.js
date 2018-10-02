@@ -1,6 +1,6 @@
 export default class Deatils{
     constructor(inputs){
-        var AVERAGE_INFLATION_RATE = 0.08 // 平均通胀率
+        var AVERAGE_INFLATION_RATE = 0.04 // 平均通胀率
         var LOCAL_WAGE_GROWTH_RATE = 0.04 // 上年当地职工工资平均增长率
         var COMPANY_ANNUITY = 0// 企业年金
 
