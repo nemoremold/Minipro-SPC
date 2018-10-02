@@ -498,7 +498,8 @@ export default {
         'time-for-participation': parseInt(this.elements[4].value.split('年')[0]),
         'monthly-taxable-wage': parseInt(this.elements[11].value),
         'social-security-pension-account-balance': parseInt(this.elements[13].value),
-        'target-pension-replacement-rate': parseInt(this.elements[16].value) / 100
+        'target-pension-replacement-rate': parseInt(this.elements[16].value) / 100,
+        'supplementary-pension': parseInt(this.elements[20].value == null ? 0 : this.elements[20].value)
       }
 
       let context = this
@@ -509,6 +510,7 @@ export default {
       var res = details.getExpressReportData()
 
       console.log(res)
+      console.log(details.getDetailedReportData())
       var result = {
         name: context.elements[19].value,
         gap: parseInt(res.pensionGap),

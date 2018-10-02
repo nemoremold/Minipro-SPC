@@ -1,6 +1,6 @@
 export default class Deatils{
     constructor(inputs){
-        var AVERAGE_INFLATION_RATE = 0.08 // 平均通胀率
+        var AVERAGE_INFLATION_RATE = 0.04 // 平均通胀率
         var LOCAL_WAGE_GROWTH_RATE = 0.04 // 上年当地职工工资平均增长率
         var COMPANY_ANNUITY = 0// 企业年金
 
@@ -17,7 +17,7 @@ export default class Deatils{
         this.remaining_of_personal_account = inputs['social-security-pension-account-balance']; // @property 个人账户养老金存额
         this.average_inflation_rate = AVERAGE_INFLATION_RATE; // @property 平均通胀率
         this.local_wage_growth_rate = LOCAL_WAGE_GROWTH_RATE; // @property 上年当地职工工资平均增长率
-        this.company_annuity = COMPANY_ANNUITY; // @property 企业年金
+        this.company_annuity = inputs['supplementary-pension']; // @property 企业年金
         this.pension_replacement_rate = inputs['target-pension-replacement-rate']; // @property 养老金替代率目标
         // @property 基金定投分担，元/月
         this.fund_benefit_per_month = (inputs['social-security-pension-account-balance'] > 5000)? 
@@ -48,9 +48,9 @@ export default class Deatils{
 
     getDetailedReportData(){
         return {
-            "sectionSecondInfo": details.section_second_info,
-            "sectionThirdInfo": details.section_third_info,
-            "sectionFourthInfo": details.section_fourth_info
+            "sectionSecondInfo": this.section_second_info,
+            "sectionThirdInfo": this.section_third_info,
+            "sectionFourthInfo": this.section_fourth_info
         }
     }
 
@@ -342,7 +342,7 @@ export default class Deatils{
      * 企业年金
      */
     get_company_annuity(){
-        return this.company_annuity / this.plan_months();
+        return this.company_annuity * this.years_join_insure / this.plan_months();
     }
 
     /** √
