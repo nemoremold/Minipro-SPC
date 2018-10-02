@@ -148,7 +148,7 @@
       </van-panel>
     </view>
 
-    <view style="margin: 6px; font-size: 8pt;">
+    <view style="margin: 6px; font-size: 9pt;">
       <span>注：以上标注</span>
       <span style="color: red;">{{ ' * ' }}</span>
       <span>的信息只有</span>
@@ -160,17 +160,17 @@
       <view style="font-size: 13pt; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;" @click="agreeToTerms">
         <van-icon v-if="userinfo.agreeToTermsOfService == true" name="checked" style="color: #2ebeb8; display: flex; flex-direction: row; justify-content: center; align-items: center;" />
         <van-icon v-else name="checked" style="color: #B8B8B8; display: flex; flex-direction: row; justify-content: center; align-items: center;" />
-        <span style="font-size: 8pt; margin: 0 0 0 3px;">{{ '我已经阅读并同意' }}</span>
+        <span style="font-size: 9pt; margin: 0 0 0 3px;">{{ '我已经阅读并同意' }}</span>
       </view>
-      <span style="color: #0066FF;font-size: 8pt;" @click="navigateToTermsOfService">{{ '《用户协议》' }}</span>
+      <span style="color: #0066FF;font-size: 9pt;" @click="navigateToTermsOfService">{{ '《用户协议》' }}</span>
     </view>
 
     <view style="margin: 6px 5px;">
       <van-button v-if="userinfo.agreeToTermsOfService == true" @click="register" size="large" type="primary">
-        {{ '保 存' }}
+        {{ '注 册' }}
       </van-button>
       <van-button v-else disabled size="large" type="primary">
-        {{ '保 存' }}
+        {{ '注 册' }}
       </van-button>
     </view>
 

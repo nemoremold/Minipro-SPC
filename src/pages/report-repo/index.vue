@@ -1,6 +1,7 @@
 <template>
   <div>
-    <repo-element-list :elements="reports"></repo-element-list>
+    <!-- <repo-element-list :elements="reports"></repo-element-list> -->
+    正在施工中，敬请期待！
   </div>
 </template>
 

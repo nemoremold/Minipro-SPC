@@ -1,6 +1,6 @@
 <template>
   <div>
-    Developer Info
+    正在施工中，敬请期待！
   </div>
 </template>
 

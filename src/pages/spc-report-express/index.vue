@@ -147,11 +147,14 @@ export default {
     },
 
     generateDeluxeReport () {
-      wx.showModal({
-        title: '温馨提示',
-        showCancel: false,
-        content: '功能暂未开放，敬请期待！'
+      wx.navigateTo({
+        url: '../user-logon/main'
       })
+      // wx.showModal({
+      //   title: '温馨提示',
+      //   showCancel: false,
+      //   content: '功能暂未开放，敬请期待！'
+      // })
     }
   }
 }

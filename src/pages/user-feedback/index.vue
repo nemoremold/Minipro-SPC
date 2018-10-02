@@ -1,44 +1,84 @@
 <template>
   <view style="background: #F0F0F0; height: 100%; width: 100%;">
-    <view style="background: white; height: 60%; width: 100%">
-      <van-panel
-        title="意见反馈"
-        use-footer-slot
-      >
-        <view style="height: 50%;">
-          <van-field
-            label="test"
-            type="textarea"
-            maxlength="128"
-            placeholder="请在这里输入您的宝贵意见"
-            :border="false"
-            autosize="true"
-          />
+
+    <van-cell
+      :border="false"
+    >
+      <view slot="title" style="font-size: 12pt;">
+        <span style="color: #56bab7;">{{ '| ' }}</span>
+        <span style="color: #479f99;">意见反馈</span>
+      </view>
+    </van-cell>
+    <view style="height: 1px; width: 100%; background: #F0F0F0;"></view>
+
+    <view style="background: white; height: 30%; width: 100%">
+      <view style="height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
+        <view style="background: #F0F0F0; height: 100%; width: 90%; display: flex; justify-content: center; align-items: center;">
+          <view style="height: 92%; width: 94%; font-size: 11pt;">
+            <textarea
+              v-model="feedback"
+              style="height: 100%; width: 100%;"
+              maxlength="140"
+              placeholder="请输入您宝贵的意见！"
+            />
+          </view>
         </view>
-        <view slot="footer" style="bottom: 60%; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
-          <van-button size="small" style="margin: 0 5px;">清空</van-button>
-          <van-button type="primary" size="small">提交</van-button>
-        </view>
-      </van-panel>
+      </view>
     </view>
-    <view style="background: white; height: 100px; width: 200px;">
-      <input
-        type="text"
-        step="background: red;"
-      />
+
+    <van-field
+      inputAlign="right"
+      :value="wordCount + '/140'"
+      :border="false"
+    >
+    </van-field>
+    <view style="height: 1px; width: 100%; background: #D0D0D0;"></view>
+
+    <view style="width: 100%; margin: 6px 0; display: flex; justify-content: center; align-items: center;">
+      <view style="width: 90%;">
+        <van-button type="primary" size="large" @click="submitFeedback">{{ '提 交' }}</van-button>
+      </view>
     </view>
-    <view style="background: white; height: 40%; width: 100%;">
-      <input
-        type="text"
-        step="background: red;"
-      />
-    </view>
+
+    <van-toast id="van-toast" />
   </view>
 </template>
 
 <script>
-export default {
+import Toast from '../../../static/vant/toast/toast'
 
+export default {
+  data () {
+    return {
+      feedback: String,
+      wordCount: Number
+    }
+  },
+
+  onLoad () {
+    this.feedback = ''
+    this.wordCount = 0
+  },
+
+  watch: {
+    feedback (newValue) {
+      this.wordCount = ((newValue === '' || newValue == null) ? 0 : newValue.length)
+    }
+  },
+
+  methods: {
+    submitFeedback () {
+      if (this.feedback == null || this.feedback === '') {
+        Toast('请您输入反馈内容！')
+        return
+      }
+      wx.showModal({
+        title: '温馨提示',
+        showCancel: false,
+        content: '功能暂未开放，敬请期待！'
+      })
+    }
+  }
 }
 </script>
 
