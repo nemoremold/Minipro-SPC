@@ -114,7 +114,7 @@
           <van-cell
             title="我的信息"
             is-link
-            url="../userinfo-setting/main"
+            url="../user-logon/main"
             icon="contact"
             :border="false"
           />

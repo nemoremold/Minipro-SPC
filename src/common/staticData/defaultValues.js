@@ -187,7 +187,7 @@ const DEFAULT_CALCULATION_FACTORS = [
     id: 'company-type',
     label: '任职单位',
     type: 'picklist',
-    value: '城镇单位',
+    value: '城镇企业',
     picklistId: '2'
   }, {
     internalId: '3',
