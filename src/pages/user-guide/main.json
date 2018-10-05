@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText" : "用户指南",
+  "navigationBarTitleText": "用户指南",
   "usingComponents": {
     "van-panel": "/static/vant/panel/index",
     "van-cell": "/static/vant/cell/index",

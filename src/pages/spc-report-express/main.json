@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText" : "养老金测算简报",
+  "navigationBarTitleText": "养老金测算简报",
   "usingComponents": {
     "van-cell": "../../../static/vant/cell/index",
     "van-cell-group": "../../../static/vant/cell-group/index",

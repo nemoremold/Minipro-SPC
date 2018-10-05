@@ -1,6 +1,6 @@
 <template>
   <div>
-    可学养老金计算器使用指南
+    正在施工中，敬请期待！
   </div>
 </template>
 
