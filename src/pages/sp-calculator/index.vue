@@ -513,6 +513,8 @@ export default {
       console.log(details.getDetailedReportData())
       var result = {
         name: context.elements[19].value,
+        gender: context.elements[0].value,
+        age: context.elements[6].value,
         gap: parseInt(res.pensionGap),
         p0: parseInt(res.pensionInFirstRetirementMonth),
         p1: parseInt(res.pensionBasicSocialInsurance),
@@ -521,7 +523,7 @@ export default {
         p4: parseInt(res.companyAnnuity)
       }
       wx.navigateTo({
-        url: '../spc-report-express/main?name=' + result.name + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
+        url: '../spc-report-express/main?name=' + result.name + '&gender=' + result.gender + '&age=' + result.age + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
       })
 
       // todo 2 end
