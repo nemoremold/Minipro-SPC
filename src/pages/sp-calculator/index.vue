@@ -419,6 +419,23 @@ export default {
     this.pickerIds[8] = 25
     this.pickerIds[9] = 10
     this.pickerIds[10] = 1
+    wx.login({
+      success: function (res) {
+        console.log(res)
+        wx.request({
+          url: 'https://api.weixin.qq.com/sns/jscode2session',
+          data: {
+            appid: 'wx3aa20d7fa2827d31',
+            js_code: res.code,
+            grant_type: 'authorization_code'
+          },
+          method: 'GET',
+          success: function (res) {
+            console.log(res)
+          }
+        })
+      }
+    })
   },
 
   methods: {
@@ -505,12 +522,9 @@ export default {
       let context = this
       // todo 2 begin
       var details = new Details(data)
-      console.log(data)
 
       var res = details.getExpressReportData()
 
-      console.log(res)
-      console.log(details.getDetailedReportData())
       var result = {
         name: context.elements[19].value,
         gender: context.elements[0].value,

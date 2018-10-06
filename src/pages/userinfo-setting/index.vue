@@ -68,13 +68,14 @@
             use-button-slot
             :border="false"
             :disabled="displayButNotSetUserInfo"
-            v-if="displayButNotSetUserInfo == false"
+            v-if="displayButNotSetUserInfo == false && userinfo.phone !== oldPhone"
           >
             <view slot="label">
               <span>{{ '验证码 ' }}</span>
               <span style="color: red;" v-if="displayButNotSetUserInfo == false">*</span>
             </view>
-            <van-button slot="button" size="small" type="primary" plain="true" @click="sendVerificationCode">发送验证码</van-button>
+            <van-button v-if="vcodeSent == false" slot="button" size="small" type="primary" plain="true" @click="sendVerificationCode">发送验证码</van-button>
+            <van-button v-else slot="button" size="small" type="primary" plain="true" disabled>{{ '重新发送 ' + countDown + ' 秒' }}</van-button>
           </van-field>
         </view>
       </van-panel>
@@ -195,6 +196,7 @@
 
 <script>
 import Toast from '../../../static/vant/toast/toast'
+import dataFormatter from '../../utils/dataFormatter'
 
 export default {
   data () {
@@ -210,7 +212,11 @@ export default {
         agreeToTermsOfService: false
       },
       bannerSrc: '/static/images/banner-untitled.png',
-      displayButNotSetUserInfo: false
+      displayButNotSetUserInfo: false,
+      vcodeSent: false,
+      countDown: 60,
+      interval: null,
+      oldPhone: null
     }
   },
 
@@ -223,10 +229,40 @@ export default {
       institution: '',
       branch: '',
       position: '',
-      agreeToTermsOfService: false
+      agreeToTermsOfService: false,
+      vcode: '',
+      vcodeTime: ''
     }
+    this.vcodeSent = false
+    this.countDown = 60
     this.displayButNotSetUserInfo = true
-    console.log('get user info here')
+    this.oldPhone = ''
+
+    var context = this
+    wx.request({
+      url: 'https://miniprogram.xluyun.com/user/getUserInfo',
+      data: {
+        // wechatId: this.globalData.userInfo.wechatId
+        wechatId: '0'
+      },
+      method: 'GET',
+      success: function (res) {
+        let result = res.data.result
+        if (result) {
+          context.userinfo = {
+            name: result.name,
+            phone: result.phone,
+            location: result.serveRegion,
+            institution: result.enterprise,
+            branch: result.enterpriseBranch,
+            position: result.title
+          }
+          context.oldPhone = result.phone
+        } else {
+          Toast('获取用户信息失败')
+        }
+      }
+    })
     this.userinfo = {
       name: '测试',
       phone: '18888888888',
@@ -236,28 +272,57 @@ export default {
       position: '呵呵的',
       agreeToTermsOfService: false
     }
+    this.oldPhone = '18888888888'
   },
 
   methods: {
     checkPhoneNumber () {
-      console.log('checked')
       return true
     },
 
     sendVerificationCode () {
       if (this.checkPhoneNumber()) {
-        console.log('sent')
+        var context = this
+        wx.request({
+          url: 'https://miniprogram.xluyun.com/user/sendSMSVerification',
+          data: {
+            phone: parseInt(this.userinfo.phone)
+          },
+          method: 'GET',
+          success: function (res) {
+            if (res.data.status === 'error') {
+              wx.showModal({
+                title: '温馨提示',
+                showCancel: false,
+                content: res.data.result + '！'
+              })
+            } else if (res.data.status === 'duplicate') {
+              wx.showModal({
+                title: '温馨提示',
+                showCancel: false,
+                content: '该手机号已注册！'
+              })
+            } else {
+              Toast('验证码已发送')
+              context.vcodeSent = true
+              context.interval = setInterval(function () {
+                let sec = context.countDown - 1
+                if (sec === 0) {
+                  context.countDown = 60
+                  context.vcodeSent = false
+                }
+                context.countDown = context.countDown - 1
+              }, 1000)
+              context.userinfo.vcode = res.data.result
+              let formatter = dataFormatter.formatTime(new Date()).split(':')
+              context.userinfo.vcodeTime = [formatter[1], formatter[2]]
+            }
+          }
+        })
       }
-      wx.showModal({
-        title: '温馨提示',
-        showCancel: false,
-        content: '功能暂未开放，敬请期待！'
-      })
     },
 
     fieldChange (e, id) {
-      console.log(e)
-      console.log(id)
       let value = e.mp.detail
       if (id === 'name') {
         this.userinfo.name = value
@@ -293,7 +358,7 @@ export default {
       } else if (this.userinfo.phone == null || this.userinfo.phone === '') {
         Toast('请输入手机号！')
         return
-      } else if (this.userinfo.verificationCode == null || this.userinfo.verificationCode === '') {
+      } else if (this.userinfo.phone !== this.oldPhone && (this.userinfo.verificationCode == null || this.userinfo.verificationCode === '')) {
         Toast('请输入验证码！')
         return
       } else if (this.userinfo.location == null || this.userinfo.location === '') {
@@ -310,12 +375,68 @@ export default {
         return
       }
 
-      console.log('send request for register here')
-      wx.showModal({
-        title: '温馨提示',
-        showCancel: false,
-        content: '功能暂未开放，敬请期待！'
-      })
+      if (this.oldPhone === this.userinfo.phone) {
+        // wx.request({
+        //   url: 'https://miniprogram.xluyun.com/user/updateUserInfo',
+        //   data: {
+        //     user: {
+        //       wechatId: this.globalData.userInfo.wechatId,
+        //       name: this.name,
+        //       phone: this.phone,
+        //       serveRegion: this.location,
+        //       enterprise: this.institution,
+        //       enterpriseBranch: this.branch,
+        //       title: this.position
+        //     }
+        //   },
+        //   method: 'POST',
+        //   success: function (res) {
+        //     console.log(res)
+        //   }
+        // })
+        return
+      }
+
+      if (this.userinfo.vcode != null && this.userinfo.vcode !== '' && (parseInt(this.userinfo.verificationCode) === parseInt(this.userinfo.vcode) || this.userinfo.verificationCode === this.userinfo.vcode)) {
+        let formatter = dataFormatter.formatTime(new Date()).split(':')
+        let minute = parseInt(formatter[1]) - parseInt(this.userinfo.vcodeTime[0])
+        let second = parseInt(formatter[2]) - parseInt(this.userinfo.vcodeTime[1])
+        if (minute < 0) {
+          minute += 60
+        }
+        if (minute * 60 + second <= 180) {
+          // wx.request({
+          //   url: 'https://miniprogram.xluyun.com/user/updateUserInfo',
+          //   data: {
+          //     user: {
+          //       wechatId: this.globalData.userInfo.wechatId,
+          //       name: this.name,
+          //       phone: this.phone,
+          //       serveRegion: this.location,
+          //       enterprise: this.institution,
+          //       enterpriseBranch: this.branch,
+          //       title: this.position
+          //     }
+          //   },
+          //   method: 'POST',
+          //   success: function (res) {
+          //     console.log(res)
+          //   }
+          // })
+        } else {
+          wx.showModal({
+            title: '温馨提示',
+            showCancel: false,
+            content: '验证码过期，请重新获取！'
+          })
+        }
+      } else {
+        wx.showModal({
+          title: '温馨提示',
+          showCancel: false,
+          content: '验证码错误！'
+        })
+      }
     },
 
     setUserInfo () {
