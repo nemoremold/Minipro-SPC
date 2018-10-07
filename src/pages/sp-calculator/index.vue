@@ -419,23 +419,7 @@ export default {
     this.pickerIds[8] = 25
     this.pickerIds[9] = 10
     this.pickerIds[10] = 1
-    wx.login({
-      success: function (res) {
-        console.log(res)
-        wx.request({
-          url: 'https://api.weixin.qq.com/sns/jscode2session',
-          data: {
-            appid: 'wx3aa20d7fa2827d31',
-            js_code: res.code,
-            grant_type: 'authorization_code'
-          },
-          method: 'GET',
-          success: function (res) {
-            console.log(res)
-          }
-        })
-      }
-    })
+    console.log(this.globalData)
   },
 
   methods: {

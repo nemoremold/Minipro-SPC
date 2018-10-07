@@ -10,10 +10,13 @@
 </template>
 
 <script>
+import WXBizDataCrypt from '../../utils/cryptojs/WXBizDataCrypt'
+
 export default {
   data () {
     return {
-      logoSrc: '/static/images/logo.png'
+      logoSrc: '/static/images/logo.png',
+      AppId: 'wx3aa20d7fa2827d31'
     }
   },
 
@@ -26,6 +29,24 @@ export default {
           wx.getUserInfo({
             success: function (res) {
               appContext.globalData.userInfo = res.userInfo
+
+              wx.login({
+                success: function (jsCodeRes) {
+                  wx.request({
+                    url: 'https://miniprogram.xluyun.com/user/login',
+                    data: {
+                      code: jsCodeRes.code
+                    },
+                    method: 'GET',
+                    success: function (sessionRes) {
+                      var pc = new WXBizDataCrypt(context.AppId, sessionRes.data.result.session_key)
+                      var data = pc.decryptData(res.encryptedData, res.iv)
+                      console.log(data)
+                      appContext.globalData.userInfo.wechatId = data.openId
+                    }
+                  })
+                }
+              })
             }
           })
           wx.switchTab({
@@ -39,6 +60,28 @@ export default {
   methods: {
     onGotUserInfo (e) {
       this.globalData.userInfo = e.mp.detail.userInfo
+      var appContext = this
+      wx.getUserInfo({
+        success: function (res) {
+          wx.login({
+            success: function (jsCodeRes) {
+              wx.request({
+                url: 'https://miniprogram.xluyun.com/user/login',
+                data: {
+                  code: jsCodeRes.code
+                },
+                method: 'GET',
+                success: function (sessionRes) {
+                  var pc = new WXBizDataCrypt(appContext.AppId, sessionRes.data.result.session_key)
+                  var data = pc.decryptData(res.encryptedData, res.iv)
+                  console.log(data)
+                  appContext.globalData.userInfo.wechatId = data.openId
+                }
+              })
+            }
+          })
+        }
+      })
       wx.switchTab({
         url: '../sp-calculator/main'
       })

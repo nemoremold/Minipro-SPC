@@ -331,24 +331,24 @@ export default {
           minute += 60
         }
         if (minute * 60 + second <= 180) {
-          // wx.request({
-          //   url: 'https://miniprogram.xluyun.com/user/updateUserInfo',
-          //   data: {
-          //     user: {
-          //       wechatId: this.globalData.userInfo.wechatId,
-          //       name: this.name,
-          //       phone: this.phone,
-          //       serveRegion: this.location,
-          //       enterprise: this.institution,
-          //       enterpriseBranch: this.branch,
-          //       title: this.position
-          //     }
-          //   },
-          //   method: 'POST',
-          //   success: function (res) {
-          //     console.log(res)
-          //   }
-          // })
+          wx.request({
+            url: 'https://miniprogram.xluyun.com/user/updateUserInfo',
+            data: {
+              user: {
+                wechatId: this.globalData.userInfo.wechatId,
+                name: this.name,
+                phone: this.phone,
+                serveRegion: this.location,
+                enterprise: this.institution,
+                enterpriseBranch: this.branch,
+                title: this.position
+              }
+            },
+            method: 'POST',
+            success: function (res) {
+              console.log(res)
+            }
+          })
           wx.showModal({
             title: '温馨提示',
             showCancel: false,

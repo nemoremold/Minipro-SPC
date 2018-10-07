@@ -2,3 +2,5 @@ build/*.js
 config/*.js
 static/vant/*/*.js
 src/utils/*.js
+src/utils/cryptojs/*.js
+src/utils/cryptojs/lib/*.js
