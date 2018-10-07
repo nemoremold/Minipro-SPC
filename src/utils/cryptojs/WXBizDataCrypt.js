@@ -30,9 +30,9 @@ WXBizDataCrypt.prototype.decryptData = function (encryptedData, iv) {
     console.log(err)
   }
 
-  // if (decryptResult.watermark.appid !== this.appId) {
-  //   console.log(err)
-  // }
+  if (decryptResult.watermark.appid !== this.appId) {
+    console.log(err)
+  }
 
   return decryptResult
 }

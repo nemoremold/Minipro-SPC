@@ -202,11 +202,12 @@ export default {
       bannerSrc: '/static/images/banner-untitled.png',
       vcodeSent: false,
       countDown: 60,
-      interval: null
+      interval: null,
+      proxy: null
     }
   },
 
-  onLoad () {
+  onLoad (options) {
     this.userinfo = {
       name: '',
       phone: '',
@@ -221,6 +222,12 @@ export default {
     }
     this.vcodeSent = false
     this.countDown = 60
+    this.proxy = ''
+
+    if (options.proxy != null && options.proxy !== '') {
+      this.proxy = options.proxy
+    }
+    console.log(options)
   },
 
   methods: {
@@ -300,6 +307,7 @@ export default {
     },
 
     register () {
+      var context = this
       if (this.userinfo.name == null || this.userinfo.name === '') {
         Toast('请输入姓名！')
         return
@@ -336,23 +344,52 @@ export default {
             data: {
               user: {
                 wechatId: this.globalData.userInfo.wechatId,
-                name: this.name,
-                phone: this.phone,
-                serveRegion: this.location,
-                enterprise: this.institution,
-                enterpriseBranch: this.branch,
-                title: this.position
-              }
+                name: this.userinfo.name,
+                phone: this.userinfo.phone,
+                serveRegion: this.userinfo.location,
+                enterprise: this.userinfo.institution,
+                enterpriseBranch: this.userinfo.branch,
+                title: this.userinfo.position
+              },
+              code: parseInt(this.userinfo.verificationCode)
             },
             method: 'POST',
             success: function (res) {
+              console.log(context.globalData.userInfo.wechatId + ' ' + context.userinfo.name + ' ' + context.userinfo.phone + ' ' + context.userinfo.location + ' ' + context.userinfo.institution + ' ' + context.userinfo.branch + ' ' + context.userinfo.position)
               console.log(res)
+              if (context.proxy === 'info') {
+                wx.showModal({
+                  title: '温馨提示',
+                  showCancel: false,
+                  content: '注册成功！',
+                  success: function (res) {
+                    if (res.confirm) {
+                      wx.switchTab({
+                        url: '../user-center/main',
+                        success: function () {
+                          wx.navigateTo({
+                            url: '../userinfo-setting/main'
+                          })
+                        }
+                      })
+                    }
+                  }
+                })
+              } else if (context.proxy === 'report') {
+                wx.showModal({
+                  title: '温馨提示',
+                  showCancel: false,
+                  content: '注册成功！详细报告暂未开放，将转到用户中心页面！',
+                  success: function (res) {
+                    if (res.confirm) {
+                      wx.switchTab({
+                        url: '../user-center/main'
+                      })
+                    }
+                  }
+                })
+              }
             }
-          })
-          wx.showModal({
-            title: '温馨提示',
-            showCancel: false,
-            content: '功能尚未开放，敬请期待！'
           })
         } else {
           wx.showModal({

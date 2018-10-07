@@ -127,7 +127,6 @@ var UTF8 = charenc.UTF8 = {
 
 	// Convert a byte array to a string
 	bytesToString: function (bytes) {
-		console.log()
 		return decodeURIComponent(escape(Binary.bytesToString(bytes)));
 	}
 

@@ -263,7 +263,7 @@ export default {
               })
             } else {
               wx.navigateTo({
-                url: '../user-logon/main'
+                url: '../user-logon/main?proxy=report'
               })
             }
           }

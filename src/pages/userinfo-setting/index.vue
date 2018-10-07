@@ -209,7 +209,7 @@ export default {
         institution: String,
         branch: String,
         position: String,
-        agreeToTermsOfService: false
+        agreeToTermsOfService: Boolean
       },
       bannerSrc: '/static/images/banner-untitled.png',
       displayButNotSetUserInfo: false,
@@ -242,8 +242,7 @@ export default {
     wx.request({
       url: 'https://miniprogram.xluyun.com/user/getUserInfo',
       data: {
-        // wechatId: this.globalData.userInfo.wechatId
-        wechatId: '0'
+        wechatId: this.globalData.userInfo.wechatId
       },
       method: 'GET',
       success: function (res) {
@@ -255,7 +254,8 @@ export default {
             location: result.serveRegion,
             institution: result.enterprise,
             branch: result.enterpriseBranch,
-            position: result.title
+            position: result.title,
+            agreeToTermsOfService: false
           }
           context.oldPhone = result.phone
         } else {
@@ -263,16 +263,16 @@ export default {
         }
       }
     })
-    this.userinfo = {
-      name: '测试',
-      phone: '18888888888',
-      location: '上海-上海市',
-      institution: '爆炸银行',
-      branch: '静安支行',
-      position: '呵呵的',
-      agreeToTermsOfService: false
-    }
-    this.oldPhone = '18888888888'
+    // this.userinfo = {
+    //   name: '测试',
+    //   phone: '18888888888',
+    //   location: '上海-上海市',
+    //   institution: '爆炸银行',
+    //   branch: '静安支行',
+    //   position: '呵呵的',
+    //   agreeToTermsOfService: false
+    // }
+    // this.oldPhone = '18888888888'
   },
 
   methods: {
@@ -342,6 +342,7 @@ export default {
     },
 
     agreeToTerms () {
+      console.log(this.userinfo.agreeToTermsOfService)
       this.userinfo.agreeToTermsOfService ^= true
     },
 
@@ -352,6 +353,7 @@ export default {
     },
 
     register () {
+      var context = this
       if (this.userinfo.name == null || this.userinfo.name === '') {
         Toast('请输入姓名！')
         return
@@ -381,17 +383,19 @@ export default {
           data: {
             user: {
               wechatId: this.globalData.userInfo.wechatId,
-              name: this.name,
-              phone: this.phone,
-              serveRegion: this.location,
-              enterprise: this.institution,
-              enterpriseBranch: this.branch,
-              title: this.position
-            }
+              name: this.userinfo.name,
+              phone: this.userinfo.phone,
+              serveRegion: this.userinfo.location,
+              enterprise: this.userinfo.institution,
+              enterpriseBranch: this.userinfo.branch,
+              title: this.userinfo.position
+            },
+            code: parseInt(this.userinfo.verificationCode)
           },
           method: 'POST',
           success: function (res) {
             console.log(res)
+            context.displayButNotSetUserInfo = true
           }
         })
         return
@@ -410,17 +414,19 @@ export default {
             data: {
               user: {
                 wechatId: this.globalData.userInfo.wechatId,
-                name: this.name,
-                phone: this.phone,
-                serveRegion: this.location,
-                enterprise: this.institution,
-                enterpriseBranch: this.branch,
-                title: this.position
-              }
+                name: this.userinfo.name,
+                phone: this.userinfo.phone,
+                serveRegion: this.userinfo.location,
+                enterprise: this.userinfo.institution,
+                enterpriseBranch: this.userinfo.branch,
+                title: this.userinfo.position
+              },
+              code: parseInt(this.userinfo.verificationCode)
             },
             method: 'POST',
             success: function (res) {
               console.log(res)
+              context.displayButNotSetUserInfo = true
             }
           })
         } else {

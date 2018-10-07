@@ -419,7 +419,6 @@ export default {
     this.pickerIds[8] = 25
     this.pickerIds[9] = 10
     this.pickerIds[10] = 1
-    console.log(this.globalData)
   },
 
   methods: {

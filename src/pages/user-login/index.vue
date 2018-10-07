@@ -26,22 +26,20 @@ export default {
       success: function (res) {
         var appContext = context
         if (res.authSetting['scope.userInfo']) {
-          wx.getUserInfo({
-            success: function (res) {
-              appContext.globalData.userInfo = res.userInfo
-
-              wx.login({
-                success: function (jsCodeRes) {
-                  wx.request({
-                    url: 'https://miniprogram.xluyun.com/user/login',
-                    data: {
-                      code: jsCodeRes.code
-                    },
-                    method: 'GET',
-                    success: function (sessionRes) {
-                      var pc = new WXBizDataCrypt(context.AppId, sessionRes.data.result.session_key)
+          wx.login({
+            success: function (jsCodeRes) {
+              wx.request({
+                url: 'https://miniprogram.xluyun.com/user/login',
+                data: {
+                  code: jsCodeRes.code
+                },
+                method: 'GET',
+                success: function (sessionRes) {
+                  var pc = new WXBizDataCrypt(appContext.AppId, sessionRes.data.result.session_key)
+                  wx.getUserInfo({
+                    success: function (res) {
+                      appContext.globalData.userInfo = res.userInfo
                       var data = pc.decryptData(res.encryptedData, res.iv)
-                      console.log(data)
                       appContext.globalData.userInfo.wechatId = data.openId
                     }
                   })
@@ -59,22 +57,29 @@ export default {
 
   methods: {
     onGotUserInfo (e) {
+      if (e.mp.detail.errMsg === 'getUserInfo:fail auth deny') {
+        wx.showModal({
+          title: '温馨提示',
+          showCancel: false,
+          content: '小程序的使用需要您的用户基本信息：用户头像、用户名。'
+        })
+        return
+      }
       this.globalData.userInfo = e.mp.detail.userInfo
       var appContext = this
-      wx.getUserInfo({
-        success: function (res) {
-          wx.login({
-            success: function (jsCodeRes) {
-              wx.request({
-                url: 'https://miniprogram.xluyun.com/user/login',
-                data: {
-                  code: jsCodeRes.code
-                },
-                method: 'GET',
-                success: function (sessionRes) {
-                  var pc = new WXBizDataCrypt(appContext.AppId, sessionRes.data.result.session_key)
+      wx.login({
+        success: function (jsCodeRes) {
+          wx.request({
+            url: 'https://miniprogram.xluyun.com/user/login',
+            data: {
+              code: jsCodeRes.code
+            },
+            method: 'GET',
+            success: function (sessionRes) {
+              var pc = new WXBizDataCrypt(appContext.AppId, sessionRes.data.result.session_key)
+              wx.getUserInfo({
+                success: function (res) {
                   var data = pc.decryptData(res.encryptedData, res.iv)
-                  console.log(data)
                   appContext.globalData.userInfo.wechatId = data.openId
                 }
               })
