@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "SPC Report - Deluxe"
+  "navigationBarTitleText": "SPC Report - Deluxe",
+  "usingComponents": {
+    "ec-canvas": "/static/ec-canvas/ec-canvas"
+  }
 }

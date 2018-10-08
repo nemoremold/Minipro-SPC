@@ -180,7 +180,7 @@ export default class Deatils{
      * @param {*} this.years_join_insure 
      */
     point_average(){
-        return this.sum_point() / (this.years_join_insure + this.expected_retirement_age - this.age);
+        return this.sum_point() / (2018 - this.join + this.expected_retirement_age - this.age);
     }
 
     /** √

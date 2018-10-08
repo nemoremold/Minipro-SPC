@@ -4,10 +4,10 @@
       <view style="height: 100%; width: 10%;"></view>
       <view style="height: 100%; width: 55%; display: flex; justify-content: center; align-items: center;">
         <view style="height: 50%; width: 100%; display: flex; justify-content: flex-start; align-items: center;">
-          <image style="height: 50px; width: 50px; border-radius: 50%; background: white;" v-if="logoSrc" :src="logoSrc" mode="scaleToFill" />
+          <image style="height: 50px; width: 50px; border-radius: 50%; background: white;" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" mode="scaleToFill" />
           <view style="height: 100%; width: 5px;"></view>
           <view style="height: 100%; width: 100px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
-            <div style="font-size: 10pt;">可学用户</div>
+            <div style="font-size: 10pt;">{{ userInfo.nickName }}</div>
             <div style="font-size: 8pt;">专业报告数：0</div>
           </view>
         </view>
@@ -44,7 +44,7 @@
                   <van-icon name="points-mall" style="display: flex; flex-direction: row; justify-content: center; align-items: center;" />
                 </view>
                 <view style="width: 75%; display: flex; flex-direction: row; justify-content: flex-start;">
-                  <span>待定测试功能1</span>
+                  <span>我的信息</span>
                 </view>
               </view>
             </van-cell>
@@ -59,7 +59,7 @@
                   <van-icon name="cart" style="display: flex; flex-direction: row; justify-content: center; align-items: center;" />
                 </view>
                 <view style="width: 75%; display: flex; flex-direction: row; justify-content: flex-start;">
-                  <span>待定测试功能2</span>
+                  <span>历史订单</span>
                 </view>
               </view>
             </van-cell>
@@ -77,7 +77,7 @@
                   <van-icon name="discount" style="display: flex; flex-direction: row; justify-content: center; align-items: center;" />
                 </view>
                 <view style="width: 75%; display: flex; flex-direction: row; justify-content: flex-start;">
-                  <span>待定功能3</span>
+                  <span>意见反馈</span>
                 </view>
               </view>
             </van-cell>
@@ -92,7 +92,7 @@
                   <van-icon name="wap-home" style="display: flex; flex-direction: row; justify-content: center; align-items: center;" />
                 </view>
                 <view style="width: 75%; display: flex; flex-direction: row; justify-content: flex-start;">
-                  <span>待定功能4</span>
+                  <span>用户指南</span>
                 </view>
               </view>
             </van-cell>
@@ -114,9 +114,9 @@
           <van-cell
             title="我的信息"
             is-link
-            url="../userinfo-setting/main"
             icon="contact"
             :border="false"
+            @click="setInfo"
           />
         </van-cell-group>
       </van-panel>
@@ -166,12 +166,37 @@ export default {
     return {
       optionTabs: [],
       logoSrc: '/static/images/logo.png',
-      bannerSrc: '/static/images/banner-untitled.png'
+      bannerSrc: '/static/images/banner-untitled.png',
+      userInfo: null
     }
   },
 
   onLoad () {
     this.optionTabs = viewSetting.USER_CENTER_SETTING.optionTabs
+    this.userInfo = this.globalData.userInfo
+  },
+
+  methods: {
+    setInfo () {
+      wx.request({
+        url: 'https://miniprogram.xluyun.com/user/checkRegister',
+        data: {
+          wechatId: this.globalData.userInfo.wechatId
+        },
+        method: 'GET',
+        success: function (res) {
+          if (res.data.result === true) {
+            wx.navigateTo({
+              url: '../userinfo-setting/main'
+            })
+          } else {
+            wx.navigateTo({
+              url: '../user-logon/main?proxy=info'
+            })
+          }
+        }
+      })
+    }
   }
 }
 </script>

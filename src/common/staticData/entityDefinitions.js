@@ -4,6 +4,14 @@ const EXPRESS_REPORT_FIELDS_DEFINITION = {
       {
         label: '名字',
         value: ''
+      },
+      {
+        label: '性别',
+        value: ''
+      },
+      {
+        label: '年龄',
+        value: ''
       }
     ],
     [
@@ -51,33 +59,34 @@ const EXPRESS_REPORT_FIELDS_DEFINITION = {
 }
 
 const CHART_OPTIONS = {
-  backgroundColor: '#fff',
-  color: ['#5e65e3', '#f36837', '#5e98e3', '#f9df94', '#0f0'],
+  color: ['#e66c5a', '#fbb513', '#017e8d', '#8ac5c6', '#0f0'],
   tooltip: {
     trigger: 'item',
     formatter: '{b}: {c} ({d}%)'
   },
-  legend: {
-    orient: 'vertical',
-    left: '50%',
-    right: '10px',
-    y: 'middle',
-    data: ['社保基础养老金', '社保个人帐户养老金', '社保过渡性养老金', '企业年金'],
-    textStyle: {
-      color: '#666',
-      fontWeight: 'normal'
-    }
-  },
+  // legend: {
+  //   orient: 'vertical',
+  //   data: ['社保基础养老金', '社保个人帐户养老金', '社保过渡性养老金', '企业年金'],
+  //   textStyle: {
+  //     fontWeight: 'normal'
+  //   },
+  //   selectedMode: false
+  // },
   series: [{
     // left: '10px',
     // right: '50%',
     label: {
-      show: false
+      show: true,
+      formatter: '{d}%',
+      color: 'black',
+      position: 'inside'
+    },
+    labelLine: {
+      show: true
     },
     type: 'pie',
-    // roseType: 'angle',
-    radius: '40%',
-    center: ['25%', '50%'],
+    center: ['50%', '50%'],
+    radius: ['35%', '90%'],
     data: [
       {
         value: 1,
@@ -99,7 +108,8 @@ const CHART_OPTIONS = {
         shadowOffsetX: 0,
         shadowColor: 'rgba(0, 2, 2, 0.3)'
       }
-    }
+    },
+    silent: true
   }]
 }
 
