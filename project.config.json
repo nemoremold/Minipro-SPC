@@ -2,14 +2,14 @@
 	"description": "项目配置文件。",
 	"setting": {
 		"urlCheck": true,
-		"es6": false,
+		"es6": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true
 	},
 	"miniprogramRoot": "./dist/",
 	"compileType": "miniprogram",
-	"appid": "wx5604e60d9858d6cc",
+	"appid": "wx3aa20d7fa2827d31",
 	"projectname": "Minipro-SPC",
 	"condition": {
 		"search": {

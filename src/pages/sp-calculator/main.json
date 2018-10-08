@@ -1,3 +1,14 @@
 {
-  "navigationBarTitleText" : "SPC Calculator"
+  "navigationBarTitleText": "可学养老金计算器",
+  "usingComponents": {
+    "van-field": "/static/vant/field/index",
+    "van-button": "/static/vant/button/index",
+    "van-row": "/static/vant/row/index",
+    "van-col": "/static/vant/col/index",
+    "van-toast": "/static/vant/toast/index",
+    "van-cell": "/static/vant/cell/index",
+    "van-cell-group": "/static/vant/cell-group/index",
+    "van-icon": "/static/vant/icon/index",
+    "van-panel": "/static/vant/panel/index"
+  }
 }

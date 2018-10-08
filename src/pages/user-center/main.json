@@ -1,3 +1,11 @@
 {
-  "navigationBarTitleText" : "User Center"
+  "navigationBarTitleText": "用户中心",
+  "usingComponents": {
+    "van-cell": "/static/vant/cell/index",
+    "van-cell-group": "/static/vant/cell-group/index",
+    "van-icon": "/static/vant/icon/index",
+    "van-panel": "/static/vant/panel/index",
+    "van-row": "/static/vant/row/index",
+    "van-col": "/static/vant/col/index"
+  }
 }

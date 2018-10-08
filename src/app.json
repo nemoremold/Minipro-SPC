@@ -1,19 +1,46 @@
 {
   "pages": [
-    "pages/sp-calculator/main",
-    "pages/user-center/main",
     "pages/user-login/main",
-    "pages/user-logon/main",
+    "pages/sp-calculator/main",
+    "pages/terms-of-service/main",
+    "pages/user-feedback/main",
     "pages/userinfo-setting/main",
+    "pages/user-logon/main",
+    "pages/user-center/main",
     "pages/membership-register/main",
     "pages/report-repo/main",
     "pages/spc-report-express/main",
-    "pages/spc-report-deluxe/main"
+    "pages/spc-report-deluxe/main",
+    "pages/purchase-history/main",
+    "pages/developer-info/main",
+    "pages/user-guide/main",
+    "pages/user-guide/usage-guide/main"
   ],
   "window": {
+    "backgroundColor": "#B8B8B8",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
+    "navigationBarBackgroundColor": "#2ebeb8",
     "navigationBarTitleText": "SPC",
     "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#000000",
+    "borderStyle": "white",
+    "backgroundColor": "#f8f9fb",
+    "list": [
+      {
+        "text": "计算",
+        "pagePath": "pages/sp-calculator/main",
+        "iconPath": "/static/images/calculator.png",
+        "selectedIconPath": "/static/images/calculatorselected.png"
+      },
+      {
+        "text": "用户",
+        "pagePath": "pages/user-center/main",
+        "iconPath": "/static/images/user.png",
+        "selectedIconPath": "/static/images/userselected.png"
+      }
+    ]
   }
 }

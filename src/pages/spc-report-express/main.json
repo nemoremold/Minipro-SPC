@@ -1,3 +1,14 @@
 {
-  "navigationBarTitleText" : "SPC Report - Express"
+  "navigationBarTitleText": "养老金测算简报",
+  "usingComponents": {
+    "van-cell": "../../../static/vant/cell/index",
+    "van-cell-group": "../../../static/vant/cell-group/index",
+    "van-row": "../../../static/vant/row/index",
+    "van-col": "../../../static/vant/col/index",
+    "van-icon": "../../../static/vant/icon/index",
+    "van-panel": "../../../static/vant/panel/index",
+    "van-field": "../../../static/vant/field/index",
+    "ec-canvas": "../../../static/ec-canvas/ec-canvas",
+    "van-button": "../../../static/vant/button/index"
+  }
 }
