@@ -151,9 +151,23 @@
         <span style="color: #e6551c; font-weight: bold; font-size: 20pt;">{{ '&ensp;报告' }}</span>
       </view>
     </view>
-    <view style="position: absolute; background: black; height: 100px; width: 100%;">
-      nihaomahahahahahah
+    <view style="margin: 3px 0; position: absolute; width: 100%; font-size: 6pt; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <view style="width: 94%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+        <view>
+          <span style="font-weight: bold;">专业版报告额外提供：</span>
+        </view>
+        <view>
+          <span>&emsp;缴费工资指数、基础养老金领取比例、个人帐户计发月数、养老金替代率与月度缺口等专业数据，并配有退休前后现金流示意图，比简版更专业、更详尽、更直观。</span>
+        </view>
+        <view>
+          <span>&emsp;展示沟通工具。金融机构理财顾问可以使用专业版报告与客户进行专业沟通，既体现专业能力，又提高沟通效率。</span>
+        </view>
+        <view>
+          <span>&emsp;专业版报告既可以打印出来仔细研究，也可以直接发送给客户或朋友，还可以在过往报告中查询。</span>
+        </view>
+      </view>
     </view>
+    <view style="position: absolute; margin: 3px 0; height: 3px; width: 100%;"></view>
   </view>
 </template>
 
