@@ -247,6 +247,7 @@ export default {
     },
 
     generateDeluxeReport () {
+      var context = this
       if (this.globalData.userInfo != null) {
         wx.request({
           url: 'https://miniprogram.xluyun.com/user/checkRegister',
@@ -259,7 +260,27 @@ export default {
               wx.showModal({
                 title: '温馨提示',
                 showCancel: false,
-                content: '功能暂未开放，敬请期待！'
+                content: '正在生成专业报告！',
+                success: function (res) {
+                  wx.request({
+                    url: 'http://localhost:8080/report/setReportData',
+                    data: context.globalData.calculateFactors,
+                    method: 'POST',
+                    success: function (res) {
+                      console.log(res)
+                    }
+                  })
+                  if (res.confirm) {
+                    wx.switchTab({
+                      url: '../user-center/main',
+                      success: function () {
+                        wx.navigateTo({
+                          url: '../report-repo/main'
+                        })
+                      }
+                    })
+                  }
+                }
               })
             } else {
               wx.navigateTo({

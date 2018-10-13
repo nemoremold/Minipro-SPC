@@ -379,11 +379,24 @@ export default {
                 wx.showModal({
                   title: '温馨提示',
                   showCancel: false,
-                  content: '注册成功！详细报告暂未开放，将转到用户中心页面！',
+                  content: '注册成功！',
                   success: function (res) {
+                    wx.request({
+                      url: 'http://localhost:8080/report/setReportData',
+                      data: context.globalData.calculateFactors,
+                      method: 'POST',
+                      success: function (res) {
+                        console.log(res)
+                      }
+                    })
                     if (res.confirm) {
                       wx.switchTab({
-                        url: '../user-center/main'
+                        url: '../user-center/main',
+                        success: function () {
+                          wx.navigateTo({
+                            url: '../report-repo/main'
+                          })
+                        }
                       })
                     }
                   }

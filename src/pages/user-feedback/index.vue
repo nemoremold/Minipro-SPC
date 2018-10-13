@@ -18,7 +18,7 @@
             <textarea
               v-model="feedback"
               style="height: 100%; width: 100%;"
-              maxlength="140"
+              maxlength="128"
               placeholder="请输入您宝贵的意见！"
             />
           </view>
@@ -28,7 +28,7 @@
 
     <van-field
       inputAlign="right"
-      :value="wordCount + '/140'"
+      :value="wordCount + '/128'"
       :border="false"
     >
     </van-field>
@@ -72,10 +72,29 @@ export default {
         Toast('请您输入反馈内容！')
         return
       }
-      wx.showModal({
-        title: '温馨提示',
-        showCancel: false,
-        content: '功能暂未开放，敬请期待！'
+      wx.request({
+        url: 'http://localhost:8080/user/userFeedback',
+        data: {
+          wechatId: this.globalData.userInfo.wechatId,
+          feedback: this.feedback
+        },
+        method: 'POST',
+        success: function (res) {
+          console.log(res)
+          if (res.statusCode === 200) {
+            wx.showModal({
+              title: '温馨提示',
+              showCancel: false,
+              content: '成功提交，谢谢您的反馈！'
+            })
+          } else if (res.data.status === 500) {
+            wx.showModal({
+              title: '温馨提示',
+              showCancel: false,
+              content: res.data.error
+            })
+          }
+        }
       })
     }
   }
