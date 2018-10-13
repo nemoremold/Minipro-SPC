@@ -419,14 +419,14 @@ export default {
     this.pickerIds[8] = 25
     this.pickerIds[9] = 10
     this.pickerIds[10] = 1
-    wx.switchTab({
-      url: '../user-center/main',
-      success: function () {
-        wx.navigateTo({
-          url: '../report-repo/main'
-        })
-      }
-    })
+    // wx.switchTab({
+    //   url: '../user-center/main',
+    //   success: function () {
+    //     wx.navigateTo({
+    //       url: '../report-repo/main'
+    //     })
+    //   }
+    // })
   },
 
   methods: {

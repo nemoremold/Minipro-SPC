@@ -263,13 +263,34 @@ export default {
                 content: '正在生成专业报告！',
                 success: function (res) {
                   var detailedRes = context.globalData.details.getDetailedReportData()
-                  console.log(detailedRes)
+                  detailedRes.wechatId = context.userInfo.wechatId
+                  detailedRes.generate_time = context.globalData.calculateFactors.timestamp
+                  detailedRes.avatar_url = context.userInfo.avatarUrl
+                  detailedRes['target-name'] = context.globalData.calculateFactors.name
+                  detailedRes.gender = context.globalData.calculateFactors.gender
+                  detailedRes.age = context.globalData.calculateFactors.age
+                  detailedRes['start-date'] = context.globalData.calculateFactors.workingMonths
+                  detailedRes['mandatory-age-for-retirement'] = context.globalData.calculateFactors.legalRetirementAge
+                  detailedRes['expected-retirement-age'] = context.globalData.calculateFactors.expectedRetirementAge
+                  detailedRes['time-for-participation'] = context.globalData.calculateFactors.insuredMonths
+                  detailedRes['social-security-location'] = context.globalData.calculateFactors.province
+                  detailedRes['company-type'] = context.globalData.calculateFactors.jobType
+                  detailedRes['personal-salary-before-tax'] = context.globalData.calculateFactors.incomeWithTax
+                  detailedRes['local-average-salary-last-year'] = context.globalData.calculateFactors.averageIncomePerMonth
+                  detailedRes['social-security-pension-account-balance'] = context.globalData.calculateFactors.pensionBalance
                   wx.request({
                     url: 'http://localhost:8080/report/setReportData',
                     data: context.globalData.calculateFactors,
                     method: 'POST',
                     success: function (res) {
-                      console.log(res)
+                      wx.request({
+                        url: 'http://localhost:8080/report/generateReport',
+                        data: detailedRes,
+                        method: 'POST',
+                        success: function (res) {
+                          console.log(res)
+                        }
+                      })
                     }
                   })
                   if (res.confirm) {
