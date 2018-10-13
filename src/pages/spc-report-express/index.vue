@@ -147,7 +147,7 @@
       </view>
       <view :style="'buttom: 0; height: ' + viewData.button.height + 'rpx; width: ' + viewData.button.width + 'rpx; z-index: 2; background: #f0bc26; display: flex; flex-direction: row; justify-content: center; align-items: center;'" @click="generateDeluxeReport">
         <span style="color: #e6551c; font-weight: bold; font-size: 20pt;">{{ '点击生成&ensp;' }}</span>
-        <span style="color: #e6551c; font-weight: bold; font-size: 24pt;">{{ '专业版' }}</span>
+        <span style="color: #e85100; font-weight: bold; font-size: 24pt;">{{ '专业版' }}</span>
         <span style="color: #e6551c; font-weight: bold; font-size: 20pt;">{{ '&ensp;报告' }}</span>
       </view>
     </view>
