@@ -47,11 +47,40 @@ export default class Deatils{
     }
 
     getDetailedReportData(){
+        var pensionGap = this.pension_gap();
+        var pensionInFirstRetirementMonth = this.pension_in_first_retirement_month();
+        var pensionBasicSocialInsurance = this.pension_basic_social_insurance();
+        var pensionPersonalAccount = this.pension_personal_account();
+        var pensionTransition = this.pension_transition();
+        var companyAnnuity = this.get_company_annuity();
+        var pensionGapPerMonth = this.pension_gap_per_month();
+        var t = this.gap_of_pension_replacement_rate_value()
+
         return {
-            "sectionSecondInfo": this.section_second_info,
-            "sectionThirdInfo": this.section_third_info,
-            "sectionFourthInfo": this.section_fourth_info
-        }
+            pensionGap,
+            pensionInFirstRetirementMonth,
+            pensionBasicSocialInsurance,
+            pensionPersonalAccount,
+            pensionTransition,
+            companyAnnuity,
+            pensionGapPerMonth,
+            "ratioOfBasicReceivePension": this.ratio_of_basic_receive_pension(),
+            "pointAverage": this.point_average(),
+            "planMonths": this.plan_months(),
+            "retirementSalaryPerMonth": this.retirement_salary_per_month_expand(),
+            "pensionBasicSocialInsurance": this.pension_basic_social_insurance(),
+            "pensionPersonalAccount": this.pension_personal_account(),
+            "pensionTransition": this.pension_transition(),
+            "companyAnnuity": this.get_company_annuity(),
+            "pensionInFirstRetirementMonth": this.pension_in_first_retirement_month(),
+            "pensionReplacementRate": this.pension_replacement_rate,
+            "rateOfSocialInsurancePlusAnnuity": this.pension_replacement_rate - t,
+            "gapOfPensionReplacementRateValue": t,
+            "pensionGapPerMonth": this.pension_gap_per_month(),
+            'salaries': this.salaries_per_year_until_retire(),
+            'pensions': this.pensions_per_year_until_died(),
+            "gaps": this.gaps_per_year_until_died()
+        };
     }
 
     /** √
