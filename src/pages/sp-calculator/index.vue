@@ -401,7 +401,7 @@ export default {
       pickerIds: [],
       weChatId: null,
       reportId: null,
-      src: '/static/images/banner-untitled.png'
+      src: '/static/images/banner-homepage.jpg'
     }
   },
 

@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/developer-info/main",
     "pages/user-login/main",
     "pages/sp-calculator/main",
     "pages/terms-of-service/main",
@@ -12,7 +13,6 @@
     "pages/spc-report-express/main",
     "pages/spc-report-deluxe/main",
     "pages/purchase-history/main",
-    "pages/developer-info/main",
     "pages/user-guide/main",
     "pages/user-guide/usage-guide/main"
   ],
