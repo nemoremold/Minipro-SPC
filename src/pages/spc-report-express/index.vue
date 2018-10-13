@@ -262,6 +262,8 @@ export default {
                 showCancel: false,
                 content: '正在生成专业报告！',
                 success: function (res) {
+                  var detailedRes = context.globalData.details.getDetailedReportData()
+                  console.log(detailedRes)
                   wx.request({
                     url: 'http://localhost:8080/report/setReportData',
                     data: context.globalData.calculateFactors,

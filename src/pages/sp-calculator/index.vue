@@ -551,6 +551,7 @@ export default {
         name: this.elements[19].value,
         supplementaryPension: parseInt(this.elements[20].value == null ? 0 : this.elements[20].value)
       }
+      this.globalData.details = details
       wx.navigateTo({
         url: '../spc-report-express/main?name=' + result.name + '&gender=' + result.gender + '&age=' + result.age + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
       })
