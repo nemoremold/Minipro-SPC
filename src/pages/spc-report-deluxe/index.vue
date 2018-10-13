@@ -136,7 +136,7 @@ export default {
     this.ec = {
       options: this.options
     }
-    console.log(this.report)
+    console.log(this.reportId)
   },
 
   methods: {

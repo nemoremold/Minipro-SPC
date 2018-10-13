@@ -70,7 +70,8 @@
               <span>{{ '验证码 ' }}</span>
               <span style="color: red;">*</span>
             </view>
-            <van-button slot="button" size="small" type="primary" plain="true" @click="sendVerificationCode">发送验证码</van-button>
+            <van-button v-if="vcodeSent == false" slot="button" size="small" type="primary" plain="true" @click="sendVerificationCode">发送验证码</van-button>
+            <van-button v-else slot="button" size="small" type="primary" plain="true" disabled>{{ '重新发送 ' + countDown + ' 秒' }}</van-button>
           </van-field>
         </view>
       </van-panel>
@@ -181,6 +182,7 @@
 
 <script>
 import Toast from '../../../static/vant/toast/toast'
+import dataFormatter from '../../utils/dataFormatter'
 
 export default {
   data () {
@@ -193,13 +195,19 @@ export default {
         institution: String,
         branch: String,
         position: String,
-        agreeToTermsOfService: false
+        agreeToTermsOfService: false,
+        vcode: '',
+        vcodeTime: []
       },
-      bannerSrc: '/static/images/banner-untitled.png'
+      bannerSrc: '/static/images/banner-untitled.png',
+      vcodeSent: false,
+      countDown: 60,
+      interval: null,
+      proxy: null
     }
   },
 
-  onLoad () {
+  onLoad (options) {
     this.userinfo = {
       name: '',
       phone: '',
@@ -208,30 +216,68 @@ export default {
       institution: '',
       branch: '',
       position: '',
-      agreeToTermsOfService: false
+      agreeToTermsOfService: false,
+      vcode: '',
+      vcodeTime: ''
     }
+    this.vcodeSent = false
+    this.countDown = 60
+    this.proxy = ''
+
+    if (options.proxy != null && options.proxy !== '') {
+      this.proxy = options.proxy
+    }
+    console.log(options)
   },
 
   methods: {
     checkPhoneNumber () {
-      console.log('checked')
       return true
     },
 
     sendVerificationCode () {
       if (this.checkPhoneNumber()) {
-        console.log('sent')
+        var context = this
+        wx.request({
+          url: 'https://miniprogram.xluyun.com/user/sendSMSVerification',
+          data: {
+            phone: parseInt(this.userinfo.phone)
+          },
+          method: 'GET',
+          success: function (res) {
+            if (res.data.status === 'error') {
+              wx.showModal({
+                title: '温馨提示',
+                showCancel: false,
+                content: res.data.result + '！'
+              })
+            } else if (res.data.status === 'duplicate') {
+              wx.showModal({
+                title: '温馨提示',
+                showCancel: false,
+                content: '该手机号已注册！'
+              })
+            } else {
+              Toast('验证码已发送')
+              context.vcodeSent = true
+              context.interval = setInterval(function () {
+                let sec = context.countDown - 1
+                if (sec === 0) {
+                  context.countDown = 60
+                  context.vcodeSent = false
+                }
+                context.countDown = context.countDown - 1
+              }, 1000)
+              context.userinfo.vcode = res.data.result
+              let formatter = dataFormatter.formatTime(new Date()).split(':')
+              context.userinfo.vcodeTime = [formatter[1], formatter[2]]
+            }
+          }
+        })
       }
-      wx.showModal({
-        title: '温馨提示',
-        showCancel: false,
-        content: '功能暂未开放，敬请期待！'
-      })
     },
 
     fieldChange (e, id) {
-      console.log(e)
-      console.log(id)
       let value = e.mp.detail
       if (id === 'name') {
         this.userinfo.name = value
@@ -261,6 +307,7 @@ export default {
     },
 
     register () {
+      var context = this
       if (this.userinfo.name == null || this.userinfo.name === '') {
         Toast('请输入姓名！')
         return
@@ -284,12 +331,93 @@ export default {
         return
       }
 
-      console.log('send request for register here')
-      wx.showModal({
-        title: '温馨提示',
-        showCancel: false,
-        content: '功能暂未开放，敬请期待！'
-      })
+      if (this.userinfo.vcode != null && this.userinfo.vcode !== '' && (parseInt(this.userinfo.verificationCode) === parseInt(this.userinfo.vcode) || this.userinfo.verificationCode === this.userinfo.vcode)) {
+        let formatter = dataFormatter.formatTime(new Date()).split(':')
+        let minute = parseInt(formatter[1]) - parseInt(this.userinfo.vcodeTime[0])
+        let second = parseInt(formatter[2]) - parseInt(this.userinfo.vcodeTime[1])
+        if (minute < 0) {
+          minute += 60
+        }
+        if (minute * 60 + second <= 180) {
+          wx.request({
+            url: 'https://miniprogram.xluyun.com/user/updateUserInfo',
+            data: {
+              user: {
+                wechatId: this.globalData.userInfo.wechatId,
+                name: this.userinfo.name,
+                phone: this.userinfo.phone,
+                serveRegion: this.userinfo.location,
+                enterprise: this.userinfo.institution,
+                enterpriseBranch: this.userinfo.branch,
+                title: this.userinfo.position
+              },
+              code: parseInt(this.userinfo.verificationCode)
+            },
+            method: 'POST',
+            success: function (res) {
+              console.log(context.globalData.userInfo.wechatId + ' ' + context.userinfo.name + ' ' + context.userinfo.phone + ' ' + context.userinfo.location + ' ' + context.userinfo.institution + ' ' + context.userinfo.branch + ' ' + context.userinfo.position)
+              console.log(res)
+              if (context.proxy === 'info') {
+                wx.showModal({
+                  title: '温馨提示',
+                  showCancel: false,
+                  content: '注册成功！',
+                  success: function (res) {
+                    if (res.confirm) {
+                      wx.switchTab({
+                        url: '../user-center/main',
+                        success: function () {
+                          wx.navigateTo({
+                            url: '../userinfo-setting/main'
+                          })
+                        }
+                      })
+                    }
+                  }
+                })
+              } else if (context.proxy === 'report') {
+                wx.showModal({
+                  title: '温馨提示',
+                  showCancel: false,
+                  content: '注册成功！',
+                  success: function (res) {
+                    wx.request({
+                      url: 'http://localhost:8080/report/setReportData',
+                      data: context.globalData.calculateFactors,
+                      method: 'POST',
+                      success: function (res) {
+                        console.log(res)
+                      }
+                    })
+                    if (res.confirm) {
+                      wx.switchTab({
+                        url: '../user-center/main',
+                        success: function () {
+                          wx.navigateTo({
+                            url: '../report-repo/main'
+                          })
+                        }
+                      })
+                    }
+                  }
+                })
+              }
+            }
+          })
+        } else {
+          wx.showModal({
+            title: '温馨提示',
+            showCancel: false,
+            content: '验证码过期，请重新获取！'
+          })
+        }
+      } else {
+        wx.showModal({
+          title: '温馨提示',
+          showCancel: false,
+          content: '验证码错误！'
+        })
+      }
     }
   }
 }

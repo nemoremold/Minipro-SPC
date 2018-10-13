@@ -59,7 +59,7 @@ const EXPRESS_REPORT_FIELDS_DEFINITION = {
 }
 
 const CHART_OPTIONS = {
-  color: ['#017e8d', '#8ac5c6', '#e66c5a', '#fbb513', '#0f0'],
+  color: ['#e66c5a', '#fbb513', '#017e8d', '#8ac5c6', '#0f0'],
   tooltip: {
     trigger: 'item',
     formatter: '{b}: {c} ({d}%)'
