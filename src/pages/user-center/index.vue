@@ -38,6 +38,7 @@
             <van-cell
               clickable
               :border="false"
+              @click="setInfo"
             >
               <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                 <view style="width: 25%;">
@@ -53,6 +54,7 @@
             <van-cell
               clickable
               :border="false"
+              url="../report-repo/main"
             >
               <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                 <view style="width: 25%;">
@@ -71,6 +73,7 @@
             <van-cell
               clickable
               :border="false"
+              url="../user-feedback/main"
             >
               <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                 <view style="width: 25%;">
@@ -86,6 +89,7 @@
             <van-cell
               clickable
               :border="false"
+              url="../user-guide/main"
             >
               <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                 <view style="width: 25%;">
@@ -178,7 +182,21 @@ export default {
     this.reportCount = 0
     var context = this
     wx.request({
-      url: 'http://localhost:8080/report/getReportCount',
+      url: 'https://miniprogram.xluyun.com/report/getReportCount',
+      data: {
+        wechatId: this.userInfo.wechatId
+      },
+      method: 'GET',
+      success: function (res) {
+        context.reportCount = res.data.result
+      }
+    })
+  },
+
+  onShow () {
+    var context = this
+    wx.request({
+      url: 'https://miniprogram.xluyun.com/report/getReportCount',
       data: {
         wechatId: this.userInfo.wechatId
       },

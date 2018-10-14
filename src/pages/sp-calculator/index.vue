@@ -401,7 +401,7 @@ export default {
       pickerIds: [],
       weChatId: null,
       reportId: null,
-      src: '/static/images/banner-untitled.png'
+      src: '/static/images/banner-homepage.jpg'
     }
   },
 
@@ -419,14 +419,14 @@ export default {
     this.pickerIds[8] = 25
     this.pickerIds[9] = 10
     this.pickerIds[10] = 1
-    wx.switchTab({
-      url: '../user-center/main',
-      success: function () {
-        wx.navigateTo({
-          url: '../report-repo/main'
-        })
-      }
-    })
+    // wx.switchTab({
+    //   url: '../user-center/main',
+    //   success: function () {
+    //     wx.navigateTo({
+    //       url: '../report-repo/main'
+    //     })
+    //   }
+    // })
   },
 
   methods: {
@@ -529,7 +529,7 @@ export default {
       }
       this.globalData.calculateFactors = {
         wechatId: this.globalData.userInfo.wechatId,
-        timestamp: parseInt(Date.parse(new Date()) / 1000),
+        timestamp: parseInt(Date.parse(new Date())),
         gender: this.elements[0].value,
         province: this.elements[1].value,
         jobType: this.elements[2].value,
@@ -551,6 +551,7 @@ export default {
         name: this.elements[19].value,
         supplementaryPension: parseInt(this.elements[20].value == null ? 0 : this.elements[20].value)
       }
+      this.globalData.details = details
       wx.navigateTo({
         url: '../spc-report-express/main?name=' + result.name + '&gender=' + result.gender + '&age=' + result.age + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
       })
