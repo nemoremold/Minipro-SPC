@@ -1,7 +1,7 @@
 <template>
   <view v-if="QRCodeSrc" style="text-align: center; position: fixed; height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
     <view style="background: white; width: 100%; height: 70%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-      <image v-if="QRCodeSrc" :src="QRCodeSrc" mode="aspectFit" @tap="bindLongTab" style="height: 700rpx; width: 700rpx;" />
+      <image v-if="QRCodeSrc" :src="QRCodeSrc" mode="aspectFit" @tap="bindTap" style="height: 700rpx; width: 700rpx;" />
       <view style="width: 90%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <span style="display: flex; flex-direction: column; justify-content: center; align-items: center;">点击二维码,长按,保存图片或转发之后，扫码即可关注可学微信公众号</span>
       </view>
@@ -29,12 +29,10 @@ export default {
   },
 
   methods: {
-    bindLongTab () {
+    bindTap () {
       var current = this.QRCodeSrc
       wx.previewImage({
-        urls: current.split(','),
-        success: function (res) {
-        }
+        urls: current.split(',')
       })
     }
   }

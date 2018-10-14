@@ -529,7 +529,7 @@ export default {
       }
       this.globalData.calculateFactors = {
         wechatId: this.globalData.userInfo.wechatId,
-        timestamp: parseInt(Date.parse(new Date()) / 1000),
+        timestamp: parseInt(Date.parse(new Date())),
         gender: this.elements[0].value,
         province: this.elements[1].value,
         jobType: this.elements[2].value,

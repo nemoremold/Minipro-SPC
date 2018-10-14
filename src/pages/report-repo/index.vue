@@ -87,7 +87,7 @@ export default {
     this.reportCount = 0
     var context = this
     wx.request({
-      url: 'http://localhost:8080/report/getReportCount',
+      url: 'https://miniprogram.xluyun.com/report/getReportCount',
       data: {
         wechatId: this.userInfo.wechatId
       },
