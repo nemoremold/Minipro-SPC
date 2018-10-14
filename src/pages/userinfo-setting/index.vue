@@ -216,7 +216,8 @@ export default {
       vcodeSent: false,
       countDown: 60,
       interval: null,
-      oldPhone: null
+      oldPhone: null,
+      pressed: null
     }
   },
 
@@ -237,6 +238,7 @@ export default {
     this.countDown = 60
     this.displayButNotSetUserInfo = true
     this.oldPhone = ''
+    this.pressed = false
 
     var context = this
     wx.request({
@@ -342,7 +344,6 @@ export default {
     },
 
     agreeToTerms () {
-      console.log(this.userinfo.agreeToTermsOfService)
       this.userinfo.agreeToTermsOfService ^= true
     },
 
@@ -354,6 +355,9 @@ export default {
 
     register () {
       var context = this
+      if (this.pressed === true) {
+        return
+      }
       if (this.userinfo.name == null || this.userinfo.name === '') {
         Toast('请输入姓名！')
         return
@@ -378,6 +382,11 @@ export default {
       }
 
       if (this.oldPhone === this.userinfo.phone) {
+        this.pressed = true
+        wx.showLoading({
+          title: '正在修改',
+          mask: true
+        })
         wx.request({
           url: 'https://miniprogram.xluyun.com/user/updateUserInfo',
           data: {
@@ -394,7 +403,8 @@ export default {
           },
           method: 'POST',
           success: function (res) {
-            console.log(res)
+            context.pressed = false
+            wx.hideLoading()
             context.displayButNotSetUserInfo = true
           }
         })
@@ -409,6 +419,11 @@ export default {
           minute += 60
         }
         if (minute * 60 + second <= 180) {
+          this.pressed = true
+          wx.showLoading({
+            title: '正在修改',
+            mask: true
+          })
           wx.request({
             url: 'https://miniprogram.xluyun.com/user/updateUserInfo',
             data: {
@@ -425,7 +440,8 @@ export default {
             },
             method: 'POST',
             success: function (res) {
-              console.log(res)
+              context.pressed = false
+              wx.hideLoading()
               context.displayButNotSetUserInfo = true
             }
           })
