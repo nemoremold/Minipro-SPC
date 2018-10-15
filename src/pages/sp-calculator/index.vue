@@ -391,6 +391,7 @@ import defaultValues from '@/common/staticData/defaultValues'
 import Toast from '../../../static/vant/toast/toast'
 // import getExpressReportData from '@/utils/brief' todo 1
 import Details from '@/utils/details'
+// import dataFormatter from '../../utils/dataFormatter'
 
 export default {
   data () {
