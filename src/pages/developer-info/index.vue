@@ -3,7 +3,7 @@
     <view style="background: white; width: 100%; height: 70%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
       <image v-if="QRCodeSrc" :src="QRCodeSrc" mode="aspectFit" @tap="bindTap" style="height: 700rpx; width: 700rpx;" />
       <view style="width: 90%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <span style="display: flex; flex-direction: column; justify-content: center; align-items: center;">点击二维码,长按,保存图片或转发之后，扫码即可关注可学微信公众号</span>
+        <span style="display: flex; flex-direction: column; justify-content: center; align-items: center;">点击二维码，长按，保存图片或转发之后，扫码即可关注可学微信公众号</span>
       </view>
     </view>
     <view style="width: 90%; height: 30%; font-size: 10pt; display: flex; flex-direction: column; justify-content: center; align-items: center;">

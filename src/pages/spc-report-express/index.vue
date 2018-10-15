@@ -212,12 +212,14 @@ export default {
       options: entityDefinitions.CHART_OPTIONS,
       ec: null,
       pickerId: null,
-      userInfo: null
+      userInfo: null,
+      pressed: null
     }
   },
 
   onLoad (options) {
     var sysInfo = wx.getSystemInfoSync()
+    this.pressed = false
     if (sysInfo != null) {
       this.viewData.sysWidth = sysInfo.windowWidth
       this.viewData.sysHeight = sysInfo.windowHeight
@@ -270,6 +272,9 @@ export default {
 
     generateDeluxeReport () {
       var context = this
+      if (this.pressed === true) {
+        return
+      }
       if (this.globalData.userInfo != null) {
         wx.request({
           url: 'https://miniprogram.xluyun.com/user/checkRegister',
@@ -279,6 +284,11 @@ export default {
           method: 'GET',
           success: function (res) {
             if (res.data.result === true) {
+              context.pressed = true
+              wx.showLoading({
+                title: '正在生成报告',
+                mask: true
+              })
               var detailedRes = context.globalData.details.getDetailedReportData()
               detailedRes.wechatId = context.userInfo.wechatId
               detailedRes.timestamp = context.globalData.calculateFactors.timestamp
@@ -306,21 +316,25 @@ export default {
                     data: detailedRes,
                     method: 'POST',
                     success: function (res) {
+                      context.pressed = false
+                      wx.hideLoading()
                       wx.showModal({
                         title: '温馨提示',
                         showCancel: false,
                         content: '专业报告生成成功！',
                         success: function (res) {
                           if (res.confirm) {
-                            wx.navigateTo({
-                              url: '../spc-report-deluxe/main?wechatId=' + detailedRes.wechatId + '&timestamp=' + detailedRes.timestamp
-                            })
-                            // wx.switchTab({
-                            //   url: '../user-center/main',
-                            //   success: function (res) {
-                            //     console.log(res)
-                            //   }
+                            // wx.navigateTo({
+                            //   url: '../spc-report-deluxe/main?wechatId=' + detailedRes.wechatId + '&timestamp=' + detailedRes.timestamp
                             // })
+                            wx.switchTab({
+                              url: '../user-center/main',
+                              success: function () {
+                                wx.navigateTo({
+                                  url: '../report-repo/main'
+                                })
+                              }
+                            })
                           }
                         }
                       })

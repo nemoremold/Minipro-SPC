@@ -1,9 +1,7 @@
 {
   "navigationBarTitleText": "报告列表",
   "enablePullDownRefresh": true,
-  "window": {
-    "backgroundTextStyle": "dark"
-  },
+  "backgroundColor": "#2ebeb8",
   "usingComponents": {
     "van-panel": "/static/vant/panel/index",
     "van-cell": "/static/vant/cell/index",
