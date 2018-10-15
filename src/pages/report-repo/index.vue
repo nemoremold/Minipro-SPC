@@ -44,7 +44,7 @@
             <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
               <view style="height: 100%; width: 80%; display:flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;">
                 <span style="font-size: 11pt">{{ item.name }}</span>
-                <span style="font-size: 9pt; color: grey;">{{ item.timestamp }}</span>
+                <span style="font-size: 9pt; color: grey;">{{ item.time }}</span>
               </view>
               <view style="height: 100%; width: 20%; display:flex; justify-content: flex-end; align-items: center;">
                 <van-tag type="success" plain="true" style="display: flex; justify-content: flex-start; align-items: center;">{{ '点击查看' }}</van-tag>
@@ -125,6 +125,9 @@ export default {
       },
       method: 'GET',
       success: function (res) {
+        for (var i = 0; i < res.data.result.length; ++i) {
+          res.data.result[i].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp / 1000))
+        }
         context.reports = res.data.result
         if (context.reports.length < context.reportCount) {
           context.isMore = true
@@ -162,6 +165,9 @@ export default {
             wx.hideNavigationBarLoading()
             wx.stopPullDownRefresh()
             context.isPullDownRefreshing = false
+            for (var i = 0; i < res.data.result.length; ++i) {
+              res.data.result[i].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp / 1000))
+            }
             context.reports = res.data.result
             if (context.reports.length < context.reportCount) {
               context.isMore = true
@@ -191,6 +197,7 @@ export default {
           const index = context.reports.length
           for (var i = 0; i < res.data.result.length; ++i) {
             context.reports[index + i + 1] = res.data.result[i]
+            context.reports[index + i + 1].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp / 1000))
           }
           if (context.reports.length < context.reportCount) {
             context.isMore = true

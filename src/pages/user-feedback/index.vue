@@ -84,7 +84,7 @@ export default {
         mask: true
       })
       wx.request({
-        url: 'http://localhost:8080/user/userFeedback',
+        url: 'https://miniprogram.xluyun.com/user/userFeedback',
         data: {
           wechatId: this.globalData.userInfo.wechatId,
           feedback: this.feedback
