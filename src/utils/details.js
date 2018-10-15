@@ -27,13 +27,13 @@ export default class Deatils{
 
     getExpressReportData(){
         // 养老金总缺口
-        var pensionGap = this.pension_gap();
-        var pensionInFirstRetirementMonth = this.pension_in_first_retirement_month();
-        var pensionBasicSocialInsurance = this.pension_basic_social_insurance();
-        var pensionPersonalAccount = this.pension_personal_account();
-        var pensionTransition = this.pension_transition();
-        var companyAnnuity = this.get_company_annuity();
-        var pensionGapPerMonth = this.pension_gap_per_month();
+        var pensionGap = this.pension_gap() < 0? 0 : this.pension_gap();
+        var pensionInFirstRetirementMonth = this.pension_in_first_retirement_month() < 0? 0 : this.pension_in_first_retirement_month();
+        var pensionBasicSocialInsurance = this.pension_basic_social_insurance()<0? 0: this.pension_basic_social_insurance();
+        var pensionPersonalAccount = this.pension_personal_account()<0? 0: this.pension_personal_account();
+        var pensionTransition = this.pension_transition()<0? 0: this.pension_transition();
+        var companyAnnuity = this.get_company_annuity()<0? 0: this.get_company_annuity();
+        var pensionGapPerMonth = this.pension_gap_per_month()<0? 0: this.pension_gap_per_month();
         
         return {
             pensionGap,
@@ -47,13 +47,13 @@ export default class Deatils{
     }
 
     getDetailedReportData(){
-        var pensionGap = this.pension_gap();
-        var pensionInFirstRetirementMonth = this.pension_in_first_retirement_month();
-        var pensionBasicSocialInsurance = this.pension_basic_social_insurance();
-        var pensionPersonalAccount = this.pension_personal_account();
-        var pensionTransition = this.pension_transition();
-        var companyAnnuity = this.get_company_annuity();
-        var pensionGapPerMonth = this.pension_gap_per_month();
+        var pensionGap = this.pension_gap() < 0? 0 : this.pension_gap();
+        var pensionInFirstRetirementMonth = this.pension_in_first_retirement_month() < 0? 0 : this.pension_in_first_retirement_month();
+        var pensionBasicSocialInsurance = this.pension_basic_social_insurance()<0? 0: this.pension_basic_social_insurance();
+        var pensionPersonalAccount = this.pension_personal_account()<0? 0: this.pension_personal_account();
+        var pensionTransition = this.pension_transition()<0? 0: this.pension_transition();
+        var companyAnnuity = this.get_company_annuity()<0? 0: this.get_company_annuity();
+        var pensionGapPerMonth = this.pension_gap_per_month()<0? 0: this.pension_gap_per_month();
         var t = this.gap_of_pension_replacement_rate_value()
 
         return {
@@ -407,7 +407,8 @@ export default class Deatils{
         //     money_per_month: ${this.money_per_month()}.
         //     rate: ${this.pension_in_first_retirement_month()/this.money_per_month()}`
         // )
-        return this.pension_replacement_rate - this.pension_in_first_retirement_month()/this.money_per_month();
+        var t = this.pension_replacement_rate - this.pension_in_first_retirement_month()/this.money_per_month();
+        return  t < 0? 0: t; 
     }
 
     get section_second_info(){
@@ -455,7 +456,7 @@ export default class Deatils{
      */
     gaps_per_year_until_died(){
         var gaps = [];
-        var gap = this.pension_gap_per_month();
+        var gap = this.pension_gap_per_month()<0? 0:this.pension_gap_per_month();
 
         for(var i = 0; i < this.expected_age - this.expected_retirement_age; i++){
             gaps.push(gap*(1+this.local_wage_growth_rate)**(i));
