@@ -203,7 +203,8 @@ export default {
       vcodeSent: false,
       countDown: 60,
       interval: null,
-      proxy: null
+      proxy: null,
+      pressed: null
     }
   },
 
@@ -223,11 +224,11 @@ export default {
     this.vcodeSent = false
     this.countDown = 60
     this.proxy = ''
+    this.pressed = false
 
     if (options.proxy != null && options.proxy !== '') {
       this.proxy = options.proxy
     }
-    console.log(options)
   },
 
   methods: {
@@ -308,6 +309,9 @@ export default {
 
     register () {
       var context = this
+      if (this.pressed === true) {
+        return
+      }
       if (this.userinfo.name == null || this.userinfo.name === '') {
         Toast('请输入姓名！')
         return
@@ -339,6 +343,11 @@ export default {
           minute += 60
         }
         if (minute * 60 + second <= 180) {
+          this.pressed = true
+          wx.showLoading({
+            title: '正在注册',
+            mask: true
+          })
           wx.request({
             url: 'https://miniprogram.xluyun.com/user/updateUserInfo',
             data: {
@@ -355,8 +364,7 @@ export default {
             },
             method: 'POST',
             success: function (res) {
-              console.log(context.globalData.userInfo.wechatId + ' ' + context.userinfo.name + ' ' + context.userinfo.phone + ' ' + context.userinfo.location + ' ' + context.userinfo.institution + ' ' + context.userinfo.branch + ' ' + context.userinfo.position)
-              console.log(res)
+              wx.hideLoading()
               if (context.proxy === 'info') {
                 wx.showModal({
                   title: '温馨提示',
@@ -364,6 +372,7 @@ export default {
                   content: '注册成功！',
                   success: function (res) {
                     if (res.confirm) {
+                      context.pressed = false
                       wx.switchTab({
                         url: '../user-center/main',
                         success: function () {
@@ -379,11 +388,65 @@ export default {
                 wx.showModal({
                   title: '温馨提示',
                   showCancel: false,
-                  content: '注册成功！详细报告暂未开放，将转到用户中心页面！',
+                  content: '注册成功！',
                   success: function (res) {
                     if (res.confirm) {
-                      wx.switchTab({
-                        url: '../user-center/main'
+                      wx.showLoading({
+                        title: '正在生成报告',
+                        mask: true
+                      })
+                      var detailedRes = context.globalData.details.getDetailedReportData()
+                      detailedRes.wechatId = context.userInfo.wechatId
+                      detailedRes.timestamp = context.globalData.calculateFactors.timestamp
+                      detailedRes.generate_time = dataFormatter.formatDate(new Date())
+                      detailedRes.avatar_url = context.userInfo.avatarUrl
+                      detailedRes['target-name'] = context.globalData.calculateFactors.name
+                      detailedRes.gender = context.globalData.calculateFactors.gender
+                      detailedRes.age = context.globalData.calculateFactors.age
+                      detailedRes['start-date'] = context.globalData.calculateFactors.workingMonths
+                      detailedRes['mandatory-age-for-retirement'] = context.globalData.calculateFactors.legalRetirementAge
+                      detailedRes['expected-retirement-age'] = context.globalData.calculateFactors.expectedRetirementAge
+                      detailedRes['time-for-participation'] = context.globalData.calculateFactors.insuredMonths
+                      detailedRes['social-security-location'] = context.globalData.calculateFactors.province
+                      detailedRes['company-type'] = context.globalData.calculateFactors.jobType
+                      detailedRes['personal-salary-before-tax'] = context.globalData.calculateFactors.incomeWithTax
+                      detailedRes['local-average-salary-last-year'] = context.globalData.calculateFactors.averageIncomePerMonth
+                      detailedRes['social-security-pension-account-balance'] = context.globalData.calculateFactors.pensionBalance
+                      wx.request({
+                        url: 'https://miniprogram.xluyun.com/report/setReportData',
+                        data: context.globalData.calculateFactors,
+                        method: 'POST',
+                        success: function (res) {
+                          wx.request({
+                            url: 'https://miniprogram.xluyun.com/report/generateReport',
+                            data: detailedRes,
+                            method: 'POST',
+                            success: function (res) {
+                              wx.hideLoading()
+                              wx.showModal({
+                                title: '温馨提示',
+                                showCancel: false,
+                                content: '专业报告生成成功！',
+                                success: function (res) {
+                                  if (res.confirm) {
+                                    context.pressed = false
+                                    // wx.navigateTo({
+                                    //   url: '../spc-report-deluxe/main?wechatId=' + detailedRes.wechatId + '&timestamp=' + detailedRes.timestamp
+                                    // })
+                                    wx.switchTab({
+                                      url: '../user-center/main',
+                                      success: function () {
+                                        wx.navigateTo({
+                                          url: '../report-repo/main'
+                                        })
+                                      }
+                                    })
+                                  }
+                                }
+                              })
+                            }
+                          })
+                        }
                       })
                     }
                   }

@@ -1,6 +1,6 @@
 {
-  "navigationBarTitleText": "SPC Report - Deluxe",
+  "navigationBarTitleText": "专业版报告",
   "usingComponents": {
-    "ec-canvas": "/static/ec-canvas/ec-canvas"
+    "van-notify": "/static/vant/notify/index"
   }
 }

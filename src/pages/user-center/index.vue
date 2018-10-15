@@ -8,7 +8,7 @@
           <view style="height: 100%; width: 5px;"></view>
           <view style="height: 100%; width: 100px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
             <div style="font-size: 10pt;">{{ userInfo.nickName }}</div>
-            <div style="font-size: 8pt;">专业报告数：0</div>
+            <div style="font-size: 8pt;">{{ '专业报告数：' + reportCount }}</div>
           </view>
         </view>
       </view>
@@ -38,6 +38,7 @@
             <van-cell
               clickable
               :border="false"
+              @click="setInfo"
             >
               <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                 <view style="width: 25%;">
@@ -53,13 +54,14 @@
             <van-cell
               clickable
               :border="false"
+              url="../report-repo/main"
             >
               <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                 <view style="width: 25%;">
                   <van-icon name="cart" style="display: flex; flex-direction: row; justify-content: center; align-items: center;" />
                 </view>
                 <view style="width: 75%; display: flex; flex-direction: row; justify-content: flex-start;">
-                  <span>历史订单</span>
+                  <span>历史报告</span>
                 </view>
               </view>
             </van-cell>
@@ -71,6 +73,7 @@
             <van-cell
               clickable
               :border="false"
+              url="../user-feedback/main"
             >
               <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                 <view style="width: 25%;">
@@ -86,6 +89,7 @@
             <van-cell
               clickable
               :border="false"
+              url="../user-guide/main"
             >
               <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                 <view style="width: 25%;">
@@ -105,12 +109,12 @@
         title="资料"
       >
         <van-cell-group :border="false">
-          <van-cell
+          <!-- <van-cell
             title="历史订单"
             is-link
             url="../purchase-history/main"
             icon="completed"
-          />
+          /> -->
           <van-cell
             title="我的信息"
             is-link
@@ -167,13 +171,40 @@ export default {
       optionTabs: [],
       logoSrc: '/static/images/logo.png',
       bannerSrc: '/static/images/banner-untitled.png',
-      userInfo: null
+      userInfo: null,
+      reportCount: null
     }
   },
 
   onLoad () {
     this.optionTabs = viewSetting.USER_CENTER_SETTING.optionTabs
     this.userInfo = this.globalData.userInfo
+    this.reportCount = 0
+    var context = this
+    wx.request({
+      url: 'https://miniprogram.xluyun.com/report/getReportCount',
+      data: {
+        wechatId: this.userInfo.wechatId
+      },
+      method: 'GET',
+      success: function (res) {
+        context.reportCount = res.data.result
+      }
+    })
+  },
+
+  onShow () {
+    var context = this
+    wx.request({
+      url: 'https://miniprogram.xluyun.com/report/getReportCount',
+      data: {
+        wechatId: this.userInfo.wechatId
+      },
+      method: 'GET',
+      success: function (res) {
+        context.reportCount = res.data.result
+      }
+    })
   },
 
   methods: {

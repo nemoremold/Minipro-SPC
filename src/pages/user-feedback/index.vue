@@ -18,7 +18,7 @@
             <textarea
               v-model="feedback"
               style="height: 100%; width: 100%;"
-              maxlength="140"
+              maxlength="128"
               placeholder="请输入您宝贵的意见！"
             />
           </view>
@@ -28,7 +28,7 @@
 
     <van-field
       inputAlign="right"
-      :value="wordCount + '/140'"
+      :value="wordCount + '/128'"
       :border="false"
     >
     </van-field>
@@ -51,13 +51,15 @@ export default {
   data () {
     return {
       feedback: String,
-      wordCount: Number
+      wordCount: Number,
+      pressed: null
     }
   },
 
   onLoad () {
     this.feedback = ''
     this.wordCount = 0
+    this.pressed = false
   },
 
   watch: {
@@ -72,10 +74,46 @@ export default {
         Toast('请您输入反馈内容！')
         return
       }
-      wx.showModal({
-        title: '温馨提示',
-        showCancel: false,
-        content: '功能暂未开放，敬请期待！'
+      if (this.pressed) {
+        return
+      }
+      this.pressed = true
+      var context = this
+      wx.showLoading({
+        title: '正在反馈',
+        mask: true
+      })
+      wx.request({
+        url: 'https://miniprogram.xluyun.com/user/userFeedback',
+        data: {
+          wechatId: this.globalData.userInfo.wechatId,
+          feedback: this.feedback
+        },
+        method: 'POST',
+        success: function (res) {
+          context.pressed = false
+          wx.hideLoading()
+          if (res.statusCode === 200) {
+            wx.showModal({
+              title: '温馨提示',
+              showCancel: false,
+              content: '成功提交，谢谢您的反馈！',
+              success: function (res) {
+                if (res.confirm) {
+                  wx.switchTab({
+                    url: '../user-center/main'
+                  })
+                }
+              }
+            })
+          } else if (res.data.status === 500) {
+            wx.showModal({
+              title: '温馨提示',
+              showCancel: false,
+              content: res.data.error
+            })
+          }
+        }
       })
     }
   }
