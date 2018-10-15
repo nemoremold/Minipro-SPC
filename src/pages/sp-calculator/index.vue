@@ -401,7 +401,7 @@ export default {
       pickerIds: [],
       weChatId: null,
       reportId: null,
-      src: '/static/images/banner-untitled.png'
+      src: '/static/images/banner-homepage.jpg'
     }
   },
 
@@ -419,6 +419,14 @@ export default {
     this.pickerIds[8] = 25
     this.pickerIds[9] = 10
     this.pickerIds[10] = 1
+    // wx.switchTab({
+    //   url: '../user-center/main',
+    //   success: function () {
+    //     wx.navigateTo({
+    //       url: '../report-repo/main'
+    //     })
+    //   }
+    // })
   },
 
   methods: {
@@ -519,6 +527,31 @@ export default {
         p3: parseInt(res.pensionTransition),
         p4: parseInt(res.companyAnnuity)
       }
+      this.globalData.calculateFactors = {
+        wechatId: this.globalData.userInfo.wechatId,
+        timestamp: parseInt(Date.parse(new Date())),
+        gender: this.elements[0].value,
+        province: this.elements[1].value,
+        jobType: this.elements[2].value,
+        workingMonths: parseInt(this.elements[3].value.split('年')[0]),
+        insuredMonths: parseInt(this.elements[4].value.split('年')[0]),
+        continuousWork: parseInt(this.elements[5].value.split('年')[0]),
+        age: this.elements[6].value,
+        legalRetirementAge: this.elements[7].value,
+        expectedRetirementAge: this.elements[8].value,
+        expectedLife: this.elements[9].value,
+        incomeWithTax: this.elements[10].value,
+        incomeWithMonth: this.elements[11].value,
+        averageIncomePerMonth: this.elements[12].value,
+        pensionBalance: this.elements[13].value,
+        companyAnnuity: (this.elements[15].value === '否' ? 0 : 1),
+        pensionReplacementRate: this.elements[16].value,
+        existingPension: this.elements[17].value,
+        pensionBenefitRate: this.elements[18].value,
+        name: this.elements[19].value,
+        supplementaryPension: parseInt(this.elements[20].value == null ? 0 : this.elements[20].value)
+      }
+      this.globalData.details = details
       wx.navigateTo({
         url: '../spc-report-express/main?name=' + result.name + '&gender=' + result.gender + '&age=' + result.age + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
       })
