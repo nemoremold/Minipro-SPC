@@ -92,11 +92,22 @@ export default {
       reportCount: null,
       isPullDownRefreshing: null,
       isLoadMore: null,
-      isMore: null
+      isMore: null,
+      pressed: null
+    }
+  },
+
+  onShareAppMessage () {
+    return {
+      title: '可学养老金计算器',
+      path: 'pages/user-login/main'
     }
   },
 
   onLoad () {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
     this.top = 0
     this.skip = 15
     this.isPullDownRefreshing = false
@@ -106,6 +117,7 @@ export default {
     this.userInfo = this.globalData.userInfo
     this.reportCount = 0
     var context = this
+    this.pressed = false
     wx.request({
       url: 'https://miniprogram.xluyun.com/report/getReportCount',
       data: {
@@ -209,12 +221,20 @@ export default {
 
   methods: {
     longPress (wechatId, timestamp) {
+      if (this.pressed === true) {
+        return
+      }
       var context = this
       wx.showModal({
         title: '温馨提示',
         content: '重新生成该报告。',
         success: function (res) {
           if (res.confirm) {
+            context.pressed = true
+            wx.showLoading({
+              title: '重新生成中',
+              mask: true
+            })
             wx.request({
               url: 'https://miniprogram.xluyun.com/report/getReportData',
               data: {
@@ -257,17 +277,25 @@ export default {
                 detailedRes['personal-salary-before-tax'] = resData.incomeWithTax
                 detailedRes['local-average-salary-last-year'] = resData.averageIncomePerMonth
                 detailedRes['social-security-pension-account-balance'] = resData.pensionBalance
-                console.log(detailedRes)
-                wx.showModal({
-                  title: '温馨提示',
-                  showCancel: false,
-                  content: '成功重新生成报告！',
+                wx.request({
+                  url: 'https://miniprogram.xluyun.com/report/generateReport',
+                  data: detailedRes,
+                  method: 'POST',
                   success: function (res) {
-                    if (res.confirm) {
-                      wx.navigateTo({
-                        url: '../spc-report-deluxe/main?wechatId=' + context.userInfo.wechatId + '&timestamp=' + detailedRes.timestamp
-                      })
-                    }
+                    context.pressed = false
+                    wx.hideLoading()
+                    wx.showModal({
+                      title: '温馨提示',
+                      showCancel: false,
+                      content: '成功重新生成报告！',
+                      success: function (res) {
+                        if (res.confirm) {
+                          wx.navigateTo({
+                            url: '../spc-report-deluxe/main?wechatId=' + context.userInfo.wechatId + '&timestamp=' + detailedRes.timestamp
+                          })
+                        }
+                      }
+                    })
                   }
                 })
               }

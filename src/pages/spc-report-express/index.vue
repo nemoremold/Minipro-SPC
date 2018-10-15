@@ -217,7 +217,17 @@ export default {
     }
   },
 
+  onShareAppMessage () {
+    return {
+      title: '可学养老金计算器',
+      path: 'pages/user-login/main'
+    }
+  },
+
   onLoad (options) {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
     var sysInfo = wx.getSystemInfoSync()
     this.pressed = false
     if (sysInfo != null) {
