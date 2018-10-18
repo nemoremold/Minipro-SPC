@@ -110,7 +110,7 @@ export default {
     })
     this.top = 0
     this.skip = 15
-    this.isPullDownRefreshing = false
+    this.isPullDownRefreshing = true
     this.isLoadMore = false
     this.isMore = false
     this.reports = []
@@ -141,6 +141,7 @@ export default {
           res.data.result[i].time = dataFormatter.formatTime(new Date(parseInt(res.data.result[i].timestamp)))
         }
         context.reports = res.data.result
+        context.isPullDownRefreshing = false
         if (context.reports.length < context.reportCount) {
           context.isMore = true
         }
