@@ -188,7 +188,8 @@ const DEFAULT_CALCULATION_FACTORS = [
     label: '任职单位',
     type: 'picklist',
     value: '城镇企业',
-    picklistId: '2'
+    picklistId: '2',
+    annotations: '请在此处添加文本。'
   }, {
     internalId: '3',
     id: 'start-date',
