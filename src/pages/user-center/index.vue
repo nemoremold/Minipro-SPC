@@ -177,6 +177,9 @@ export default {
   },
 
   onLoad () {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
     this.optionTabs = viewSetting.USER_CENTER_SETTING.optionTabs
     this.userInfo = this.globalData.userInfo
     this.reportCount = 0
@@ -191,6 +194,13 @@ export default {
         context.reportCount = res.data.result
       }
     })
+  },
+
+  onShareAppMessage () {
+    return {
+      title: '可学养老金计算器',
+      path: 'pages/user-login/main'
+    }
   },
 
   onShow () {

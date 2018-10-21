@@ -47,7 +47,27 @@
               center="true"
             />
           </picker>
-          <picker
+          <van-cell
+            center="true"
+            is-link
+          >
+            <view slot="title" style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
+              <view style="display: flex; flex-direction: column; justify-content: flex-start; align-items: center;">
+                <span>任职单位</span>
+              </view>
+              <van-icon name="question" @click="toastAnnotation(2)" style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 5px;"></van-icon>
+            </view>
+            <view>
+              <picker
+                @change="bindPickerChange($event, 2)"
+                :value="pickerIds[elements[2].picklistId]"
+                :range="picklists[elements[2].picklistId].options"
+              >
+                <span style="color: #666;">{{ elements[2].value }}</span>
+              </picker>
+            </view>
+          </van-cell>
+          <!-- <picker
             @change="bindPickerChange($event, 2)"
             :value="pickerIds[elements[2].picklistId]"
             :range="picklists[elements[2].picklistId].options"
@@ -62,7 +82,7 @@
               @change="fieldChange($event, 2)"
               center="true"
             />
-          </picker>
+          </picker> -->
           <picker
             @change="bindPickerDateChange($event, 3)"
             mode="date"
@@ -314,7 +334,7 @@
             v-if="elements[15].value === '是'"
           >
             <view slot="label">{{ elements[20].label }}</view>
-            <view slot="button">元</view>
+            <view slot="button">元/年</view>
           </van-field>
           <van-field
             :inputAlign="'right'"
@@ -391,6 +411,8 @@ import defaultValues from '@/common/staticData/defaultValues'
 import Toast from '../../../static/vant/toast/toast'
 // import getExpressReportData from '@/utils/brief' todo 1
 import Details from '@/utils/details'
+import dataFormatter from '../../utils/dataFormatter'
+// import dataFormatter from '../../utils/dataFormatter'
 
 export default {
   data () {
@@ -405,7 +427,17 @@ export default {
     }
   },
 
+  onShareAppMessage () {
+    return {
+      title: '可学养老金计算器',
+      path: 'pages/user-login/main'
+    }
+  },
+
   onLoad () {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
     this.elements = defaultValues.DEFAULT_CALCULATION_FACTORS
     this.picklists = defaultValues.PICKLIST_TYPES
     this.pickerIds[0] = 0
@@ -626,15 +658,26 @@ export default {
       let newValues = newValue.split('-')
       this.elements[elementId].value = newValues[0] + '年' + newValues[1] + '月'
       if (this.elements[elementId].id === 'start-date') {
-        let years = 2018 - parseInt(newValues[0])
+        let date = dataFormatter.formatDate(new Date()).split('/')
+        let yearNum = parseInt(date[0])
+        let monthNum = parseInt(date[1])
+        let years = yearNum - parseInt(newValues[0])
+        let months = monthNum - parseInt(newValues[1])
+        let gap = yearNum - 1992
+        if (months < 0) {
+          years = years - 1
+          months = months + 12
+        }
+        console.log(date + ' ' + yearNum + ' ' + monthNum + ' ' + years + ' ' + months + ' ' + gap)
         if (years < 0) {
           years = 0
-        } else if (years > 26) {
-          this.elements[elementId + 2].value = (years - 26) + '年0个月'
-          this.pickerIds[this.elements[elementId + 2].picklistId] = [(years - 26), 0]
+          months = 0
+        } else if (parseInt(newValues[0]) <= 1992) {
+          this.elements[elementId + 2].value = (1992 - parseInt(newValues[0])) + '年' + (12 - parseInt(newValues[1])) + '个月'
+          this.pickerIds[this.elements[elementId + 2].picklistId] = [(1992 - parseInt(newValues[0])), (12 - parseInt(newValues[1]))]
         }
-        this.elements[elementId + 1].value = years + '年0个月'
-        this.pickerIds[this.elements[elementId + 1].picklistId] = [years, 0]
+        this.elements[elementId + 1].value = years + '年' + months + '个月'
+        this.pickerIds[this.elements[elementId + 1].picklistId] = [years, months]
       }
       this.pickerIds[this.elements[elementId].picklistId] = newValue
     },
