@@ -125,7 +125,8 @@
           >
             <view slot="title" style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
               <view style="display: flex; flex-direction: column; justify-content: flex-start; align-items: center;">
-                <span style="color: #0066FF;">1992年12月31日</span>
+                <span v-if="elements[2].value == '城镇企业'" style="color: #0066FF;">1992年12月31日</span>
+                <span v-if="elements[2].value == '机关单位' || elements[2].value == '事业单位'" style="color: #0066FF">2014年10月1日</span>
                 <span>之前的连续工龄</span>
               </view>
               <van-icon name="question" @click="toastAnnotation(5)" style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 5px;"></van-icon>
@@ -410,7 +411,7 @@
 import defaultValues from '@/common/staticData/defaultValues'
 import Toast from '../../../static/vant/toast/toast'
 // import getExpressReportData from '@/utils/brief' todo 1
-import Details from '@/utils/details'
+// import Details from '@/utils/details'
 import dataFormatter from '../../utils/dataFormatter'
 // import dataFormatter from '../../utils/dataFormatter'
 
@@ -423,7 +424,9 @@ export default {
       pickerIds: [],
       weChatId: null,
       reportId: null,
-      src: '/static/images/banner-homepage.jpg'
+      src: '/static/images/banner-homepage.jpg',
+      isLoadedData: false,
+      pressed: null
     }
   },
 
@@ -435,6 +438,8 @@ export default {
   },
 
   onLoad () {
+    this.isLoadedData = false
+    this.pressed = false
     wx.showShareMenu({
       withShareTicket: true
     })
@@ -443,7 +448,6 @@ export default {
     this.pickerIds[0] = 0
     this.pickerIds[1] = 0
     this.pickerIds[2] = 0
-    this.pickerIds[3] = '2018-10'
     this.pickerIds[4] = [0, 0]
     this.pickerIds[5] = [0, 0]
     this.pickerIds[6] = 24
@@ -451,18 +455,38 @@ export default {
     this.pickerIds[8] = 25
     this.pickerIds[9] = 10
     this.pickerIds[10] = 1
-    // wx.switchTab({
-    //   url: '../user-center/main',
-    //   success: function () {
-    //     wx.navigateTo({
-    //       url: '../report-repo/main'
-    //     })
-    //   }
-    // })
+
+    let date = dataFormatter.formatDate(new Date()).split('/')
+    this.elements[3].value = date[0] + '年' + date[1] + '月'
+    this.pickerIds[3] = date[0] + '-' + date[1]
+
+    var context = this
+    wx.showLoading({
+      title: '正在加载数据',
+      mask: true
+    })
+    wx.request({
+      url: 'https://miniprogram.xluyun.com/staticData/getLocalSalaries',
+      method: 'GET',
+      success: function (res) {
+        var averageSalary = JSON.parse(res.data.result)
+        if (averageSalary != null) {
+          defaultValues.setLocationWages(averageSalary)
+          context.elements[1].value = defaultValues.getLocation(0)
+          context.elements[12].value = defaultValues.getLocationWage(context.elements[1].value)
+          context.picklists[1].options = defaultValues.getLocations()
+          wx.hideLoading()
+          context.isLoadedData = true
+        }
+      }
+    })
   },
 
   methods: {
     calculatePension () {
+      if (this.pressed) {
+        return
+      }
       let checker = this.elements
       if (checker[0].value == null || checker[0].value === '') {
         Toast('请选择性别！')
@@ -525,6 +549,11 @@ export default {
         Toast('请输入企业年金！')
         return
       }
+      this.pressed = true
+      wx.showLoading({
+        title: '正在计算',
+        mask: true
+      })
 
       var data = {
         'personal-salary-before-tax': parseInt(this.elements[10].value),
@@ -539,117 +568,103 @@ export default {
         'monthly-taxable-wage': parseInt(this.elements[11].value),
         'social-security-pension-account-balance': parseInt(this.elements[13].value),
         'target-pension-replacement-rate': parseInt(this.elements[16].value) / 100,
-        'supplementary-pension': parseInt(this.elements[20].value == null ? 0 : this.elements[20].value)
+        'supplementary-pension': parseInt(this.elements[20].value == null ? 0 : this.elements[20].value),
+        'company-type': this.elements[2].value
       }
+      this.globalData.criticalData = data
 
       let context = this
-      // todo 2 begin
-      var details = new Details(data)
-
-      var res = details.getExpressReportData()
-
-      var result = {
-        name: context.elements[19].value,
-        gender: context.elements[0].value,
-        age: context.elements[6].value,
-        gap: parseInt(res.pensionGap),
-        p0: parseInt(res.pensionInFirstRetirementMonth),
-        p1: parseInt(res.pensionBasicSocialInsurance),
-        p2: parseInt(res.pensionPersonalAccount),
-        p3: parseInt(res.pensionTransition),
-        p4: parseInt(res.companyAnnuity)
-      }
-      this.globalData.calculateFactors = {
-        wechatId: this.globalData.userInfo.wechatId,
-        timestamp: parseInt(Date.parse(new Date())),
-        gender: this.elements[0].value,
-        province: this.elements[1].value,
-        jobType: this.elements[2].value,
-        workingMonths: parseInt(this.elements[3].value.split('年')[0]),
-        insuredMonths: parseInt(this.elements[4].value.split('年')[0]),
-        continuousWork: parseInt(this.elements[5].value.split('年')[0]),
-        age: this.elements[6].value,
-        legalRetirementAge: this.elements[7].value,
-        expectedRetirementAge: this.elements[8].value,
-        expectedLife: this.elements[9].value,
-        incomeWithTax: this.elements[10].value,
-        incomeWithMonth: this.elements[11].value,
-        averageIncomePerMonth: this.elements[12].value,
-        pensionBalance: this.elements[13].value,
-        companyAnnuity: (this.elements[15].value === '否' ? 0 : 1),
-        pensionReplacementRate: this.elements[16].value,
-        existingPension: this.elements[17].value,
-        pensionBenefitRate: this.elements[18].value,
-        name: this.elements[19].value,
-        supplementaryPension: parseInt(this.elements[20].value == null ? 0 : this.elements[20].value)
-      }
-      this.globalData.details = details
-      wx.navigateTo({
-        url: '../spc-report-express/main?name=' + result.name + '&gender=' + result.gender + '&age=' + result.age + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
+      wx.request({
+        url: 'https://miniprogram.xluyun.com/getExpressReportData',
+        data: data,
+        method: 'POST',
+        success: function (resJsonString) {
+          var res = JSON.parse(resJsonString.data.result)
+          var result = {
+            name: context.elements[19].value,
+            gender: context.elements[0].value,
+            age: context.elements[6].value,
+            gap: parseInt(res.pensionGap),
+            p0: parseInt(res.pensionInFirstRetirementMonth),
+            p1: parseInt(res.pensionBasicSocialInsurance),
+            p2: parseInt(res.pensionPersonalAccount),
+            p3: parseInt(res.pensionTransition),
+            p4: parseInt(res.companyAnnuity)
+          }
+          context.globalData.calculateFactors = {
+            wechatId: context.globalData.userInfo.wechatId,
+            timestamp: parseInt(Date.parse(new Date())),
+            gender: context.elements[0].value,
+            province: context.elements[1].value,
+            jobType: context.elements[2].value,
+            workingMonths: parseInt(context.elements[3].value.split('年')[0]),
+            insuredMonths: parseInt(context.elements[4].value.split('年')[0]),
+            continuousWork: parseInt(context.elements[5].value.split('年')[0]),
+            age: context.elements[6].value,
+            legalRetirementAge: context.elements[7].value,
+            expectedRetirementAge: context.elements[8].value,
+            expectedLife: context.elements[9].value,
+            incomeWithTax: context.elements[10].value,
+            incomeWithMonth: context.elements[11].value,
+            averageIncomePerMonth: context.elements[12].value,
+            pensionBalance: context.elements[13].value,
+            companyAnnuity: (context.elements[15].value === '否' ? 0 : 1),
+            pensionReplacementRate: context.elements[16].value,
+            existingPension: context.elements[17].value,
+            pensionBenefitRate: context.elements[18].value,
+            name: context.elements[19].value,
+            supplementaryPension: parseInt(context.elements[20].value == null ? 0 : context.elements[20].value)
+          }
+          context.pressed = false
+          wx.hideLoading()
+          wx.navigateTo({
+            url: '../spc-report-express/main?name=' + result.name + '&gender=' + result.gender + '&age=' + result.age + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
+          })
+        },
+        fail: function (res) {
+          context.pressed = false
+          wx.hideLoading()
+          wx.showModal({
+            title: '温馨提示',
+            showCancel: false,
+            content: '计算失败！'
+          })
+        }
       })
-
-      // todo 2 end
-
-      // todo 3 begin
-      // wx.request({
-      //   url: 'https://miniprogram.xluyun.com/getExpressReportData', // 仅为示例，并非真实的接口地址
-      //   header: {
-      //     'content-type': 'application/json' // 默认值
-      //   },
-      //   success: function (res) {
-      //     console.log(res)
-      //     var result = null
-      //     if (res.header.statusCode === 200) {
-      //       result = {
-      //         name: context.elements[19].value,
-      //         gap: parseInt(res.data.pensionGap),
-      //         p0: parseInt(res.data.pensionInFirstRetirementMonth),
-      //         p1: parseInt(res.data.pensionBasicSocialInsurance),
-      //         p2: parseInt(res.data.pensionPersonalAccount),
-      //         p3: parseInt(res.data.pensionTransition),
-      //         p4: parseInt(res.data.companyAnnuity)
-      //       }
-      //     } else {
-      //       result = getExpressReportData(
-      //         context.elements[5].value,
-      //         context.elements[3].value,
-      //         context.elements[12].value,
-      //         context.elements[10].value,
-      //         context.elements[8].value,
-      //         context.elements[6].value,
-      //         context.elements[4].value,
-      //         context.elements[11].value,
-      //         context.elements[13].value,
-      //         context.elements[9].value,
-      //         context.elements[19].value
-      //       )
-      //     }
-      //     wx.navigateTo({
-      //       url: '../spc-report-express/main?name=' + result.name + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
-      //     })
-      //   },
-      //   fail: function (res) {
-      //     console.log(res)
-      //     wx.showModal({
-      //       title: '服务错误',
-      //       showCancel: false,
-      //       content: '请求失败，请稍后再试！'
-      //     })
-      //   },
-      //   method: 'POST',
-      //   data: data,
-      //   dataType: 'json'
-      // })
-
-      // todo 3 end
     },
 
     bindPickerChange (e, elementId) {
       let pickedId = e.mp.detail.value
       this.pickerIds[this.elements[elementId].picklistId] = pickedId
       this.elements[elementId].value = this.picklists[this.elements[elementId].picklistId].options[pickedId]
+      var newValues = this.pickerIds[this.elements[3].picklistId].split('-')
       if (this.elements[elementId].id === 'social-security-location') {
         this.elements[12].value = defaultValues.getLocationWage(this.elements[elementId].value)
+      } else if (this.elements[elementId].id === 'company-type') {
+        if (this.elements[2].value === '城镇企业' && parseInt(newValues[0]) <= 1992) {
+          this.elements[5].value = (1992 - parseInt(newValues[0])) + '年' + (12 - parseInt(newValues[1])) + '个月'
+          this.pickerIds[this.elements[5].picklistId] = [(1992 - parseInt(newValues[0])), (12 - parseInt(newValues[1]))]
+        } else if ((this.elements[2].value === '机关单位' || this.elements[2].value === '事业单位') && parseInt(newValues[0]) <= 2014) {
+          var calcYear = 2014 - parseInt(newValues[0])
+          var calcMonth = 9 - parseInt(newValues[1])
+          if (calcMonth < 0) {
+            calcMonth = calcMonth + 12
+            calcYear = calcYear - 1
+          }
+          if (calcYear < 0) {
+            calcYear = 0
+            calcMonth = 0
+          }
+          this.elements[5].value = calcYear + '年' + calcMonth + '个月'
+          this.pickerIds[this.elements[5].picklistId] = [calcYear, calcMonth]
+        } else {
+          this.elements[5].value = 0 + '年' + 0 + '个月'
+          this.pickerIds[this.elements[5].picklistId] = [0, 0]
+        }
+      } else if (this.elements[elementId].id === 'company-will-provide-supplementary-pension') {
+        if (this.elements[elementId].value === '否') {
+          this.elements[20].value = null
+        }
       }
     },
 
@@ -663,18 +678,29 @@ export default {
         let monthNum = parseInt(date[1])
         let years = yearNum - parseInt(newValues[0])
         let months = monthNum - parseInt(newValues[1])
-        let gap = yearNum - 1992
         if (months < 0) {
           years = years - 1
           months = months + 12
         }
-        console.log(date + ' ' + yearNum + ' ' + monthNum + ' ' + years + ' ' + months + ' ' + gap)
         if (years < 0) {
           years = 0
           months = 0
-        } else if (parseInt(newValues[0]) <= 1992) {
+        } else if (this.elements[2].value === '城镇企业' && parseInt(newValues[0]) <= 1992) {
           this.elements[elementId + 2].value = (1992 - parseInt(newValues[0])) + '年' + (12 - parseInt(newValues[1])) + '个月'
           this.pickerIds[this.elements[elementId + 2].picklistId] = [(1992 - parseInt(newValues[0])), (12 - parseInt(newValues[1]))]
+        } else if ((this.elements[2].value === '机关单位' || this.elements[2].value === '事业单位') && parseInt(newValues[0]) <= 2014) {
+          var calcYear = 2014 - parseInt(newValues[0])
+          var calcMonth = 9 - parseInt(newValues[1])
+          if (calcMonth < 0) {
+            calcMonth = calcMonth + 12
+            calcYear = calcYear - 1
+          }
+          if (calcYear < 0) {
+            calcYear = 0
+            calcMonth = 0
+          }
+          this.elements[elementId + 2].value = calcYear + '年' + calcMonth + '个月'
+          this.pickerIds[this.elements[elementId + 2].picklistId] = [calcYear, calcMonth]
         }
         this.elements[elementId + 1].value = years + '年' + months + '个月'
         this.pickerIds[this.elements[elementId + 1].picklistId] = [years, months]
