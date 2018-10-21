@@ -1,5 +1,5 @@
 <template>
-  <view style="background: #F0F0F0;">
+  <view v-if="isLoadedData" style="background: #F0F0F0;">
     <view style="height: 150px; width: 100%; margin: 0; background: #2ebeb8;">
       <image v-if="src" :src="src" mode="aspectFill" style="height: 150px; width: 100%;" />
     </view>
@@ -423,7 +423,8 @@ export default {
       pickerIds: [],
       weChatId: null,
       reportId: null,
-      src: '/static/images/banner-homepage.jpg'
+      src: '/static/images/banner-homepage.jpg',
+      isLoadedData: false
     }
   },
 
@@ -435,6 +436,7 @@ export default {
   },
 
   onLoad () {
+    this.isLoadedData = false
     wx.showShareMenu({
       withShareTicket: true
     })
@@ -451,14 +453,27 @@ export default {
     this.pickerIds[8] = 25
     this.pickerIds[9] = 10
     this.pickerIds[10] = 1
-    // wx.switchTab({
-    //   url: '../user-center/main',
-    //   success: function () {
-    //     wx.navigateTo({
-    //       url: '../report-repo/main'
-    //     })
-    //   }
-    // })
+
+    var context = this
+    wx.showLoading({
+      title: '正在加载数据',
+      mask: true
+    })
+    wx.request({
+      url: 'https://miniprogram.xluyun.com/staticData/getLocalSalaries',
+      method: 'GET',
+      success: function (res) {
+        var averageSalary = JSON.parse(res.data.result)
+        if (averageSalary != null) {
+          defaultValues.setLocationWages(averageSalary)
+          context.elements[1].value = defaultValues.getLocation(0)
+          context.elements[12].value = defaultValues.getLocationWage(context.elements[1].value)
+          context.picklists[1].options = defaultValues.getLocations()
+          wx.hideLoading()
+          context.isLoadedData = true
+        }
+      }
+    })
   },
 
   methods: {
@@ -663,12 +678,10 @@ export default {
         let monthNum = parseInt(date[1])
         let years = yearNum - parseInt(newValues[0])
         let months = monthNum - parseInt(newValues[1])
-        let gap = yearNum - 1992
         if (months < 0) {
           years = years - 1
           months = months + 12
         }
-        console.log(date + ' ' + yearNum + ' ' + monthNum + ' ' + years + ' ' + months + ' ' + gap)
         if (years < 0) {
           years = 0
           months = 0
