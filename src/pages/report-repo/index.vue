@@ -179,7 +179,7 @@ export default {
             wx.stopPullDownRefresh()
             context.isPullDownRefreshing = false
             for (var i = 0; i < res.data.result.length; ++i) {
-              res.data.result[i].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp / 1000))
+              res.data.result[i].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp))
             }
             context.reports = res.data.result
             if (context.reports.length < context.reportCount) {
@@ -210,7 +210,7 @@ export default {
           const index = context.reports.length
           for (var i = 0; i < res.data.result.length; ++i) {
             context.reports[index + i + 1] = res.data.result[i]
-            context.reports[index + i + 1].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp / 1000))
+            context.reports[index + i + 1].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp))
           }
           if (context.reports.length < context.reportCount) {
             context.isMore = true
