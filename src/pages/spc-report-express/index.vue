@@ -345,11 +345,9 @@ export default {
                     },
                     method: 'GET',
                     success: function (res) {
-                      console.log(res)
                       var payData = 'appId=' + res.data.appId + '&nonceStr=' + res.data.nonce_str + '&package=prepay_id=' + res.data.prepayId + '&signType=MD5&timeStamp=' + detailedRes.timestamp
                       var tempData = payData + '&key=' + res.data.appKey
                       var paySign = MD5Util.MD5(tempData).toUpperCase()
-                      console.log(paySign)
                       wx.hideLoading()
                       if (res.data.status === 'SUCCESS') {
                         wx.requestPayment({
@@ -359,7 +357,6 @@ export default {
                           signType: 'MD5',
                           paySign: paySign,
                           success: function (res) {
-                            console.log(res)
                             wx.showLoading({
                               title: '正在生成报告',
                               mask: true
