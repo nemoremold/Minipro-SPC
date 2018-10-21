@@ -411,7 +411,7 @@
 import defaultValues from '@/common/staticData/defaultValues'
 import Toast from '../../../static/vant/toast/toast'
 // import getExpressReportData from '@/utils/brief' todo 1
-import Details from '@/utils/details'
+// import Details from '@/utils/details'
 import dataFormatter from '../../utils/dataFormatter'
 // import dataFormatter from '../../utils/dataFormatter'
 
@@ -425,7 +425,8 @@ export default {
       weChatId: null,
       reportId: null,
       src: '/static/images/banner-homepage.jpg',
-      isLoadedData: false
+      isLoadedData: false,
+      pressed: null
     }
   },
 
@@ -438,6 +439,7 @@ export default {
 
   onLoad () {
     this.isLoadedData = false
+    this.pressed = false
     wx.showShareMenu({
       withShareTicket: true
     })
@@ -482,6 +484,9 @@ export default {
 
   methods: {
     calculatePension () {
+      if (this.pressed) {
+        return
+      }
       let checker = this.elements
       if (checker[0].value == null || checker[0].value === '') {
         Toast('请选择性别！')
@@ -544,6 +549,11 @@ export default {
         Toast('请输入企业年金！')
         return
       }
+      this.pressed = true
+      wx.showLoading({
+        title: '正在计算',
+        mask: true
+      })
 
       var data = {
         'personal-salary-before-tax': parseInt(this.elements[10].value),
@@ -558,109 +568,69 @@ export default {
         'monthly-taxable-wage': parseInt(this.elements[11].value),
         'social-security-pension-account-balance': parseInt(this.elements[13].value),
         'target-pension-replacement-rate': parseInt(this.elements[16].value) / 100,
-        'supplementary-pension': parseInt(this.elements[20].value == null ? 0 : this.elements[20].value)
+        'supplementary-pension': parseInt(this.elements[20].value == null ? 0 : this.elements[20].value),
+        'company-type': this.elements[2].value
       }
+      this.globalData.criticalData = data
 
       let context = this
-      // todo 2 begin
-      var details = new Details(data)
-
-      var res = details.getExpressReportData()
-
-      var result = {
-        name: context.elements[19].value,
-        gender: context.elements[0].value,
-        age: context.elements[6].value,
-        gap: parseInt(res.pensionGap),
-        p0: parseInt(res.pensionInFirstRetirementMonth),
-        p1: parseInt(res.pensionBasicSocialInsurance),
-        p2: parseInt(res.pensionPersonalAccount),
-        p3: parseInt(res.pensionTransition),
-        p4: parseInt(res.companyAnnuity)
-      }
-      this.globalData.calculateFactors = {
-        wechatId: this.globalData.userInfo.wechatId,
-        timestamp: parseInt(Date.parse(new Date())),
-        gender: this.elements[0].value,
-        province: this.elements[1].value,
-        jobType: this.elements[2].value,
-        workingMonths: parseInt(this.elements[3].value.split('年')[0]),
-        insuredMonths: parseInt(this.elements[4].value.split('年')[0]),
-        continuousWork: parseInt(this.elements[5].value.split('年')[0]),
-        age: this.elements[6].value,
-        legalRetirementAge: this.elements[7].value,
-        expectedRetirementAge: this.elements[8].value,
-        expectedLife: this.elements[9].value,
-        incomeWithTax: this.elements[10].value,
-        incomeWithMonth: this.elements[11].value,
-        averageIncomePerMonth: this.elements[12].value,
-        pensionBalance: this.elements[13].value,
-        companyAnnuity: (this.elements[15].value === '否' ? 0 : 1),
-        pensionReplacementRate: this.elements[16].value,
-        existingPension: this.elements[17].value,
-        pensionBenefitRate: this.elements[18].value,
-        name: this.elements[19].value,
-        supplementaryPension: parseInt(this.elements[20].value == null ? 0 : this.elements[20].value)
-      }
-      this.globalData.details = details
-      wx.navigateTo({
-        url: '../spc-report-express/main?name=' + result.name + '&gender=' + result.gender + '&age=' + result.age + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
+      wx.request({
+        url: 'https://miniprogram.xluyun.com/getExpressReportData',
+        data: data,
+        method: 'POST',
+        success: function (resJsonString) {
+          var res = JSON.parse(resJsonString.data.result)
+          var result = {
+            name: context.elements[19].value,
+            gender: context.elements[0].value,
+            age: context.elements[6].value,
+            gap: parseInt(res.pensionGap),
+            p0: parseInt(res.pensionInFirstRetirementMonth),
+            p1: parseInt(res.pensionBasicSocialInsurance),
+            p2: parseInt(res.pensionPersonalAccount),
+            p3: parseInt(res.pensionTransition),
+            p4: parseInt(res.companyAnnuity)
+          }
+          context.globalData.calculateFactors = {
+            wechatId: context.globalData.userInfo.wechatId,
+            timestamp: parseInt(Date.parse(new Date())),
+            gender: context.elements[0].value,
+            province: context.elements[1].value,
+            jobType: context.elements[2].value,
+            workingMonths: parseInt(context.elements[3].value.split('年')[0]),
+            insuredMonths: parseInt(context.elements[4].value.split('年')[0]),
+            continuousWork: parseInt(context.elements[5].value.split('年')[0]),
+            age: context.elements[6].value,
+            legalRetirementAge: context.elements[7].value,
+            expectedRetirementAge: context.elements[8].value,
+            expectedLife: context.elements[9].value,
+            incomeWithTax: context.elements[10].value,
+            incomeWithMonth: context.elements[11].value,
+            averageIncomePerMonth: context.elements[12].value,
+            pensionBalance: context.elements[13].value,
+            companyAnnuity: (context.elements[15].value === '否' ? 0 : 1),
+            pensionReplacementRate: context.elements[16].value,
+            existingPension: context.elements[17].value,
+            pensionBenefitRate: context.elements[18].value,
+            name: context.elements[19].value,
+            supplementaryPension: parseInt(context.elements[20].value == null ? 0 : context.elements[20].value)
+          }
+          context.pressed = false
+          wx.hideLoading()
+          wx.navigateTo({
+            url: '../spc-report-express/main?name=' + result.name + '&gender=' + result.gender + '&age=' + result.age + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
+          })
+        },
+        fail: function (res) {
+          context.pressed = false
+          wx.hideLoading()
+          wx.showModal({
+            title: '温馨提示',
+            showCancel: false,
+            content: '计算失败！'
+          })
+        }
       })
-
-      // todo 2 end
-
-      // todo 3 begin
-      // wx.request({
-      //   url: 'https://miniprogram.xluyun.com/getExpressReportData', // 仅为示例，并非真实的接口地址
-      //   header: {
-      //     'content-type': 'application/json' // 默认值
-      //   },
-      //   success: function (res) {
-      //     console.log(res)
-      //     var result = null
-      //     if (res.header.statusCode === 200) {
-      //       result = {
-      //         name: context.elements[19].value,
-      //         gap: parseInt(res.data.pensionGap),
-      //         p0: parseInt(res.data.pensionInFirstRetirementMonth),
-      //         p1: parseInt(res.data.pensionBasicSocialInsurance),
-      //         p2: parseInt(res.data.pensionPersonalAccount),
-      //         p3: parseInt(res.data.pensionTransition),
-      //         p4: parseInt(res.data.companyAnnuity)
-      //       }
-      //     } else {
-      //       result = getExpressReportData(
-      //         context.elements[5].value,
-      //         context.elements[3].value,
-      //         context.elements[12].value,
-      //         context.elements[10].value,
-      //         context.elements[8].value,
-      //         context.elements[6].value,
-      //         context.elements[4].value,
-      //         context.elements[11].value,
-      //         context.elements[13].value,
-      //         context.elements[9].value,
-      //         context.elements[19].value
-      //       )
-      //     }
-      //     wx.navigateTo({
-      //       url: '../spc-report-express/main?name=' + result.name + '&gap=' + result.gap + '&p0=' + result.p0 + '&p1=' + result.p1 + '&p2=' + result.p2 + '&p3=' + result.p3 + '&p4=' + result.p4
-      //     })
-      //   },
-      //   fail: function (res) {
-      //     console.log(res)
-      //     wx.showModal({
-      //       title: '服务错误',
-      //       showCancel: false,
-      //       content: '请求失败，请稍后再试！'
-      //     })
-      //   },
-      //   method: 'POST',
-      //   data: data,
-      //   dataType: 'json'
-      // })
-
-      // todo 3 end
     },
 
     bindPickerChange (e, elementId) {

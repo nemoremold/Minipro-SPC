@@ -316,79 +316,108 @@ export default {
                 title: '正在准备生成',
                 mask: true
               })
-              var detailedRes = context.globalData.details.getDetailedReportData()
-              detailedRes.wechatId = context.userInfo.wechatId
-              detailedRes.timestamp = context.globalData.calculateFactors.timestamp
-              detailedRes.generate_time = dataFormatter.formatDate(new Date())
-              detailedRes.avatar_url = context.userInfo.avatarUrl
-              detailedRes['target-name'] = context.globalData.calculateFactors.name
-              detailedRes.gender = context.globalData.calculateFactors.gender
-              detailedRes.age = context.globalData.calculateFactors.age
-              detailedRes['start-date'] = context.globalData.calculateFactors.workingMonths
-              detailedRes['mandatory-age-for-retirement'] = context.globalData.calculateFactors.legalRetirementAge
-              detailedRes['expected-retirement-age'] = context.globalData.calculateFactors.expectedRetirementAge
-              detailedRes['time-for-participation'] = context.globalData.calculateFactors.insuredMonths
-              detailedRes['social-security-location'] = context.globalData.calculateFactors.province
-              detailedRes['company-type'] = context.globalData.calculateFactors.jobType
-              detailedRes['personal-salary-before-tax'] = context.globalData.calculateFactors.incomeWithTax
-              detailedRes['local-average-salary-last-year'] = context.globalData.calculateFactors.averageIncomePerMonth
-              detailedRes['social-security-pension-account-balance'] = context.globalData.calculateFactors.pensionBalance
               wx.request({
-                url: 'https://miniprogram.xluyun.com/report/setReportData',
-                data: context.globalData.calculateFactors,
+                url: 'https://miniprogram.xluyun.com/getDetailedReportData',
+                data: context.globalData.criticalData,
                 method: 'POST',
-                success: function (res) {
+                success: function (resJsonString) {
+                  var detailedRes = JSON.parse(resJsonString.data.result)
+                  detailedRes.wechatId = context.userInfo.wechatId
+                  detailedRes.timestamp = context.globalData.calculateFactors.timestamp
+                  detailedRes.generate_time = dataFormatter.formatDate(new Date())
+                  detailedRes.avatar_url = context.userInfo.avatarUrl
+                  detailedRes['target-name'] = context.globalData.calculateFactors.name
+                  detailedRes.gender = context.globalData.calculateFactors.gender
+                  detailedRes.age = context.globalData.calculateFactors.age
+                  detailedRes['start-date'] = context.globalData.calculateFactors.workingMonths
+                  detailedRes['mandatory-age-for-retirement'] = context.globalData.calculateFactors.legalRetirementAge
+                  detailedRes['expected-retirement-age'] = context.globalData.calculateFactors.expectedRetirementAge
+                  detailedRes['time-for-participation'] = context.globalData.calculateFactors.insuredMonths
+                  detailedRes['social-security-location'] = context.globalData.calculateFactors.province
+                  detailedRes['company-type'] = context.globalData.calculateFactors.jobType
+                  detailedRes['personal-salary-before-tax'] = context.globalData.calculateFactors.incomeWithTax
+                  detailedRes['local-average-salary-last-year'] = context.globalData.calculateFactors.averageIncomePerMonth
+                  detailedRes['social-security-pension-account-balance'] = context.globalData.calculateFactors.pensionBalance
                   wx.request({
-                    url: 'https://miniprogram.xluyun.com/pay/prepay',
-                    data: {
-                      wechatId: context.userInfo.wechatId
-                    },
-                    method: 'GET',
+                    url: 'https://miniprogram.xluyun.com/report/setReportData',
+                    data: context.globalData.calculateFactors,
+                    method: 'POST',
                     success: function (res) {
-                      var payData = 'appId=' + res.data.appId + '&nonceStr=' + res.data.nonce_str + '&package=prepay_id=' + res.data.prepayId + '&signType=MD5&timeStamp=' + detailedRes.timestamp
-                      var tempData = payData + '&key=' + res.data.appKey
-                      var paySign = MD5Util.MD5(tempData).toUpperCase()
-                      wx.hideLoading()
-                      if (res.data.status === 'SUCCESS') {
-                        wx.requestPayment({
-                          timeStamp: detailedRes.timestamp.toString(),
-                          nonceStr: res.data.nonce_str,
-                          package: 'prepay_id=' + res.data.prepayId,
-                          signType: 'MD5',
-                          paySign: paySign,
-                          success: function (res) {
-                            wx.showLoading({
-                              title: '正在生成报告',
-                              mask: true
-                            })
-                            wx.request({
-                              url: 'https://miniprogram.xluyun.com/report/generateReport',
-                              data: detailedRes,
-                              method: 'POST',
+                      wx.request({
+                        url: 'https://miniprogram.xluyun.com/pay/prepay',
+                        data: {
+                          wechatId: context.userInfo.wechatId
+                        },
+                        method: 'GET',
+                        success: function (res) {
+                          var payData = 'appId=' + res.data.appId + '&nonceStr=' + res.data.nonce_str + '&package=prepay_id=' + res.data.prepayId + '&signType=MD5&timeStamp=' + detailedRes.timestamp
+                          var tempData = payData + '&key=' + res.data.appKey
+                          var paySign = MD5Util.MD5(tempData).toUpperCase()
+                          wx.hideLoading()
+                          if (res.data.status === 'SUCCESS') {
+                            wx.requestPayment({
+                              timeStamp: detailedRes.timestamp.toString(),
+                              nonceStr: res.data.nonce_str,
+                              package: 'prepay_id=' + res.data.prepayId,
+                              signType: 'MD5',
+                              paySign: paySign,
                               success: function (res) {
-                                context.pressed = false
-                                wx.hideLoading()
-                                wx.showModal({
-                                  title: '温馨提示',
-                                  showCancel: false,
-                                  content: '专业报告生成成功！',
+                                wx.showLoading({
+                                  title: '正在生成报告',
+                                  mask: true
+                                })
+                                wx.request({
+                                  url: 'https://miniprogram.xluyun.com/report/generateReport',
+                                  data: detailedRes,
+                                  method: 'POST',
                                   success: function (res) {
-                                    if (res.confirm) {
-                                      wx.switchTab({
-                                        url: '../user-center/main',
-                                        success: function () {
-                                          wx.navigateTo({
-                                            url: '../report-repo/main'
+                                    context.pressed = false
+                                    wx.hideLoading()
+                                    wx.showModal({
+                                      title: '温馨提示',
+                                      showCancel: false,
+                                      content: '专业报告生成成功！',
+                                      success: function (res) {
+                                        if (res.confirm) {
+                                          wx.switchTab({
+                                            url: '../user-center/main',
+                                            success: function () {
+                                              wx.navigateTo({
+                                                url: '../report-repo/main'
+                                              })
+                                            }
                                           })
                                         }
-                                      })
-                                    }
+                                      }
+                                    })
+                                  }
+                                })
+                              },
+                              fail: function (res) {
+                                wx.showLoading({
+                                  title: '正在处理',
+                                  mask: true
+                                })
+                                wx.request({
+                                  url: 'https://miniprogram.xluyun.com/report/deleteReportData',
+                                  data: {
+                                    wechatId: detailedRes.wechatId,
+                                    timestamp: detailedRes.timestamp
+                                  },
+                                  method: 'GET',
+                                  complete: function (res) {
+                                    context.pressed = false
+                                    wx.hideLoading()
+                                    wx.showModal({
+                                      title: '温馨提示',
+                                      showCancel: false,
+                                      content: '支付失败！'
+                                    })
                                   }
                                 })
                               }
                             })
-                          },
-                          fail: function (res) {
+                          } else {
                             wx.showLoading({
                               title: '正在处理',
                               mask: true
@@ -411,54 +440,41 @@ export default {
                               }
                             })
                           }
-                        })
-                      } else {
-                        wx.showLoading({
-                          title: '正在处理',
-                          mask: true
-                        })
-                        wx.request({
-                          url: 'https://miniprogram.xluyun.com/report/deleteReportData',
-                          data: {
-                            wechatId: detailedRes.wechatId,
-                            timestamp: detailedRes.timestamp
-                          },
-                          method: 'GET',
-                          complete: function (res) {
-                            context.pressed = false
-                            wx.hideLoading()
-                            wx.showModal({
-                              title: '温馨提示',
-                              showCancel: false,
-                              content: '支付失败！'
-                            })
-                          }
-                        })
-                      }
-                    },
-                    fail: function (res) {
-                      wx.showLoading({
-                        title: '正在处理',
-                        mask: true
-                      })
-                      wx.request({
-                        url: 'https://miniprogram.xluyun.com/report/deleteReportData',
-                        data: {
-                          wechatId: detailedRes.wechatId,
-                          timestamp: detailedRes.timestamp
                         },
-                        method: 'GET',
-                        complete: function (res) {
-                          context.pressed = false
-                          wx.hideLoading()
-                          wx.showModal({
-                            title: '温馨提示',
-                            showCancel: false,
-                            content: '支付失败！'
+                        fail: function (res) {
+                          wx.showLoading({
+                            title: '正在处理',
+                            mask: true
+                          })
+                          wx.request({
+                            url: 'https://miniprogram.xluyun.com/report/deleteReportData',
+                            data: {
+                              wechatId: detailedRes.wechatId,
+                              timestamp: detailedRes.timestamp
+                            },
+                            method: 'GET',
+                            complete: function (res) {
+                              context.pressed = false
+                              wx.hideLoading()
+                              wx.showModal({
+                                title: '温馨提示',
+                                showCancel: false,
+                                content: '支付失败！'
+                              })
+                            }
                           })
                         }
                       })
                     }
+                  })
+                },
+                fail: function (res) {
+                  context.pressed = false
+                  wx.hideLoading()
+                  wx.showModal({
+                    title: '温馨提示',
+                    showCancel: false,
+                    content: '计算错误！'
                   })
                 }
               })

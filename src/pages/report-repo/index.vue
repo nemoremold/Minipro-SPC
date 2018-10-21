@@ -43,7 +43,7 @@
           >
             <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
               <view style="height: 100%; width: 80%; display:flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;">
-                <span style="font-size: 11pt">{{ '姓名：' + item.name }}</span>
+                <span style="font-size: 11pt">{{ item.name }}</span>
                 <span style="font-size: 9pt; color: grey;">{{ '填写时间：' + item.time }}</span>
               </view>
               <view style="height: 100%; width: 20%; display:flex; justify-content: flex-end; align-items: center;">
@@ -83,7 +83,7 @@
 
 <script>
 import RepoElementList from '@/components/repo-element-list'
-import Details from '@/utils/details'
+// import Details from '@/utils/details'
 import dataFormatter from '@/utils/dataFormatter'
 
 export default {
@@ -304,53 +304,69 @@ export default {
                   'monthly-taxable-wage': parseInt(resData.incomeWithMonth),
                   'social-security-pension-account-balance': parseInt(resData.pensionBalance),
                   'target-pension-replacement-rate': parseInt(resData.pensionReplacementRate) / 100,
-                  'supplementary-pension': resData.supplementaryPension
+                  'supplementary-pension': resData.supplementaryPension,
+                  'company-type': resData.jobType
                 }
-                var details = new Details(data)
-                var detailedRes = details.getDetailedReportData()
-                detailedRes.wechatId = context.userInfo.wechatId
-                detailedRes.timestamp = resData.timestamp
-                detailedRes.generate_time = dataFormatter.formatDate(new Date())
-                detailedRes.avatar_url = context.userInfo.avatarUrl
-                detailedRes['target-name'] = resData.name
-                detailedRes.gender = resData.gender
-                detailedRes.age = resData.age
-                detailedRes['start-date'] = resData.workingMonths
-                detailedRes['mandatory-age-for-retirement'] = resData.legalRetirementAge
-                detailedRes['expected-retirement-age'] = resData.expectedRetirementAge
-                detailedRes['time-for-participation'] = resData.insuredMonths
-                detailedRes['social-security-location'] = resData.province
-                detailedRes['company-type'] = resData.jobType
-                detailedRes['personal-salary-before-tax'] = resData.incomeWithTax
-                detailedRes['local-average-salary-last-year'] = resData.averageIncomePerMonth
-                detailedRes['social-security-pension-account-balance'] = resData.pensionBalance
                 wx.request({
-                  url: 'https://miniprogram.xluyun.com/report/generateReport',
-                  data: detailedRes,
+                  url: 'https://miniprogram.xluyun.com/getDetailedReportData',
+                  data: data,
                   method: 'POST',
-                  success: function (res) {
-                    context.pressed = false
-                    wx.hideLoading()
-                    if (res.data.result === 'success') {
-                      wx.showModal({
-                        title: '温馨提示',
-                        showCancel: false,
-                        content: '成功重新生成报告！',
-                        success: function (res) {
-                          if (res.confirm) {
-                            wx.navigateTo({
-                              url: '../spc-report-deluxe/main?wechatId=' + context.userInfo.wechatId + '&timestamp=' + detailedRes.timestamp
-                            })
-                          }
+                  success: function (resJsonString) {
+                    var detailedRes = JSON.parse(resJsonString.data.result)
+                    detailedRes.wechatId = context.userInfo.wechatId
+                    detailedRes.timestamp = resData.timestamp
+                    detailedRes.generate_time = dataFormatter.formatDate(new Date())
+                    detailedRes.avatar_url = context.userInfo.avatarUrl
+                    detailedRes['target-name'] = resData.name
+                    detailedRes.gender = resData.gender
+                    detailedRes.age = resData.age
+                    detailedRes['start-date'] = resData.workingMonths
+                    detailedRes['mandatory-age-for-retirement'] = resData.legalRetirementAge
+                    detailedRes['expected-retirement-age'] = resData.expectedRetirementAge
+                    detailedRes['time-for-participation'] = resData.insuredMonths
+                    detailedRes['social-security-location'] = resData.province
+                    detailedRes['company-type'] = resData.jobType
+                    detailedRes['personal-salary-before-tax'] = resData.incomeWithTax
+                    detailedRes['local-average-salary-last-year'] = resData.averageIncomePerMonth
+                    detailedRes['social-security-pension-account-balance'] = resData.pensionBalance
+                    wx.request({
+                      url: 'https://miniprogram.xluyun.com/report/generateReport',
+                      data: detailedRes,
+                      method: 'POST',
+                      success: function (res) {
+                        context.pressed = false
+                        wx.hideLoading()
+                        if (res.data.result === 'success') {
+                          wx.showModal({
+                            title: '温馨提示',
+                            showCancel: false,
+                            content: '成功重新生成报告！',
+                            success: function (res) {
+                              if (res.confirm) {
+                                wx.navigateTo({
+                                  url: '../spc-report-deluxe/main?wechatId=' + context.userInfo.wechatId + '&timestamp=' + detailedRes.timestamp
+                                })
+                              }
+                            }
+                          })
+                        } else {
+                          wx.showModal({
+                            title: '温馨提示',
+                            showCancel: false,
+                            content: '生成失败！'
+                          })
                         }
-                      })
-                    } else {
-                      wx.showModal({
-                        title: '温馨提示',
-                        showCancel: false,
-                        content: '生成失败！'
-                      })
-                    }
+                      },
+                      fail: function (res) {
+                        context.pressed = false
+                        wx.hideLoading()
+                        wx.showModal({
+                          title: '温馨提示',
+                          showCancel: false,
+                          content: '生成失败！'
+                        })
+                      }
+                    })
                   },
                   fail: function (res) {
                     context.pressed = false
@@ -358,7 +374,7 @@ export default {
                     wx.showModal({
                       title: '温馨提示',
                       showCancel: false,
-                      content: '生成失败！'
+                      content: '重新生成失败！'
                     })
                   }
                 })
