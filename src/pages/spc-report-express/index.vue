@@ -153,7 +153,7 @@
     </view>
     <view style="margin: 3px 0; position: absolute; width: 100%; font-size: 6pt; display: flex; flex-direction: column; justify-content: center; align-items: center;">
       <view style="width: 94%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
-        <view>
+        <!-- <view>
           <span style="font-weight: bold;">&diams;退休首年月领养老金计算公式：</span>
         </view>
         <view>
@@ -164,7 +164,7 @@
         </view>
         <view>
           <span>&emsp;&bull;公式二</span>
-        </view>
+        </view> -->
         <view>
           <span style="font-weight: bold;">&diams;专业版报告额外提供：</span>
         </view>
