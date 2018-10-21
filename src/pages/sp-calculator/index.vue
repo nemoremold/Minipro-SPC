@@ -125,7 +125,8 @@
           >
             <view slot="title" style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
               <view style="display: flex; flex-direction: column; justify-content: flex-start; align-items: center;">
-                <span style="color: #0066FF;">1992年12月31日</span>
+                <span v-if="elements[2].value == '城镇企业'" style="color: #0066FF;">1992年12月31日</span>
+                <span v-if="elements[2].value == '机关单位' || elements[2].value == '事业单位'" style="color: #0066FF">2014年10月1日</span>
                 <span>之前的连续工龄</span>
               </view>
               <van-icon name="question" @click="toastAnnotation(5)" style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 5px;"></van-icon>
@@ -445,7 +446,6 @@ export default {
     this.pickerIds[0] = 0
     this.pickerIds[1] = 0
     this.pickerIds[2] = 0
-    this.pickerIds[3] = '2018-10'
     this.pickerIds[4] = [0, 0]
     this.pickerIds[5] = [0, 0]
     this.pickerIds[6] = 24
@@ -453,6 +453,10 @@ export default {
     this.pickerIds[8] = 25
     this.pickerIds[9] = 10
     this.pickerIds[10] = 1
+
+    let date = dataFormatter.formatDate(new Date()).split('/')
+    this.elements[3].value = date[0] + '年' + date[1] + '月'
+    this.pickerIds[3] = date[0] + '-' + date[1]
 
     var context = this
     wx.showLoading({
@@ -663,8 +667,30 @@ export default {
       let pickedId = e.mp.detail.value
       this.pickerIds[this.elements[elementId].picklistId] = pickedId
       this.elements[elementId].value = this.picklists[this.elements[elementId].picklistId].options[pickedId]
+      var newValues = this.pickerIds[this.elements[3].picklistId].split('-')
       if (this.elements[elementId].id === 'social-security-location') {
         this.elements[12].value = defaultValues.getLocationWage(this.elements[elementId].value)
+      } else if (this.elements[elementId].id === 'company-type') {
+        if (this.elements[2].value === '城镇企业' && parseInt(newValues[0]) <= 1992) {
+          this.elements[5].value = (1992 - parseInt(newValues[0])) + '年' + (12 - parseInt(newValues[1])) + '个月'
+          this.pickerIds[this.elements[5].picklistId] = [(1992 - parseInt(newValues[0])), (12 - parseInt(newValues[1]))]
+        } else if ((this.elements[2].value === '机关单位' || this.elements[2].value === '事业单位') && parseInt(newValues[0]) <= 2014) {
+          var calcYear = 2014 - parseInt(newValues[0])
+          var calcMonth = 9 - parseInt(newValues[1])
+          if (calcMonth < 0) {
+            calcMonth = calcMonth + 12
+            calcYear = calcYear - 1
+          }
+          if (calcYear < 0) {
+            calcYear = 0
+            calcMonth = 0
+          }
+          this.elements[5].value = calcYear + '年' + calcMonth + '个月'
+          this.pickerIds[this.elements[5].picklistId] = [calcYear, calcMonth]
+        } else {
+          this.elements[5].value = 0 + '年' + 0 + '个月'
+          this.pickerIds[this.elements[5].picklistId] = [0, 0]
+        }
       }
     },
 
@@ -685,9 +711,22 @@ export default {
         if (years < 0) {
           years = 0
           months = 0
-        } else if (parseInt(newValues[0]) <= 1992) {
+        } else if (this.elements[2].value === '城镇企业' && parseInt(newValues[0]) <= 1992) {
           this.elements[elementId + 2].value = (1992 - parseInt(newValues[0])) + '年' + (12 - parseInt(newValues[1])) + '个月'
           this.pickerIds[this.elements[elementId + 2].picklistId] = [(1992 - parseInt(newValues[0])), (12 - parseInt(newValues[1]))]
+        } else if ((this.elements[2].value === '机关单位' || this.elements[2].value === '事业单位') && parseInt(newValues[0]) <= 2014) {
+          var calcYear = 2014 - parseInt(newValues[0])
+          var calcMonth = 9 - parseInt(newValues[1])
+          if (calcMonth < 0) {
+            calcMonth = calcMonth + 12
+            calcYear = calcYear - 1
+          }
+          if (calcYear < 0) {
+            calcYear = 0
+            calcMonth = 0
+          }
+          this.elements[elementId + 2].value = calcYear + '年' + calcMonth + '个月'
+          this.pickerIds[this.elements[elementId + 2].picklistId] = [calcYear, calcMonth]
         }
         this.elements[elementId + 1].value = years + '年' + months + '个月'
         this.pickerIds[this.elements[elementId + 1].picklistId] = [years, months]
