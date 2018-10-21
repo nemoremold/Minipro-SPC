@@ -179,7 +179,7 @@ export default {
             wx.stopPullDownRefresh()
             context.isPullDownRefreshing = false
             for (var i = 0; i < res.data.result.length; ++i) {
-              res.data.result[i].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp))
+              res.data.result[i].time = dataFormatter.formatTime(new Date(parseInt(res.data.result[i].timestamp)))
             }
             context.reports = res.data.result
             if (context.reports.length < context.reportCount) {
@@ -210,7 +210,7 @@ export default {
           const index = context.reports.length
           for (var i = 0; i < res.data.result.length; ++i) {
             context.reports[index + i + 1] = res.data.result[i]
-            context.reports[index + i + 1].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp))
+            context.reports[index + i + 1].time = dataFormatter.formatTime(new Date(parseInt(res.data.result[i].timestamp)))
           }
           if (context.reports.length < context.reportCount) {
             context.isMore = true
@@ -285,18 +285,26 @@ export default {
                   success: function (res) {
                     context.pressed = false
                     wx.hideLoading()
-                    wx.showModal({
-                      title: '温馨提示',
-                      showCancel: false,
-                      content: '成功重新生成报告！',
-                      success: function (res) {
-                        if (res.confirm) {
-                          wx.navigateTo({
-                            url: '../spc-report-deluxe/main?wechatId=' + context.userInfo.wechatId + '&timestamp=' + detailedRes.timestamp
-                          })
+                    if (res.data.result === 'success') {
+                      wx.showModal({
+                        title: '温馨提示',
+                        showCancel: false,
+                        content: '成功重新生成报告！',
+                        success: function (res) {
+                          if (res.confirm) {
+                            wx.navigateTo({
+                              url: '../spc-report-deluxe/main?wechatId=' + context.userInfo.wechatId + '&timestamp=' + detailedRes.timestamp
+                            })
+                          }
                         }
-                      }
-                    })
+                      })
+                    } else {
+                      wx.showModal({
+                        title: '温馨提示',
+                        showCancel: false,
+                        content: '生成失败！'
+                      })
+                    }
                   },
                   fail: function (res) {
                     context.pressed = false
