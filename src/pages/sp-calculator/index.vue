@@ -1,5 +1,5 @@
 <template>
-  <view v-if="isLoadedData" style="background: #F0F0F0;">
+  <view style="background: #F0F0F0;">
     <view style="height: 150px; width: 100%; margin: 0; background: #2ebeb8;">
       <image v-if="src" :src="src" mode="aspectFill" style="height: 150px; width: 100%;" />
     </view>
@@ -660,6 +660,10 @@ export default {
         } else {
           this.elements[5].value = 0 + '年' + 0 + '个月'
           this.pickerIds[this.elements[5].picklistId] = [0, 0]
+        }
+      } else if (this.elements[elementId].id === 'company-will-provide-supplementary-pension') {
+        if (this.elements[elementId].value === '否') {
+          this.elements[20].value = null
         }
       }
     },
