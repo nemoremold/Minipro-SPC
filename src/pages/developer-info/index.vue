@@ -28,6 +28,19 @@ export default {
     }
   },
 
+  onShareAppMessage () {
+    return {
+      title: '可学养老金计算器',
+      path: 'pages/user-login/main'
+    }
+  },
+
+  onLoad () {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
+  },
+
   methods: {
     bindTap () {
       var current = this.QRCodeSrc

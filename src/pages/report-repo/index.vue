@@ -21,7 +21,7 @@
     <view style="background: white; margin: 0 0 6px 0;">
       <van-cell>
         <view slot="title" style="font-size: 10pt;">
-          <span>提示：下拉刷新列表，上拉加载更多报告，长按重新生成报告。</span>
+          <span>提示：下拉刷新列表，上拉加载更多报告，长按重新生成、删除报告。</span>
         </view>
       </van-cell>
     </view>
@@ -44,7 +44,7 @@
             <view style="height: 100%; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
               <view style="height: 100%; width: 80%; display:flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;">
                 <span style="font-size: 11pt">{{ item.name }}</span>
-                <span style="font-size: 9pt; color: grey;">{{ item.time }}</span>
+                <span style="font-size: 9pt; color: grey;">{{ '填写时间：' + item.time }}</span>
               </view>
               <view style="height: 100%; width: 20%; display:flex; justify-content: flex-end; align-items: center;">
                 <van-tag type="success" plain="true" style="display: flex; justify-content: flex-start; align-items: center;">{{ '点击查看' }}</van-tag>
@@ -68,13 +68,22 @@
     </view>
 
     <view style="height: 1px; margin: 6px 0;">
-    </view>
+    </view> 
+    
+    <van-action-sheet
+      :show="showActionSheet"
+      :actions="sheetActions"
+      cancelText="取消"
+      @close="onClose"
+      @select="onSelect"
+      @cancel="onCancel"
+    />
   </view>
 </template>
 
 <script>
 import RepoElementList from '@/components/repo-element-list'
-import Details from '@/utils/details'
+// import Details from '@/utils/details'
 import dataFormatter from '@/utils/dataFormatter'
 
 export default {
@@ -93,7 +102,20 @@ export default {
       isPullDownRefreshing: null,
       isLoadMore: null,
       isMore: null,
-      pressed: null
+      pressed: null,
+      showActionSheet: false,
+      chosenWechatId: null,
+      chosenTimestamp: null,
+      sheetActions: [
+        {
+          name: '重新生成',
+          subname: '不改变报告填写日期'
+        },
+        {
+          name: '删除',
+          subname: '删除之后不可恢复'
+        }
+      ]
     }
   },
 
@@ -118,6 +140,7 @@ export default {
     this.reportCount = 0
     var context = this
     this.pressed = false
+    this.showActionSheet = false
     wx.request({
       url: 'https://miniprogram.xluyun.com/report/getReportCount',
       data: {
@@ -179,7 +202,7 @@ export default {
             wx.stopPullDownRefresh()
             context.isPullDownRefreshing = false
             for (var i = 0; i < res.data.result.length; ++i) {
-              res.data.result[i].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp))
+              res.data.result[i].time = dataFormatter.formatTime(new Date(parseInt(res.data.result[i].timestamp)))
             }
             context.reports = res.data.result
             if (context.reports.length < context.reportCount) {
@@ -210,7 +233,7 @@ export default {
           const index = context.reports.length
           for (var i = 0; i < res.data.result.length; ++i) {
             context.reports[index + i + 1] = res.data.result[i]
-            context.reports[index + i + 1].time = dataFormatter.formatTime(new Date(res.data.result[i].timestamp))
+            context.reports[index + i + 1].time = dataFormatter.formatTime(new Date(parseInt(res.data.result[i].timestamp)))
           }
           if (context.reports.length < context.reportCount) {
             context.isMore = true
@@ -221,10 +244,33 @@ export default {
   },
 
   methods: {
+    onClose (event) {
+      this.showActionSheet = false
+    },
+
+    onCancel (event) {
+      this.showActionSheet = false
+    },
+
+    onSelect (event) {
+      this.showActionSheet = false
+      if (event.mp.detail.name === '删除') {
+        this.delete(this.chosenWechatId, this.chosenTimestamp)
+      } else if (event.mp.detail.name === '重新生成') {
+        this.regenerate(this.chosenWechatId, this.chosenTimestamp)
+      }
+    },
+
     longPress (wechatId, timestamp) {
       if (this.pressed === true) {
         return
       }
+      this.showActionSheet = true
+      this.chosenWechatId = wechatId
+      this.chosenTimestamp = timestamp
+    },
+
+    regenerate (wechatId, timestamp) {
       var context = this
       wx.showModal({
         title: '温馨提示',
@@ -258,43 +304,67 @@ export default {
                   'monthly-taxable-wage': parseInt(resData.incomeWithMonth),
                   'social-security-pension-account-balance': parseInt(resData.pensionBalance),
                   'target-pension-replacement-rate': parseInt(resData.pensionReplacementRate) / 100,
-                  'supplementary-pension': resData.supplementaryPension
+                  'supplementary-pension': resData.supplementaryPension,
+                  'company-type': resData.jobType
                 }
-                var details = new Details(data)
-                var detailedRes = details.getDetailedReportData()
-                detailedRes.wechatId = context.userInfo.wechatId
-                detailedRes.timestamp = resData.timestamp
-                detailedRes.generate_time = dataFormatter.formatDate(new Date())
-                detailedRes.avatar_url = context.userInfo.avatarUrl
-                detailedRes['target-name'] = resData.name
-                detailedRes.gender = resData.gender
-                detailedRes.age = resData.age
-                detailedRes['start-date'] = resData.workingMonths
-                detailedRes['mandatory-age-for-retirement'] = resData.legalRetirementAge
-                detailedRes['expected-retirement-age'] = resData.expectedRetirementAge
-                detailedRes['time-for-participation'] = resData.insuredMonths
-                detailedRes['social-security-location'] = resData.province
-                detailedRes['company-type'] = resData.jobType
-                detailedRes['personal-salary-before-tax'] = resData.incomeWithTax
-                detailedRes['local-average-salary-last-year'] = resData.averageIncomePerMonth
-                detailedRes['social-security-pension-account-balance'] = resData.pensionBalance
                 wx.request({
-                  url: 'https://miniprogram.xluyun.com/report/generateReport',
-                  data: detailedRes,
+                  url: 'https://miniprogram.xluyun.com/getDetailedReportData',
+                  data: data,
                   method: 'POST',
-                  success: function (res) {
-                    context.pressed = false
-                    wx.hideLoading()
-                    wx.showModal({
-                      title: '温馨提示',
-                      showCancel: false,
-                      content: '成功重新生成报告！',
+                  success: function (resJsonString) {
+                    var detailedRes = JSON.parse(resJsonString.data.result)
+                    detailedRes.wechatId = context.userInfo.wechatId
+                    detailedRes.timestamp = resData.timestamp
+                    detailedRes.generate_time = dataFormatter.formatDate(new Date())
+                    detailedRes.avatar_url = context.userInfo.avatarUrl
+                    detailedRes['target-name'] = resData.name
+                    detailedRes.gender = resData.gender
+                    detailedRes.age = resData.age
+                    detailedRes['start-date'] = resData.workingMonths
+                    detailedRes['mandatory-age-for-retirement'] = resData.legalRetirementAge
+                    detailedRes['expected-retirement-age'] = resData.expectedRetirementAge
+                    detailedRes['time-for-participation'] = resData.insuredMonths
+                    detailedRes['social-security-location'] = resData.province
+                    detailedRes['company-type'] = resData.jobType
+                    detailedRes['personal-salary-before-tax'] = resData.incomeWithTax
+                    detailedRes['local-average-salary-last-year'] = resData.averageIncomePerMonth
+                    detailedRes['social-security-pension-account-balance'] = resData.pensionBalance
+                    wx.request({
+                      url: 'https://miniprogram.xluyun.com/report/generateReport',
+                      data: detailedRes,
+                      method: 'POST',
                       success: function (res) {
-                        if (res.confirm) {
-                          wx.navigateTo({
-                            url: '../spc-report-deluxe/main?wechatId=' + context.userInfo.wechatId + '&timestamp=' + detailedRes.timestamp
+                        context.pressed = false
+                        wx.hideLoading()
+                        if (res.data.result === 'success') {
+                          wx.showModal({
+                            title: '温馨提示',
+                            showCancel: false,
+                            content: '成功重新生成报告！',
+                            success: function (res) {
+                              if (res.confirm) {
+                                wx.navigateTo({
+                                  url: '../spc-report-deluxe/main?wechatId=' + context.userInfo.wechatId + '&timestamp=' + detailedRes.timestamp
+                                })
+                              }
+                            }
+                          })
+                        } else {
+                          wx.showModal({
+                            title: '温馨提示',
+                            showCancel: false,
+                            content: '生成失败！'
                           })
                         }
+                      },
+                      fail: function (res) {
+                        context.pressed = false
+                        wx.hideLoading()
+                        wx.showModal({
+                          title: '温馨提示',
+                          showCancel: false,
+                          content: '生成失败！'
+                        })
                       }
                     })
                   },
@@ -304,13 +374,111 @@ export default {
                     wx.showModal({
                       title: '温馨提示',
                       showCancel: false,
-                      content: '生成失败！'
+                      content: '重新生成失败！'
                     })
                   }
                 })
               }
             })
           }
+        }
+      })
+    },
+
+    delete (wechatId, timestamp) {
+      var context = this
+      wx.showModal({
+        title: '温馨提示',
+        content: '请注意，删除之后无法恢复。',
+        success: function (res) {
+          if (res.confirm) {
+            context.pressed = true
+            wx.showLoading({
+              title: '删除报告中',
+              mask: true
+            })
+            wx.request({
+              url: 'https://miniprogram.xluyun.com/report/deleteReport',
+              data: {
+                wechatId: wechatId,
+                timestamp: timestamp
+              },
+              method: 'GET',
+              success: function (res) {
+                context.pressed = false
+                wx.hideLoading()
+                if (res.data.result === 'deleted') {
+                  wx.showModal({
+                    title: '温馨提示',
+                    showCancel: false,
+                    content: '删除成功！',
+                    success: function (res) {
+                      if (res.confirm) {
+                        context.refreshPage()
+                      }
+                    }
+                  })
+                } else {
+                  wx.showModal({
+                    title: '温馨提示',
+                    showCancel: false,
+                    content: '删除失败！'
+                  })
+                }
+              },
+              fail: function (res) {
+                context.pressed = false
+                wx.hideLoading()
+                wx.showModal({
+                  title: '温馨提示',
+                  showCancel: false,
+                  content: '删除失败！'
+                })
+              }
+            })
+          }
+        }
+      })
+    },
+
+    refreshPage () {
+      wx.showNavigationBarLoading()
+      var context = this
+      this.reports = []
+      this.reportCount = 0
+      this.isMore = false
+      this.isPullDownRefreshing = true
+      this.isLoadMore = false
+      this.top = 0
+      wx.request({
+        url: 'https://miniprogram.xluyun.com/report/getReportCount',
+        data: {
+          wechatId: this.userInfo.wechatId
+        },
+        method: 'GET',
+        success: function (res) {
+          context.reportCount = res.data.result
+          wx.request({
+            url: 'https://miniprogram.xluyun.com/report/getReportDataList',
+            data: {
+              wechatId: context.userInfo.wechatId,
+              top: context.top,
+              skip: context.skip
+            },
+            method: 'GET',
+            success: function (res) {
+              wx.hideNavigationBarLoading()
+              wx.stopPullDownRefresh()
+              context.isPullDownRefreshing = false
+              for (var i = 0; i < res.data.result.length; ++i) {
+                res.data.result[i].time = dataFormatter.formatTime(new Date(parseInt(res.data.result[i].timestamp)))
+              }
+              context.reports = res.data.result
+              if (context.reports.length < context.reportCount) {
+                context.isMore = true
+              }
+            }
+          })
         }
       })
     }

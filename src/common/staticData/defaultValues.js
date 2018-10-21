@@ -1,4 +1,4 @@
-const LOCATIONS = [
+var LOCATIONS = [
   '北京市',
   '天津市',
   '河北省',
@@ -32,7 +32,7 @@ const LOCATIONS = [
   '新疆维吾尔自治区'
 ]
 
-const LOCATIONS_WAGES = [
+var LOCATIONS_WAGES = [
   {
     location: '北京市',
     wage: 8467 * 12
@@ -165,6 +165,22 @@ function getLocationWage (location) {
       return parseInt(LOCATIONS_WAGES[i].wage / 12)
     }
   }
+}
+
+function setLocationWages (wages) {
+  LOCATIONS_WAGES = wages
+  LOCATIONS = []
+  for (var i = 0; i < wages.length; ++i) {
+    LOCATIONS[i] = wages[i].location
+  }
+}
+
+function getLocations () {
+  return LOCATIONS
+}
+
+function getLocation (index) {
+  return LOCATIONS[index]
 }
 
 const DEFAULT_CALCULATION_FACTORS = [
@@ -394,5 +410,8 @@ const PICKLIST_TYPES = [
 export default {
   DEFAULT_CALCULATION_FACTORS,
   PICKLIST_TYPES,
-  getLocationWage
+  getLocationWage,
+  setLocationWages,
+  getLocation,
+  getLocations
 }
