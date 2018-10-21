@@ -183,6 +183,7 @@
 <script>
 import Toast from '../../../static/vant/toast/toast'
 import dataFormatter from '../../utils/dataFormatter'
+import MD5Util from '@/utils/md5'
 
 export default {
   data () {
@@ -392,7 +393,7 @@ export default {
                   success: function (res) {
                     if (res.confirm) {
                       wx.showLoading({
-                        title: '正在生成报告',
+                        title: '正在准备生成',
                         mask: true
                       })
                       var detailedRes = context.globalData.details.getDetailedReportData()
@@ -418,34 +419,159 @@ export default {
                         method: 'POST',
                         success: function (res) {
                           wx.request({
-                            url: 'https://miniprogram.xluyun.com/report/generateReport',
-                            data: detailedRes,
-                            method: 'POST',
+                            url: 'https://miniprogram.xluyun.com/pay/prepay',
+                            data: {
+                              wechatId: context.userInfo.wechatId
+                            },
+                            method: 'GET',
                             success: function (res) {
+                              console.log(res)
+                              var payData = 'appId=' + res.data.appId + '&nonceStr=' + res.data.nonce_str + '&package=prepay_id=' + res.data.prepayId + '&signType=MD5&timeStamp=' + detailedRes.timestamp
+                              var tempData = payData + '&key=' + res.data.appKey
+                              var paySign = MD5Util.MD5(tempData).toUpperCase()
+                              console.log(paySign)
                               wx.hideLoading()
-                              wx.showModal({
-                                title: '温馨提示',
-                                showCancel: false,
-                                content: '专业报告生成成功！',
-                                success: function (res) {
-                                  if (res.confirm) {
-                                    context.pressed = false
-                                    // wx.navigateTo({
-                                    //   url: '../spc-report-deluxe/main?wechatId=' + detailedRes.wechatId + '&timestamp=' + detailedRes.timestamp
-                                    // })
-                                    wx.switchTab({
-                                      url: '../user-center/main',
-                                      success: function () {
-                                        wx.navigateTo({
-                                          url: '../report-repo/main'
+                              if (res.data.status === 'SUCCESS') {
+                                wx.requestPayment({
+                                  timeStamp: detailedRes.timestamp.toString(),
+                                  nonceStr: res.data.nonce_str,
+                                  package: 'prepay_id=' + res.data.prepayId,
+                                  signType: 'MD5',
+                                  paySign: paySign,
+                                  success: function (res) {
+                                    console.log(res)
+                                    wx.showLoading({
+                                      title: '正在生成报告',
+                                      mask: true
+                                    })
+                                    wx.request({
+                                      url: 'https://miniprogram.xluyun.com/report/generateReport',
+                                      data: detailedRes,
+                                      method: 'POST',
+                                      success: function (res) {
+                                        context.pressed = false
+                                        wx.hideLoading()
+                                        wx.showModal({
+                                          title: '温馨提示',
+                                          showCancel: false,
+                                          content: '专业报告生成成功！',
+                                          success: function (res) {
+                                            if (res.confirm) {
+                                              wx.switchTab({
+                                                url: '../user-center/main',
+                                                success: function () {
+                                                  wx.navigateTo({
+                                                    url: '../report-repo/main'
+                                                  })
+                                                }
+                                              })
+                                            }
+                                          }
+                                        })
+                                      }
+                                    })
+                                  },
+                                  fail: function (res) {
+                                    wx.showLoading({
+                                      title: '正在处理',
+                                      mask: true
+                                    })
+                                    wx.request({
+                                      url: 'https://miniprogram.xluyun.com/report/deleteReportData',
+                                      data: {
+                                        wechatId: detailedRes.wechatId,
+                                        timestamp: detailedRes.timestamp
+                                      },
+                                      method: 'GET',
+                                      complete: function (res) {
+                                        context.pressed = false
+                                        wx.hideLoading()
+                                        wx.showModal({
+                                          title: '温馨提示',
+                                          showCancel: false,
+                                          content: '支付失败！'
                                         })
                                       }
                                     })
                                   }
+                                })
+                              } else {
+                                wx.showLoading({
+                                  title: '正在处理',
+                                  mask: true
+                                })
+                                wx.request({
+                                  url: 'https://miniprogram.xluyun.com/report/deleteReportData',
+                                  data: {
+                                    wechatId: detailedRes.wechatId,
+                                    timestamp: detailedRes.timestamp
+                                  },
+                                  method: 'GET',
+                                  complete: function (res) {
+                                    context.pressed = false
+                                    wx.hideLoading()
+                                    wx.showModal({
+                                      title: '温馨提示',
+                                      showCancel: false,
+                                      content: '支付失败！'
+                                    })
+                                  }
+                                })
+                              }
+                            },
+                            fail: function (res) {
+                              wx.showLoading({
+                                title: '正在处理',
+                                mask: true
+                              })
+                              wx.request({
+                                url: 'https://miniprogram.xluyun.com/report/deleteReportData',
+                                data: {
+                                  wechatId: detailedRes.wechatId,
+                                  timestamp: detailedRes.timestamp
+                                },
+                                method: 'GET',
+                                complete: function (res) {
+                                  context.pressed = false
+                                  wx.hideLoading()
+                                  wx.showModal({
+                                    title: '温馨提示',
+                                    showCancel: false,
+                                    content: '支付失败！'
+                                  })
                                 }
                               })
                             }
                           })
+                          // wx.request({
+                          //   url: 'https://miniprogram.xluyun.com/report/generateReport',
+                          //   data: detailedRes,
+                          //   method: 'POST',
+                          //   success: function (res) {
+                          //     wx.hideLoading()
+                          //     wx.showModal({
+                          //       title: '温馨提示',
+                          //       showCancel: false,
+                          //       content: '专业报告生成成功！',
+                          //       success: function (res) {
+                          //         if (res.confirm) {
+                          //           context.pressed = false
+                          //           // wx.navigateTo({
+                          //           //   url: '../spc-report-deluxe/main?wechatId=' + detailedRes.wechatId + '&timestamp=' + detailedRes.timestamp
+                          //           // })
+                          //           wx.switchTab({
+                          //             url: '../user-center/main',
+                          //             success: function () {
+                          //               wx.navigateTo({
+                          //                 url: '../report-repo/main'
+                          //               })
+                          //             }
+                          //           })
+                          //         }
+                          //       }
+                          //     })
+                          //   }
+                          // })
                         }
                       })
                     }

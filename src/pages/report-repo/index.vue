@@ -297,6 +297,15 @@ export default {
                         }
                       }
                     })
+                  },
+                  fail: function (res) {
+                    context.pressed = false
+                    wx.hideLoading()
+                    wx.showModal({
+                      title: '温馨提示',
+                      showCancel: false,
+                      content: '生成失败！'
+                    })
                   }
                 })
               }
