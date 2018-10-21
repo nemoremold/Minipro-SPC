@@ -20,13 +20,29 @@
 			"current": -1,
 			"list": []
 		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
 		"game": {
 			"currentL": -1,
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
-			"list": []
+			"current": 0,
+			"list": [
+				{
+					"id": -1,
+					"name": "share",
+					"pathName": "pages/user-center/main",
+					"scene": "1044",
+					"shareInfo": {
+						"groupName": "测试模拟群0",
+						"shareName": "TcCwHQFVmQCUdsiTdcr8q_68mdkcYfkGjH__r1rNH_o@cr4dev",
+						"shareKey": "ec1EGD51gF7-DuQveUWxABkLKLC-nlBVC1lhuM79DHfVBUh4n51peJDhaK9YnuCgG2AjSqqD8VsaZaY_Z_bugg~~"
+					}
+				}
+			]
 		}
 	}
 }

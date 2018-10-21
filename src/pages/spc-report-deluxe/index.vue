@@ -22,7 +22,17 @@ export default {
     }
   },
 
+  onShareAppMessage () {
+    return {
+      title: '可学养老金计算器',
+      path: 'pages/user-login/main'
+    }
+  },
+
   onLoad (options) {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
     this.reportId.wechatId = options.wechatId
     this.reportId.timestamp = options.timestamp
     this.reportSrc = null

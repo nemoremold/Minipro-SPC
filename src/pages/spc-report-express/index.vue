@@ -70,10 +70,10 @@
                 <view style="height: 100%; width: 15%; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
                   <view style="height: 12px; width: 100%; background: #fbb513; border-radius: 30%; margin: 0 5px;"></view>
                 </view>
-                <view style="height: 100%; width: 50%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
+                <view style="height: 100%; width: 55%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                   <span style="font-size: 8pt; color: #333;">社保个人帐户养老金</span>
                 </view>
-                <view style="height: 100%; width: 35%; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
+                <view style="height: 100%; width: 30%; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
                   <span style="font-size: 8pt; color: #333;">{{ report[2][2].value + '元' }}</span>
                 </view>
               </view>
@@ -81,10 +81,10 @@
                 <view style="height: 100%; width: 15%; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
                   <view style="height: 12px; width: 100%; background: #017e8d; border-radius: 30%; margin: 0 5px;"></view>
                 </view>
-                <view style="height: 100%; width: 50%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
+                <view style="height: 100%; width: 55%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
                   <span style="font-size: 8pt; color: #333;">社保过渡性养老金</span>
                 </view>
-                <view style="height: 100%; width: 35%; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
+                <view style="height: 100%; width: 30%; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
                   <span style="font-size: 8pt; color: #333;">{{ report[2][3].value + '元' }}</span>
                 </view>
               </view>
@@ -154,16 +154,28 @@
     <view style="margin: 3px 0; position: absolute; width: 100%; font-size: 6pt; display: flex; flex-direction: column; justify-content: center; align-items: center;">
       <view style="width: 94%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
         <view>
-          <span style="font-weight: bold;">专业版报告额外提供：</span>
+          <span style="font-weight: bold;">&diams;退休首年月领养老金计算公式：</span>
         </view>
         <view>
-          <span>&emsp;缴费工资指数、基础养老金领取比例、个人帐户计发月数、养老金替代率与月度缺口等专业数据，并配有退休前后现金流示意图，比简版更专业、更详尽、更直观。</span>
+          <span>&emsp;&bull;公式一</span>
         </view>
         <view>
-          <span>&emsp;展示沟通工具。金融机构理财顾问可以使用专业版报告与客户进行专业沟通，既体现专业能力，又提高沟通效率。</span>
+          <span style="font-weight: bold;">&diams;退休养老金总缺口计算公式：</span>
         </view>
         <view>
-          <span>&emsp;专业版报告既可以打印出来仔细研究，也可以直接发送给客户或朋友，还可以在过往报告中查询。</span>
+          <span>&emsp;&bull;公式二</span>
+        </view>
+        <view>
+          <span style="font-weight: bold;">&diams;专业版报告额外提供：</span>
+        </view>
+        <view>
+          <span>&emsp;&bull;缴费工资指数、基础养老金领取比例、个人帐户计发月数、养老金替代率与月度缺口等专业数据，并配有退休前后现金流示意图，比简版更专业、更详尽、更直观。</span>
+        </view>
+        <view>
+          <span>&emsp;&bull;展示沟通工具。金融机构理财顾问可以使用专业版报告与客户进行专业沟通，既体现专业能力，又提高沟通效率。</span>
+        </view>
+        <view>
+          <span>&emsp;&bull;专业版报告既可以打印出来仔细研究，也可以直接发送给客户或朋友，还可以在过往报告中查询。</span>
         </view>
       </view>
     </view>
@@ -174,6 +186,7 @@
 <script>
 import entityDefinitions from '@/common/staticData/entityDefinitions'
 import dataFormatter from '@/utils/dataFormatter'
+import MD5Util from '@/utils/md5'
 
 export default {
   data () {
@@ -217,7 +230,17 @@ export default {
     }
   },
 
+  onShareAppMessage () {
+    return {
+      title: '可学养老金计算器',
+      path: 'pages/user-login/main'
+    }
+  },
+
   onLoad (options) {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
     var sysInfo = wx.getSystemInfoSync()
     this.pressed = false
     if (sysInfo != null) {
@@ -243,6 +266,10 @@ export default {
     this.report[0][1].value = options.gender
     this.report[0][2].value = options.age
     this.report[1][0].value = options.gap
+    if (this.globalData.calculateFactors.age < this.globalData.calculateFactors.expectedRetirementAge) {
+      this.report[1][1].value = parseInt(this.globalData.calculateFactors.expectedRetirementAge) - parseInt(this.globalData.calculateFactors.age)
+      this.report[1][1].options = Array.from(Array(this.report[1][1].value + 10), (v, k) => k + 1)
+    }
     this.report[1][2].value = parseInt(options.gap / this.report[1][1].value)
     this.report[2][0].value = options.p0
     this.report[2][1].value = options.p1
@@ -257,7 +284,7 @@ export default {
     this.ec = {
       options: this.options
     }
-    this.pickerId = 3
+    this.pickerId = this.report[1][1].value - 1
 
     this.userInfo = this.globalData.userInfo
   },
@@ -286,7 +313,7 @@ export default {
             if (res.data.result === true) {
               context.pressed = true
               wx.showLoading({
-                title: '正在生成报告',
+                title: '正在准备生成',
                 mask: true
               })
               var detailedRes = context.globalData.details.getDetailedReportData()
@@ -312,30 +339,126 @@ export default {
                 method: 'POST',
                 success: function (res) {
                   wx.request({
-                    url: 'https://miniprogram.xluyun.com/report/generateReport',
-                    data: detailedRes,
-                    method: 'POST',
+                    url: 'https://miniprogram.xluyun.com/pay/prepay',
+                    data: {
+                      wechatId: context.userInfo.wechatId
+                    },
+                    method: 'GET',
                     success: function (res) {
-                      context.pressed = false
+                      console.log(res)
+                      var payData = 'appId=' + res.data.appId + '&nonceStr=' + res.data.nonce_str + '&package=prepay_id=' + res.data.prepayId + '&signType=MD5&timeStamp=' + detailedRes.timestamp
+                      var tempData = payData + '&key=' + res.data.appKey
+                      var paySign = MD5Util.MD5(tempData).toUpperCase()
+                      console.log(paySign)
                       wx.hideLoading()
-                      wx.showModal({
-                        title: '温馨提示',
-                        showCancel: false,
-                        content: '专业报告生成成功！',
-                        success: function (res) {
-                          if (res.confirm) {
-                            // wx.navigateTo({
-                            //   url: '../spc-report-deluxe/main?wechatId=' + detailedRes.wechatId + '&timestamp=' + detailedRes.timestamp
-                            // })
-                            wx.switchTab({
-                              url: '../user-center/main',
-                              success: function () {
-                                wx.navigateTo({
-                                  url: '../report-repo/main'
+                      if (res.data.status === 'SUCCESS') {
+                        wx.requestPayment({
+                          timeStamp: detailedRes.timestamp.toString(),
+                          nonceStr: res.data.nonce_str,
+                          package: 'prepay_id=' + res.data.prepayId,
+                          signType: 'MD5',
+                          paySign: paySign,
+                          success: function (res) {
+                            console.log(res)
+                            wx.showLoading({
+                              title: '正在生成报告',
+                              mask: true
+                            })
+                            wx.request({
+                              url: 'https://miniprogram.xluyun.com/report/generateReport',
+                              data: detailedRes,
+                              method: 'POST',
+                              success: function (res) {
+                                context.pressed = false
+                                wx.hideLoading()
+                                wx.showModal({
+                                  title: '温馨提示',
+                                  showCancel: false,
+                                  content: '专业报告生成成功！',
+                                  success: function (res) {
+                                    if (res.confirm) {
+                                      wx.switchTab({
+                                        url: '../user-center/main',
+                                        success: function () {
+                                          wx.navigateTo({
+                                            url: '../report-repo/main'
+                                          })
+                                        }
+                                      })
+                                    }
+                                  }
+                                })
+                              }
+                            })
+                          },
+                          fail: function (res) {
+                            wx.showLoading({
+                              title: '正在处理',
+                              mask: true
+                            })
+                            wx.request({
+                              url: 'https://miniprogram.xluyun.com/report/deleteReportData',
+                              data: {
+                                wechatId: detailedRes.wechatId,
+                                timestamp: detailedRes.timestamp
+                              },
+                              method: 'GET',
+                              complete: function (res) {
+                                context.pressed = false
+                                wx.hideLoading()
+                                wx.showModal({
+                                  title: '温馨提示',
+                                  showCancel: false,
+                                  content: '支付失败！'
                                 })
                               }
                             })
                           }
+                        })
+                      } else {
+                        wx.showLoading({
+                          title: '正在处理',
+                          mask: true
+                        })
+                        wx.request({
+                          url: 'https://miniprogram.xluyun.com/report/deleteReportData',
+                          data: {
+                            wechatId: detailedRes.wechatId,
+                            timestamp: detailedRes.timestamp
+                          },
+                          method: 'GET',
+                          complete: function (res) {
+                            context.pressed = false
+                            wx.hideLoading()
+                            wx.showModal({
+                              title: '温馨提示',
+                              showCancel: false,
+                              content: '支付失败！'
+                            })
+                          }
+                        })
+                      }
+                    },
+                    fail: function (res) {
+                      wx.showLoading({
+                        title: '正在处理',
+                        mask: true
+                      })
+                      wx.request({
+                        url: 'https://miniprogram.xluyun.com/report/deleteReportData',
+                        data: {
+                          wechatId: detailedRes.wechatId,
+                          timestamp: detailedRes.timestamp
+                        },
+                        method: 'GET',
+                        complete: function (res) {
+                          context.pressed = false
+                          wx.hideLoading()
+                          wx.showModal({
+                            title: '温馨提示',
+                            showCancel: false,
+                            content: '支付失败！'
+                          })
                         }
                       })
                     }

@@ -20,6 +20,19 @@ export default {
     }
   },
 
+  onShareAppMessage () {
+    return {
+      title: '可学养老金计算器',
+      path: 'pages/user-login/main'
+    }
+  },
+
+  onLoad () {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
+  },
+
   onReady () {
     var context = this
     wx.getSetting({
@@ -41,14 +54,14 @@ export default {
                       appContext.globalData.userInfo = res.userInfo
                       var data = pc.decryptData(res.encryptedData, res.iv)
                       appContext.globalData.userInfo.wechatId = data.openId
+                      wx.switchTab({
+                        url: '../sp-calculator/main'
+                      })
                     }
                   })
                 }
               })
             }
-          })
-          wx.switchTab({
-            url: '../sp-calculator/main'
           })
         }
       }
@@ -81,14 +94,14 @@ export default {
                 success: function (res) {
                   var data = pc.decryptData(res.encryptedData, res.iv)
                   appContext.globalData.userInfo.wechatId = data.openId
+                  wx.switchTab({
+                    url: '../sp-calculator/main'
+                  })
                 }
               })
             }
           })
         }
-      })
-      wx.switchTab({
-        url: '../sp-calculator/main'
       })
     }
   }
