@@ -96,7 +96,7 @@
           <van-field
             inputAlign="right"
             :value="userinfo.location"
-            placeholder="服务区域"
+            placeholder="如：上海、武汉、苏州"
             clearable
             center="true"
             @change="fieldChange($event, 'location')"
