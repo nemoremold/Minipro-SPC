@@ -205,7 +205,8 @@ export default {
       countDown: 60,
       interval: null,
       proxy: null,
-      pressed: null
+      pressed: null,
+      userInfo: null
     }
   },
 
@@ -230,6 +231,7 @@ export default {
     if (options.proxy != null && options.proxy !== '') {
       this.proxy = options.proxy
     }
+    this.userInfo = this.globalData.userInfo
   },
 
   methods: {
@@ -491,7 +493,14 @@ export default {
                                             wx.showModal({
                                               title: '温馨提示',
                                               showCancel: false,
-                                              content: '支付失败！'
+                                              content: '支付失败！',
+                                              success: function (res) {
+                                                if (res.confirm) {
+                                                  wx.navigateBack({
+                                                    delta: 1
+                                                  })
+                                                }
+                                              }
                                             })
                                           }
                                         })
@@ -515,7 +524,14 @@ export default {
                                         wx.showModal({
                                           title: '温馨提示',
                                           showCancel: false,
-                                          content: '支付失败！'
+                                          content: '支付失败！',
+                                          success: function (res) {
+                                            if (res.confirm) {
+                                              wx.navigateBack({
+                                                delta: 1
+                                              })
+                                            }
+                                          }
                                         })
                                       }
                                     })
@@ -539,10 +555,33 @@ export default {
                                       wx.showModal({
                                         title: '温馨提示',
                                         showCancel: false,
-                                        content: '支付失败！'
+                                        content: '支付失败！',
+                                        success: function (res) {
+                                          if (res.confirm) {
+                                            wx.navigateBack({
+                                              delta: 1
+                                            })
+                                          }
+                                        }
                                       })
                                     }
                                   })
+                                }
+                              })
+                            },
+                            fail: function (res) {
+                              wx.hideLoading()
+                              context.pressed = false
+                              wx.showModal({
+                                title: '温馨提示',
+                                showCancel: false,
+                                content: '服务错误！',
+                                success: function (res) {
+                                  if (res.confirm) {
+                                    wx.navigateBack({
+                                      delta: 1
+                                    })
+                                  }
                                 }
                               })
                             }
@@ -554,7 +593,14 @@ export default {
                           wx.showModal({
                             title: '温馨提示',
                             showCancel: false,
-                            content: '计算错误！'
+                            content: '计算错误！',
+                            success: function (res) {
+                              if (res.confirm) {
+                                wx.navigateBack({
+                                  delta: 1
+                                })
+                              }
+                            }
                           })
                         }
                       })
